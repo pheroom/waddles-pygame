@@ -102,7 +102,7 @@ class Princess(Platform):
         self.image.set_colorkey(Color(COLOR))
         for anim in ANIMATION_PRINCESS:
             anim = transform.scale(image.load(anim), (HERO_WIDTH, HERO_HEIGHT))
-            boltAnim.append((anim, 0.8))
+            boltAnim.append((anim, ANIMATION_STAY_DELAY))
         self.boltAnim = pyganim.PygAnimation(boltAnim)
         self.boltAnim.play()
 

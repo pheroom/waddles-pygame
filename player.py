@@ -53,7 +53,11 @@ class Player(sprite.Sprite):
         self.boltAnimLeft.play()
         self.boltAnimLeftSuperSpeed = pyganim.PygAnimation(boltAnimSuperSpeed)
         self.boltAnimLeftSuperSpeed.play()
-        self.boltAnimStay = pyganim.PygAnimation(ANIMATION_STAY)
+        boltAnim = []
+        for anim in ANIMATION_STAY:
+            anim = transform.scale(image.load(anim), (HERO_WIDTH, HERO_HEIGHT))
+            boltAnim.append((anim, ANIMATION_STAY_DELAY))
+        self.boltAnimStay = pyganim.PygAnimation(boltAnim)
         self.boltAnimStay.play()
         self.boltAnimJumpLeft = pyganim.PygAnimation(ANIMATION_JUMP_LEFT)
         self.boltAnimJumpLeft.play()

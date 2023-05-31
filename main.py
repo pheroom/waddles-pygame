@@ -66,8 +66,8 @@ size = (WIN_WIDTH, WIN_HEIGHT)
 screen = display.set_mode(size)
 clock = time.Clock()
 game = Game(screen)
-display.set_caption("Super Mario Boy")
-marioIcon = image.load('./images/smallMushroom.png')
+display.set_caption("Waddles")
+marioIcon = image.load('./images/journal.png')
 display.set_icon(marioIcon)
 
 def lvl1Screen(screen, switchScreen):
