@@ -1,19 +1,20 @@
 from pygame import *
-from config import *
+from config import config
+from utils import transformImg
 import pyganim
 import random
 
 class Platform(sprite.Sprite):
     def __init__(self, x, y, img = None):
         sprite.Sprite.__init__(self)
-        self.image = img or image.load("images/brick.png").convert_alpha()
-        self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
+        self.image = (img and transformImg(img)) or transformImg("images/brick.png")
+        self.rect = Rect(x, y, config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT)
 
 class PlatformCoin(sprite.Sprite):
     def __init__(self, x, y, remove, img = None):
         sprite.Sprite.__init__(self)
-        self.image = img or image.load("images/coin.png").convert_alpha()
-        self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
+        self.image = (img and transformImg(img)) or transformImg("images/coin.png")
+        self.rect = Rect(x, y, config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT)
         self.remove = remove
 
     def die(self):
@@ -25,12 +26,12 @@ class Coin(sprite.Sprite):
         self.startX = x
         self.startY = y
         self.remove = remove
-        self.image = Surface((PLATFORM_WIDTH, PLATFORM_HEIGHT))
-        self.image = image.load("images/coin1.png").convert_alpha()
-        self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
+        self.image = Surface((config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT))
+        self.image = transformImg("images/coin1.png")
+        self.rect = Rect(x, y, config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT)
         boltAnim = []
-        for anim in ANIMATION_COIN:
-            boltAnim.append((anim, 0.2))
+        for anim in config.ANIMATION_COIN:
+            boltAnim.append((transformImg(anim), 0.2))
         self.boltAnim = pyganim.PygAnimation(boltAnim)
         self.boltAnim.play()
         self.yvel = -7
@@ -51,7 +52,7 @@ class Amount(sprite.Sprite):
         self.startY = y
         self.remove = remove
         self.image = font.Font('./emulogic.ttf', 12).render(str(amount), False, '#ffffff')
-        self.rect = Rect(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT)
+        self.rect = Rect(x, y, config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT)
         self.yvel = -5
 
     def update(self):
@@ -74,7 +75,7 @@ class ActPlatform(Platform):
             self.strength -= 1
             self.needAction(self.rect.x, self.rect.y)
         if self.strength <= 0:
-            self.image = image.load("./images/empty_coin_block.png").convert_alpha()
+            self.image = transformImg("./images/empty_coin_block.png")
             self.end = True
 
 class BlockTeleport(Platform):
@@ -83,13 +84,13 @@ class BlockTeleport(Platform):
         self.goX = goX
         self.goY = goY
         boltAnim = []
-        for anim in ANIMATION_BLOCKTELEPORT:
-            boltAnim.append((anim, 0.3))
+        for anim in config.ANIMATION_BLOCKTELEPORT:
+            boltAnim.append((transformImg(anim), 0.3))
         self.boltAnim = pyganim.PygAnimation(boltAnim)
         self.boltAnim.play()
 
     def update(self):
-        self.image.fill(Color(PLATFORM_COLOR))
+        self.image.fill(Color(config.PLATFORM_COLOR))
         self.boltAnim.blit(self.image, (0, 0))
 
 
@@ -97,27 +98,27 @@ class Princess(Platform):
     def __init__(self, x, y):
         Platform.__init__(self, x, y)
         boltAnim = []
-        self.image = Surface((HERO_WIDTH, HERO_HEIGHT))
-        self.image.fill(Color(COLOR))
-        self.image.set_colorkey(Color(COLOR))
-        for anim in ANIMATION_PRINCESS:
-            boltAnim.append((anim, 0.8))
+        self.image = Surface((config.HERO_WIDTH, config.HERO_HEIGHT))
+        self.image.fill(Color(config.COLOR))
+        self.image.set_colorkey(Color(config.COLOR))
+        for anim in config.ANIMATION_PRINCESS:
+            boltAnim.append((transformImg(anim), 0.8))
         self.boltAnim = pyganim.PygAnimation(boltAnim)
         self.boltAnim.play()
 
     def update(self):
-        self.image.fill(Color(COLOR))
+        self.image.fill(Color(config.COLOR))
         self.boltAnim.blit(self.image, (0, 0))
 
 class Flower(sprite.Sprite):
     def __init__(self, x, y, whenDead, removeDeepPlatform):
         sprite.Sprite.__init__(self)
-        self.rect = Rect(x, y - PLATFORM_HEIGHT, PLATFORM_WIDTH, PLATFORM_HEIGHT)
+        self.rect = Rect(x, y - config.PLATFORM_HEIGHT, config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT)
         boltAnim = []
-        self.image = Surface((PLATFORM_WIDTH, PLATFORM_HEIGHT))
-        self.image.set_colorkey(Color(COLOR))
-        for anim in ANIMATION_FLOWER:
-            boltAnim.append((anim, 0.1))
+        self.image = Surface((config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT))
+        self.image.set_colorkey(Color(config.COLOR))
+        for anim in config.ANIMATION_FLOWER:
+            boltAnim.append((transformImg(anim), 0.1))
         self.boltAnim = pyganim.PygAnimation(boltAnim)
         self.boltAnim.play()
         self.removeDeepPlatform = removeDeepPlatform
@@ -125,7 +126,7 @@ class Flower(sprite.Sprite):
         self.id = random.random()
 
     def update(self):
-        self.image.fill(Color(COLOR))
+        self.image.fill(Color(config.COLOR))
         self.boltAnim.blit(self.image, (0, 0))
 
     def die(self):
