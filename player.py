@@ -14,7 +14,7 @@ class Player(sprite.Sprite):
         self.xvel = 0
         self.yvel = 0
         self.onGround = False
-        self.rect = Rect(x, y, HERO_WIDTH, HERO_HEIGHT)
+        self.rect = Rect(x, y, HERO_PHYSICAL_WIDTH, HERO_PHYSICAL_HEIGHT)
 
         self.immunityStart = 0
         self.immunityValue = 1000
