@@ -14,7 +14,7 @@ class Player(sprite.Sprite):
         self.xvel = 0
         self.yvel = 0
         self.onGround = False
-        self.rect = Rect(x, y, HERO_PHYSICAL_WIDTH, HERO_PHYSICAL_HEIGHT)
+        self.rect = Rect(x, y, HERO_WIDTH, HERO_HEIGHT)
 
         self.immunityStart = 0
         self.immunityValue = 1000
@@ -36,6 +36,7 @@ class Player(sprite.Sprite):
         boltAnim = []
         boltAnimSuperSpeed = []
         for anim in ANIMATION_RIGHT:
+            anim = transform.scale(image.load(anim), (HERO_WIDTH, HERO_HEIGHT))
             boltAnim.append((anim, ANIMATION_DELAY))
             boltAnimSuperSpeed.append((anim, ANIMATION_SUPER_SPEED_DELAY))
         self.boltAnimRight = pyganim.PygAnimation(boltAnim)
@@ -45,6 +46,7 @@ class Player(sprite.Sprite):
         boltAnim = []
         boltAnimSuperSpeed = []
         for anim in ANIMATION_LEFT:
+            anim = transform.scale(image.load(anim), (HERO_WIDTH, HERO_HEIGHT))
             boltAnim.append((anim, ANIMATION_DELAY))
             boltAnimSuperSpeed.append((anim, ANIMATION_SUPER_SPEED_DELAY))
         self.boltAnimLeft = pyganim.PygAnimation(boltAnim)

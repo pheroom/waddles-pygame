@@ -95,12 +95,13 @@ class BlockTeleport(Platform):
 
 class Princess(Platform):
     def __init__(self, x, y):
-        Platform.__init__(self, x, y)
+        Platform.__init__(self, x , y - (HERO_HEIGHT-32))
         boltAnim = []
         self.image = Surface((HERO_WIDTH, HERO_HEIGHT))
         self.image.fill(Color(COLOR))
         self.image.set_colorkey(Color(COLOR))
         for anim in ANIMATION_PRINCESS:
+            anim = transform.scale(image.load(anim), (HERO_WIDTH, HERO_HEIGHT))
             boltAnim.append((anim, 0.8))
         self.boltAnim = pyganim.PygAnimation(boltAnim)
         self.boltAnim.play()
