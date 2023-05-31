@@ -1,6 +1,6 @@
 from pygame import *
 import time as pytime
-from config import *
+from config import config
 from player import Player
 from blocks import Platform, BlockTeleport, Princess, ActPlatform, Coin, Flower, Amount, PlatformCoin
 from monsters import Monster, Mushroom
@@ -22,11 +22,11 @@ class Camera(object):
 def camera_configure(camera, target_rect, y):
     l, t, _, _ = target_rect
     _, _, w, h = camera
-    l, t = -l + WIN_WIDTH / 2, -t + WIN_HEIGHT / 2
+    l, t = -l + config.WIN_WIDTH / 2, -t + config.WIN_HEIGHT / 2
     l = min(0, l)
-    l = max(-(camera.width - WIN_WIDTH), l)
-    t = max(-(camera.height - WIN_HEIGHT), t, -y+WIN_HEIGHT-PLATFORM_HEIGHT)
-    # t = max(-(camera.height - WIN_HEIGHT), t)
+    l = max(-(camera.width - config.WIN_WIDTH), l)
+    # t = max(-(camera.height - config.WIN_HEIGHT), t, -y+config.WIN_HEIGHT-config.PLATFORM_HEIGHT)
+    t = max(-(camera.height - config.WIN_HEIGHT), t)
     t = min(0, t)
 
     return Rect(l, t, w, h)
@@ -51,8 +51,8 @@ class Level:
         self.surface = surf
         self.backToLastScreen = backToLastScreen
 
-        self.bg = Surface((WIN_WIDTH, WIN_HEIGHT))
-        self.bg.fill(Color(BG_COLOR_SKY))
+        self.bg = Surface((config.WIN_WIDTH, config.WIN_HEIGHT))
+        self.bg.fill(Color(config.BG_COLOR_SKY))
 
         self.left = self.right = self.up = False
         self.running = False
@@ -89,7 +89,7 @@ class Level:
         self.animatedEntities.add(coin)
 
     def createMushroom(self, x, y):
-        mr = Mushroom(x, y - PLATFORM_HEIGHT, 3, 0,
+        mr = Mushroom(x, y - config.PLATFORM_HEIGHT, 3, 0,
                       150, 0, self.removePlatform, self.removeMonster)
         self.entities.add(mr)
         self.platforms.append(mr)
@@ -133,68 +133,78 @@ class Level:
         self.startDead = time.get_ticks()
 
     def firstRenderMap(self, tmxMap):
-        self.totalLevelWidth = tmxMap.tilewidth * tmxMap.width
-        self.totalLevelHeight = tmxMap.tileheight * tmxMap.height
+        self.totalLevelWidth = config.PLATFORM_WIDTH * tmxMap.width
+        self.totalLevelHeight = config.PLATFORM_HEIGHT * tmxMap.height
+        # print(self.totalLevelWidth, tmxMap.width)
         self.floor = 0
+
+        def getX(obj):
+            return obj.x * config.PLATFORM_WIDTH/tmxMap.tilewidth
+        def getY(obj):
+            return obj.y * config.PLATFORM_HEIGHT/tmxMap.tileheight
+
         for layer in tmxMap.visible_layers:
             if isinstance(layer, pytmx.TiledTileLayer):
                 for x, y, gid in layer:
                     tile_bitmap = tmxMap.get_tile_image_by_gid(gid)
                     if tile_bitmap and layer.name.rstrip() == LayerNamePlatforms:
-                        pf = Platform(x * tmxMap.tilewidth, y * tmxMap.tileheight, img=tile_bitmap)
-                        self.floor = max(self.floor, y * tmxMap.tileheight)
+                        # pf = Platform(x * tmxMap.tilewidth, y * tmxMap.tileheight, img=tile_bitmap)
+                        pf = Platform(x * config.PLATFORM_WIDTH, y * config.PLATFORM_HEIGHT, img=tile_bitmap)
+                        self.floor = max(self.floor, y * config.PLATFORM_HEIGHT)
                         self.entities.add(pf)
                         self.platforms.append(pf)
                     if tile_bitmap and layer.name.rstrip() == LayerNameBackground:
-                        pf = Platform(x * tmxMap.tilewidth, y * tmxMap.tileheight, img=tile_bitmap)
+                        pf = Platform(x * config.PLATFORM_WIDTH, y * config.PLATFORM_HEIGHT, img=tile_bitmap)
                         self.entities.add(pf)
             elif isinstance(layer, pytmx.TiledObjectGroup):
                 if layer.name.rstrip() == LayerNamePlayer:
-                    self.hero = Player(layer[0].x, layer[0].y, self.playAnimAmount, self.totalLevelWidth, self.totalLevelHeight, self.playDeadScreen)
+                    self.hero = Player(getX(layer[0]), getY(layer[0]),
+                                       self.playAnimAmount, self.totalLevelWidth, self.totalLevelHeight, self.playDeadScreen)
                     self.entities.add(self.hero)
                 if layer.name.rstrip() == LayerNamePrincess:
-                    pr = Princess(layer[0].x, layer[0].y)
+                    pr = Princess(getX(layer[0]), getY(layer[0]))
                     self.platforms.append(pr)
                     self.entities.add(pr)
                     self.animatedEntities.add(pr)
                 elif layer.name.rstrip() == LayerNameEntity:
                     for entity in layer:
                         if entity.name == 'flower':
-                            self.createFlower(entity.x, entity.y + PLATFORM_HEIGHT)
+                            self.createFlower(getX(entity), getY(entity) + config.PLATFORM_HEIGHT)
                         elif entity.name == 'coin':
-                            cn = PlatformCoin(entity.x, entity.y, self.removePlatformAndEntity, entity.image)
+                            cn = PlatformCoin(getX(entity), getY(entity), self.removePlatformAndEntity, entity.image)
                             self.platforms.append(cn)
                             self.entities.add(cn)
                 elif layer.name.rstrip() == LayerNameActPlatforms:
                     for actPlatform in layer:
                         actObj = actPlatform.properties
                         if actObj.get('mushroom'):
-                            pf = ActPlatform(actPlatform.x, actPlatform.y, 1, self.createMushroom,
+                            pf = ActPlatform(getX(actPlatform), getY(actPlatform), 1, self.createMushroom,
                                              img=actPlatform.image)
                             self.entities.add(pf)
                             self.platforms.append(pf)
                             self.actPlatforms.append(pf)
                         elif actObj.get('break'):
-                            pf = ActPlatform(actPlatform.x, actPlatform.y, actObj.get('break'), self.removeActPlatform,
+                            pf = ActPlatform(getX(actPlatform), getY(actPlatform), actObj.get('break'), self.removeActPlatform,
                                              img=actPlatform.image)
                             self.entities.add(pf)
                             self.platforms.append(pf)
                             self.actPlatforms.append(pf)
                         elif actObj.get('coins'):
-                            pf = ActPlatform(actPlatform.x, actPlatform.y, actObj.get('coins'), self.animateCoin,
+                            pf = ActPlatform(getX(actPlatform), getY(actPlatform), actObj.get('coins'), self.animateCoin,
                                              img=actPlatform.image)
                             self.entities.add(pf)
                             self.platforms.append(pf)
                             self.actPlatforms.append(pf)
                         elif actObj.get('flower'):
-                            pf = ActPlatform(actPlatform.x, actPlatform.y, 1, self.createFlower,
+                            pf = ActPlatform(getX(actPlatform), getY(actPlatform), 1, self.createFlower,
                                              img=actPlatform.image)
                             self.entities.add(pf)
                             self.platforms.append(pf)
                             self.actPlatforms.append(pf)
                 elif layer.name.rstrip() == LayerNameMonsters:
                     for monster in layer:
-                        mn = Monster(monster.x, monster.y, monster.left, monster.maxLeft, self.removePlatform, self.removeMonster)
+                        mn = Monster(getX(monster), getY(monster), monster.left,
+                                     monster.maxLeft * config.PLATFORM_WIDTH/tmxMap.tilewidth, self.removePlatform, self.removeMonster)
                         self.entities.add(mn)
                         self.platforms.append(mn)
                         self.monsters.add(mn)
@@ -206,14 +216,14 @@ class Level:
                 self.backToLastScreen()
                 return
 
-            if self.startDead + DEAD_SCREEN_TIME > time.get_ticks():
-                bg = Surface((WIN_WIDTH, WIN_HEIGHT))
-                bg.fill(Color(BG_COLOR_DUNGEON))
+            if self.startDead + config.DEAD_SCREEN_TIME > time.get_ticks():
+                bg = Surface((config.WIN_WIDTH, config.WIN_HEIGHT))
+                bg.fill(Color(config.BG_COLOR_DUNGEON))
                 self.surface.blit(bg, (0, 0))
                 deadImg = transform.scale(image.load('./images/mario/r5.png').convert_alpha(), (64, 64))
                 deadLabel = font.Font('./emulogic.ttf', 45).render('*' + str(self.hero.lives), False, '#ffffff')
-                self.surface.blit(deadImg, (WIN_WIDTH // 2 - 100, WIN_HEIGHT // 2 - 15))
-                self.surface.blit(deadLabel, (WIN_WIDTH // 2 - 32, WIN_HEIGHT // 2 - 15))
+                self.surface.blit(deadImg, (config.WIN_WIDTH // 2 - 100, config.WIN_HEIGHT // 2 - 15))
+                self.surface.blit(deadLabel, (config.WIN_WIDTH // 2 - 32, config.WIN_HEIGHT // 2 - 15))
                 time_diff = time.get_ticks() - self.startTime
                 self.ui.draw(self.hero.points, self.hero.coins, (time_diff - time_diff % 400) // 400)
             else:
@@ -267,21 +277,21 @@ class Level:
 
             if self.startWin + 600 < time.get_ticks():
                 label = font.Font('./emulogic.ttf', 30).render('THANK YOU MARIO!', False, '#ffffff')
-                self.surface.blit(label, (WIN_WIDTH // 2 - label.get_width()//2, WIN_HEIGHT // 2 - 200))
+                self.surface.blit(label, (config.WIN_WIDTH // 2 - label.get_width()//2, config.WIN_HEIGHT // 2 - 200))
             if self.startWin + 1200 < time.get_ticks():
                 label = font.Font('./emulogic.ttf', 30).render('YOUR QUEST IS OVER.', False, '#ffffff')
-                self.surface.blit(label, (WIN_WIDTH // 2 - label.get_width()//2, WIN_HEIGHT // 2 - 120))
+                self.surface.blit(label, (config.WIN_WIDTH // 2 - label.get_width()//2, config.WIN_HEIGHT // 2 - 120))
             if self.startWin + 1700 < time.get_ticks():
                 label = font.Font('./emulogic.ttf', 30).render('WE PRESENT YOU A NEW QUEST.', False, '#ffffff')
-                self.surface.blit(label, (WIN_WIDTH // 2 - label.get_width()//2, WIN_HEIGHT // 2 - 70))
+                self.surface.blit(label, (config.WIN_WIDTH // 2 - label.get_width()//2, config.WIN_HEIGHT // 2 - 70))
             if self.startWin + 2500 < time.get_ticks():
                 label = font.Font('./emulogic.ttf', 30).render('PUSH BUTTON B', False, '#ffffff')
-                self.surface.blit(label, (WIN_WIDTH // 2 - label.get_width()//2, WIN_HEIGHT // 2 + 10))
+                self.surface.blit(label, (config.WIN_WIDTH // 2 - label.get_width()//2, config.WIN_HEIGHT // 2 + 10))
             if self.startWin + 3200 < time.get_ticks():
                 label = font.Font('./emulogic.ttf', 30).render('TO SELECT A WORLD', False, '#ffffff')
-                self.surface.blit(label, (WIN_WIDTH // 2 - label.get_width()//2, WIN_HEIGHT // 2 + 60))
+                self.surface.blit(label, (config.WIN_WIDTH // 2 - label.get_width()//2, config.WIN_HEIGHT // 2 + 60))
 
-            if self.startWin + WIN_SCREEN_TIME < time.get_ticks():
+            if self.startWin + config.WIN_SCREEN_TIME < time.get_ticks():
                 self.canSkipWinScreen = True
 
 class UI:
@@ -335,10 +345,10 @@ class UI:
 
 if __name__ == '__main__':
     init()
-    size = (WIN_WIDTH, WIN_HEIGHT)
+    size = (config.WIN_WIDTH, config.WIN_HEIGHT)
     screen = display.set_mode(size)
     clock = time.Clock()
-    lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/1-1.tmx")
+    lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/1-1.tmx", '1-1')
     running = True
     while running:
         events = event.get()

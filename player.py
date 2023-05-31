@@ -1,5 +1,5 @@
 from pygame import *
-from config import *
+from config import config
 import pyganim
 import blocks
 import monsters
@@ -14,7 +14,7 @@ class Player(sprite.Sprite):
         self.xvel = 0
         self.yvel = 0
         self.onGround = False
-        self.rect = Rect(x, y, HERO_PHYSICAL_WIDTH, HERO_PHYSICAL_HEIGHT)
+        self.rect = Rect(x, y, config.HERO_PHYSICAL_WIDTH, config.HERO_PHYSICAL_HEIGHT)
 
         self.immunityStart = 0
         self.immunityValue = 1000
@@ -27,40 +27,50 @@ class Player(sprite.Sprite):
         self.points = 0
         self.coins = 0
 
-        self.image = Surface((HERO_WIDTH, HERO_HEIGHT))
-        self.image.fill(Color(COLOR))
-        # self.indentImage = ((HERO_WIDTH - HERO_PHYSICAL_WIDTH)/2, (HERO_HEIGHT - HERO_PHYSICAL_HEIGHT)/2)
+        self.image = Surface((config.HERO_WIDTH, config.HERO_HEIGHT))
+        self.image.fill(Color(config.COLOR))
+        # self.indentImage = ((config.HERO_WIDTH - config.HERO_PHYSICAL_WIDTH)/2, (config.HERO_HEIGHT - config.HERO_PHYSICAL_HEIGHT)/2)
         self.indentImage = (0,0)
-        self.image.set_colorkey(Color(COLOR))
+        self.image.set_colorkey(Color(config.COLOR))
 
         boltAnim = []
         boltAnimSuperSpeed = []
-        for anim in ANIMATION_RIGHT:
-            boltAnim.append((anim, ANIMATION_DELAY))
-            boltAnimSuperSpeed.append((anim, ANIMATION_SUPER_SPEED_DELAY))
+        for anim in config.ANIMATION_RIGHT:
+            anim = self.transformImg(anim)
+            boltAnim.append((anim, config.ANIMATION_DELAY))
+            boltAnimSuperSpeed.append((anim, config.ANIMATION_SUPER_SPEED_DELAY))
         self.boltAnimRight = pyganim.PygAnimation(boltAnim)
         self.boltAnimRight.play()
         self.boltAnimRightSuperSpeed = pyganim.PygAnimation(boltAnimSuperSpeed)
         self.boltAnimRightSuperSpeed.play()
         boltAnim = []
         boltAnimSuperSpeed = []
-        for anim in ANIMATION_LEFT:
-            boltAnim.append((anim, ANIMATION_DELAY))
-            boltAnimSuperSpeed.append((anim, ANIMATION_SUPER_SPEED_DELAY))
+        for anim in config.ANIMATION_LEFT:
+            anim = self.transformImg(anim)
+            boltAnim.append((anim, config.ANIMATION_DELAY))
+            boltAnimSuperSpeed.append((anim, config.ANIMATION_SUPER_SPEED_DELAY))
         self.boltAnimLeft = pyganim.PygAnimation(boltAnim)
         self.boltAnimLeft.play()
         self.boltAnimLeftSuperSpeed = pyganim.PygAnimation(boltAnimSuperSpeed)
         self.boltAnimLeftSuperSpeed.play()
-        self.boltAnimStay = pyganim.PygAnimation(ANIMATION_STAY)
+        self.boltAnimStay = pyganim.PygAnimation(self.transformAnim(config.ANIMATION_STAY))
         self.boltAnimStay.play()
-        self.boltAnimJumpLeft = pyganim.PygAnimation(ANIMATION_JUMP_LEFT)
+        self.boltAnimJumpLeft = pyganim.PygAnimation(self.transformAnim(config.ANIMATION_JUMP_LEFT))
         self.boltAnimJumpLeft.play()
-        self.boltAnimJumpRight = pyganim.PygAnimation(ANIMATION_JUMP_RIGHT)
+        self.boltAnimJumpRight = pyganim.PygAnimation(self.transformAnim(config.ANIMATION_JUMP_RIGHT))
         self.boltAnimJumpRight.play()
-        self.boltAnimJump = pyganim.PygAnimation(ANIMATION_JUMP)
+        self.boltAnimJump = pyganim.PygAnimation(self.transformAnim(config.ANIMATION_JUMP))
         self.boltAnimJump.play()
 
         self.winner = False
+
+    def transformAnim(self, anim):
+        return [(self.transformImg(anim[0][0]), anim[0][1])]
+
+    def transformImg(self, img):
+        if(isinstance(img, str)):
+            return transform.scale(image.load(img), (config.HERO_WIDTH, config.HERO_WIDTH))
+        return transform.scale(img, (config.HERO_WIDTH, config.HERO_WIDTH))
 
     def die(self):
         if self.startDead + 500 > time.get_ticks():
@@ -68,8 +78,8 @@ class Player(sprite.Sprite):
         self.dead = True
         self.lives -= 1
         self.startDead = time.get_ticks()
-        self.image = image.load("images/mario/d.png").convert_alpha()
-        self.yvel = -JUMP_POWER
+        self.image = self.transformImg(image.load("images/mario/d.png").convert_alpha())
+        self.yvel = -config.JUMP_POWER
 
     def teleport(self, goX, goY):
         self.rect.x = goX
@@ -90,33 +100,33 @@ class Player(sprite.Sprite):
         if self.dead:
             if self.startDead + 1000 > time.get_ticks():
                 self.rect.y += self.yvel
-                self.yvel += GRAVITY
+                self.yvel += config.GRAVITY
             else:
                 self.dead = False
                 self.immunityStart = time.get_ticks()
-                self.immunityValue = DEAD_SCREEN_TIME + 1500
+                self.immunityValue = config.DEAD_SCREEN_TIME + 1500
                 self.teleport(self.startX, self.startY)
-                self.image = Surface((HERO_WIDTH, HERO_HEIGHT))
-                self.image.fill(Color(COLOR))
-                self.image.set_colorkey(Color(COLOR))
+                self.image = Surface((config.HERO_WIDTH, config.HERO_HEIGHT))
+                self.image.fill(Color(config.COLOR))
+                self.image.set_colorkey(Color(config.COLOR))
                 self.afterDead()
             return
 
         if up:
             if self.onGround:
-                self.yvel = -JUMP_POWER
+                self.yvel = -config.JUMP_POWER
                 if slowly:
-                    self.yvel += JUMP_SLOW_POWER
+                    self.yvel += config.JUMP_SLOW_POWER
                 elif running and (left or right):
-                    self.yvel -= JUMP_EXTRA_POWER
-                self.image.fill(Color(COLOR))
+                    self.yvel -= config.JUMP_EXTRA_POWER
+                self.image.fill(Color(config.COLOR))
                 self.boltAnimJump.blit(self.image, self.indentImage)
 
         if left:
-            self.xvel = -MOVE_SPEED
-            self.image.fill(Color(COLOR))
+            self.xvel = -config.MOVE_SPEED
+            self.image.fill(Color(config.COLOR))
             if running:
-                self.xvel -= MOVE_EXTRA_SPEED
+                self.xvel -= config.MOVE_EXTRA_SPEED
                 if not up:
                     self.boltAnimLeftSuperSpeed.blit(self.image, self.indentImage)
             else:
@@ -126,10 +136,10 @@ class Player(sprite.Sprite):
                 self.boltAnimJumpLeft.blit(self.image, self.indentImage)
 
         if right:
-            self.xvel = MOVE_SPEED
-            self.image.fill(Color(COLOR))
+            self.xvel = config.MOVE_SPEED
+            self.image.fill(Color(config.COLOR))
             if running:
-                self.xvel += MOVE_EXTRA_SPEED
+                self.xvel += config.MOVE_EXTRA_SPEED
                 if not up:
                     self.boltAnimRightSuperSpeed.blit(self.image, self.indentImage)
             else:
@@ -141,14 +151,14 @@ class Player(sprite.Sprite):
         if not (left or right):
             self.xvel = 0
             if not up:
-                self.image.fill(Color(COLOR))
+                self.image.fill(Color(config.COLOR))
                 self.boltAnimStay.blit(self.image, self.indentImage)
 
         if not self.onGround:
-            self.yvel += GRAVITY
+            self.yvel += config.GRAVITY
 
         if slowly and (left or right):
-            self.xvel = MOVE_SLOW_SPEED * (-1 if left else 1)
+            self.xvel = config.MOVE_SLOW_SPEED * (-1 if left else 1)
 
         self.onGround = False
         self.rect.y += self.yvel
@@ -157,7 +167,7 @@ class Player(sprite.Sprite):
         self.rect.x += self.xvel
         self.collide(self.xvel, 0, platforms, actPlatforms)
 
-        if self.rect.x + PLATFORM_WIDTH < 0 or self.rect.x - PLATFORM_WIDTH > self.maxX or self.rect.y - PLATFORM_HEIGHT*5 > self.maxY:
+        if self.rect.x + config.PLATFORM_WIDTH < 0 or self.rect.x - config.PLATFORM_WIDTH > self.maxX or self.rect.y - config.PLATFORM_HEIGHT*5 > self.maxY:
             self.die()
 
     def collide(self, xvel, yvel, platforms,actPlatforms):
@@ -165,7 +175,7 @@ class Player(sprite.Sprite):
             if sprite.collide_rect(self, p):
                 if isinstance(p,monsters.Monster) and not p.dead:
                     if self.immunityStart + self.immunityValue < time.get_ticks():
-                        if p.rect.y - HERO_HEIGHT / 2 < self.rect.y:
+                        if p.rect.y - config.HERO_HEIGHT / 2 < self.rect.y:
                             self.die()
                         else:
                             self.addPoint()
@@ -202,6 +212,6 @@ class Player(sprite.Sprite):
                         self.rect.top = p.rect.bottom
                         self.yvel = 0
 
-                if isinstance(p, blocks.ActPlatform) and p.rect.y + HERO_HEIGHT == self.rect.y:
+                if isinstance(p, blocks.ActPlatform) and p.rect.y + config.HERO_HEIGHT == self.rect.y:
                     p.act()
 

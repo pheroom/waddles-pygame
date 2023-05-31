@@ -1,18 +1,17 @@
 from pygame import *
-
 import blocks
 import pyganim
 import random
-from config import *
+from config import config
 
 class Monster(sprite.Sprite):
     def __init__(self, x, y, left, maxLengthLeft, whenDead, removeSelf):
         sprite.Sprite.__init__(self)
         self.whenDead = whenDead
-        self.image = Surface((MONSTER_WIDTH, MONSTER_HEIGHT))
-        self.image.fill(Color(MONSTER_COLOR))
-        self.image.set_colorkey(Color(MONSTER_COLOR))
-        self.rect = Rect(x, y, MONSTER_WIDTH, MONSTER_HEIGHT)
+        self.image = Surface((config.MONSTER_WIDTH, config.MONSTER_HEIGHT))
+        self.image.fill(Color(config.MONSTER_COLOR))
+        self.image.set_colorkey(Color(config.MONSTER_COLOR))
+        self.rect = Rect(x, y, config.MONSTER_WIDTH, config.MONSTER_HEIGHT)
         self.startX = x
         self.startY = y
         self.maxLengthLeft = maxLengthLeft
@@ -21,11 +20,16 @@ class Monster(sprite.Sprite):
         self.onGround = False
         self.dead = False
         boltAnim = []
-        for anim in ANIMATION_MONSTERHORYSONTAL:
-            boltAnim.append((anim, 0.2))
+        for anim in config.ANIMATION_MONSTERHORYSONTAL:
+            boltAnim.append((self.transformImg(anim), 0.2))
         self.boltAnim = pyganim.PygAnimation(boltAnim)
         self.boltAnim.play()
         self.removeSelf = removeSelf
+
+    def transformImg(self, img):
+        if(isinstance(img, str)):
+            return transform.scale(image.load(img), (config.HERO_WIDTH, config.HERO_WIDTH))
+        return transform.scale(img, (config.HERO_WIDTH, config.HERO_WIDTH))
 
     def update(self, platforms):
         if self.dead:
@@ -33,11 +37,11 @@ class Monster(sprite.Sprite):
                 self.image = Surface((0,0))
                 self.removeSelf(self)
         else:
-            self.image.fill(Color(MONSTER_COLOR))
+            self.image.fill(Color(config.MONSTER_COLOR))
             self.boltAnim.blit(self.image, (0, 0))
 
         if not self.onGround:
-            self.yvel += GRAVITY
+            self.yvel += config.GRAVITY
 
         self.onGround = False
         self.rect.y += self.yvel
@@ -70,8 +74,8 @@ class Monster(sprite.Sprite):
                     self.yvel = 0
 
     def die(self):
-        self.image = transform.scale(self.image, (PLATFORM_WIDTH*1.5, PLATFORM_HEIGHT/2))
-        self.rect.height -= PLATFORM_HEIGHT/2
+        self.image = transform.scale(self.image, (config.PLATFORM_WIDTH*1.5, config.PLATFORM_HEIGHT/2))
+        self.rect.height -= config.PLATFORM_HEIGHT/2
         self.xvel = 0
         self.whenDead(self)
         self.startDead = time.get_ticks()
@@ -82,8 +86,8 @@ class Mushroom(sprite.Sprite):
         sprite.Sprite.__init__(self)
         self.id = random.random()
         self.whenDead = whenDead
-        self.image = image.load("images/mushroom.png").convert_alpha()
-        self.rect = Rect(x, y, MONSTER_WIDTH, MONSTER_HEIGHT)
+        self.image = transform.scale(image.load("images/mushroom.png").convert_alpha(), (config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT))
+        self.rect = Rect(x, y, config.MONSTER_WIDTH, config.MONSTER_HEIGHT)
         self.startX = x
         self.startY = y
         self.maxLengthLeft = maxLengthLeft
@@ -97,7 +101,7 @@ class Mushroom(sprite.Sprite):
     def update(self, platforms):
 
         if not self.onGround:
-            self.yvel += GRAVITY
+            self.yvel += config.GRAVITY
 
         self.onGround = False
         self.rect.y += self.yvel
