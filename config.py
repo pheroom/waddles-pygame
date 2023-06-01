@@ -27,10 +27,10 @@ def refreshConfig():
     config.HERO_PHYSICAL_HEIGHT = config.PLATFORM_HEIGHT
     config.HERO_WIDTH = config.PLATFORM_WIDTH
     config.HERO_HEIGHT = config.PLATFORM_HEIGHT
-    config.MOVE_SPEED = 6 * config.HERO_WIDTH / 32
+    config.MOVE_SPEED = 4 * config.HERO_WIDTH / 32
     config.COLOR = "#888888"
-    config.JUMP_POWER = 12 * config.HERO_HEIGHT / 32
-    config.GRAVITY = 0.5 * config.HERO_HEIGHT / 32
+    config.JUMP_POWER = 10 * config.HERO_HEIGHT / 32
+    config.GRAVITY = 0.4 * config.HERO_HEIGHT / 32
 
     config.JUMP_SLOW_POWER = 2 * config.HERO_HEIGHT / 32
     config.MOVE_SLOW_SPEED = 2 * config.HERO_WIDTH / 32
@@ -38,6 +38,9 @@ def refreshConfig():
     config.MOVE_EXTRA_SPEED = 2.5 * config.HERO_WIDTH / 32
     config.JUMP_EXTRA_POWER = 1 / 5 * config.HERO_HEIGHT / 32
     config.ANIMATION_SUPER_SPEED_DELAY = 0.05
+
+    config.HERO_HEALTH = 10
+    config.MONSTER_HEALTH = 3
 
     config.ANIMATION_DELAY = 0.12
     config.ANIMATION_STAY_DELAY = 0.8
