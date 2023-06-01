@@ -39,36 +39,44 @@ def refreshConfig():
     config.JUMP_EXTRA_POWER = 1 / 5 * config.HERO_HEIGHT / 32
     config.ANIMATION_SUPER_SPEED_DELAY = 0.05
 
-    config.ANIMATION_DELAY = 0.1
-    config.ANIMATION_RIGHT = [('images/mario/r1.png'),
-                              ('images/mario/r2.png'),
-                              ('images/mario/r3.png'),
-                              ('images/mario/r4.png'),
-                              ('images/mario/r5.png')]
-    config.ANIMATION_LEFT = [('images/mario/l1.png'),
-                             ('images/mario/l2.png'),
-                             ('images/mario/l3.png'),
-                             ('images/mario/l4.png'),
-                             ('images/mario/l5.png')]
-    config.ANIMATION_JUMP_LEFT = [('images/mario/jl.png', 0.1)]
-    config.ANIMATION_JUMP_RIGHT = [('images/mario/jr.png', 0.1)]
-    config.ANIMATION_JUMP = [('images/mario/j.png', 0.1)]
-    config.ANIMATION_STAY = [('images/mario/0.png', 0.1)]
+    config.ANIMATION_DELAY = 0.12
+    config.ANIMATION_STAY_DELAY = 0.8
+    config.ANIMATION_RIGHT = ['images/waddles/waddles_run_r1.png',
+                   'images/waddles/waddles_run_r2.png',
+                   'images/waddles/waddles_run_r3.png',
+                   'images/waddles/waddles_run_r4.png']
+    config.ANIMATION_LEFT = ['images/waddles/waddles_run_l1.png',
+                  'images/waddles/waddles_run_l2.png',
+                  'images/waddles/waddles_run_l3.png',
+                  'images/waddles/waddles_run_l4.png']
+    config.ANIMATION_JUMP_LEFT = [('images/waddles/waddles_jump_l.png',  config.ANIMATION_DELAY)]
+    config.ANIMATION_JUMP_RIGHT = [('images/waddles/waddles_jump_r.png',  config.ANIMATION_DELAY)]
+    config.ANIMATION_JUMP = [('images/waddles/waddles_jump.png',  config.ANIMATION_DELAY)]
+    config.ANIMATION_STAY = ['images/waddles/waddles_stay1.png',
+                  'images/waddles/waddles_stay2.png']
 
     config.ANIMATION_BLOCKTELEPORT = [
         ('images/portal2.png'),
         ('images/portal1.png')]
-
+    
+    config.MONSTER_DELAY = 0.1
     config.MONSTER_WIDTH = config.PLATFORM_WIDTH
     config.MONSTER_HEIGHT = config.PLATFORM_HEIGHT
     config.MONSTER_COLOR = "#2110FF"
 
-    config.ANIMATION_MONSTERHORYSONTAL = [('images/goomba1.png'),
-                                          ('images/goomba2.png')]
+    config.ANIMATION_MONSTERHORYSONTAL_l = ['images/usual_dwarf/usual_dwarf_run_l1.png',
+                               'images/usual_dwarf/usual_dwarf_run_l2.png',
+                               'images/usual_dwarf/usual_dwarf_run_l3.png',
+                               'images/usual_dwarf/usual_dwarf_run_l4.png']
+    config.ANIMATION_MONSTERHORYSONTAL_r = ['images/usual_dwarf/usual_dwarf_run_r1.png',
+                               'images/usual_dwarf/usual_dwarf_run_r2.png',
+                               'images/usual_dwarf/usual_dwarf_run_r3.png',
+                               'images/usual_dwarf/usual_dwarf_run_r4.png']
+
 
     config.ANIMATION_PRINCESS = [
-        ('images/princess_l.png'),
-        ('images/princess_r.png')]
+        'images/mabel/mabel_stay1.png',
+        'images/mabel/mabel_stay2.png']
 
     config.ANIMATION_COIN = [
         ('images/coin1.png'),

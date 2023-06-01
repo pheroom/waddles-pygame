@@ -19,16 +19,26 @@ class Monster(sprite.Sprite):
         self.yvel = 0
         self.onGround = False
         self.dead = False
+        self.indentImage = (0, 0)
+        self.collide_switch = True
+
         boltAnim = []
-        for anim in config.ANIMATION_MONSTERHORYSONTAL:
-            boltAnim.append((self.transformImg(anim), 0.2))
-        self.boltAnim = pyganim.PygAnimation(boltAnim)
-        self.boltAnim.play()
+        for anim in config.ANIMATION_MONSTERHORYSONTAL_l:
+            anim = self.transformImg(anim)
+            boltAnim.append((anim, MONSTER_DELAY))
+        self.boltAnim_left = pyganim.PygAnimation(boltAnim)
+        self.boltAnim_left.play()
+        boltAnim = []
+        for anim in config.ANIMATION_MONSTERHORYSONTAL_r:
+            anim = self.transformIng(anim)
+            boltAnim.append((anim, MONSTER_DELAY))
+        self.boltAnim_right = pyganim.PygAnimation(boltAnim)
+        self.boltAnim_right.play()
         self.removeSelf = removeSelf
 
     def transformImg(self, img):
         if(isinstance(img, str)):
-            return transform.scale(image.load(img), (config.HERO_WIDTH, config.HERO_WIDTH))
+            return transform.scale(image.load(img), (config.MONSTER_WIDTH, config.MONSTER_HEIGHT))
         return transform.scale(img, (config.HERO_WIDTH, config.HERO_WIDTH))
 
     def update(self, platforms):
@@ -37,8 +47,12 @@ class Monster(sprite.Sprite):
                 self.image = Surface((0,0))
                 self.removeSelf(self)
         else:
-            self.image.fill(Color(config.MONSTER_COLOR))
-            self.boltAnim.blit(self.image, (0, 0))
+            if self.collide_switch:
+                self.image.fill(Color(config.MONSTER_COLOR))
+                self.boltAnim_right.blit(self.image, self.indentImage)
+            else:
+                self.image.fill(Color(config.MONSTER_COLOR))
+                self.boltAnim_left.blit(self.image, self.indentImage)
 
         if not self.onGround:
             self.yvel += config.GRAVITY
@@ -52,6 +66,8 @@ class Monster(sprite.Sprite):
 
         if (abs(self.startX - self.rect.x) > self.maxLengthLeft):
             self.xvel = -self.xvel
+            self.collide_switch = lambda a : False if a else True
+            
 
     def collide(self, xvel, yvel, platforms):
         for p in platforms:
@@ -59,10 +75,12 @@ class Monster(sprite.Sprite):
                 if xvel > 0:
                     self.rect.right = p.rect.left
                     self.xvel = -self.xvel
+                    self.collide_switch = lambda a : False if a else True
 
                 if xvel < 0:
                     self.rect.left = p.rect.right
                     self.xvel = -self.xvel
+                    self.collide_switch = lambda a : False if a else True
 
                 if yvel > 0:
                     self.rect.bottom = p.rect.top
