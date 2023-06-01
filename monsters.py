@@ -25,13 +25,13 @@ class Monster(sprite.Sprite):
         boltAnim = []
         for anim in config.ANIMATION_MONSTERHORYSONTAL_l:
             anim = self.transformImg(anim)
-            boltAnim.append((anim, MONSTER_DELAY))
+            boltAnim.append((anim, config.MONSTER_DELAY))
         self.boltAnim_left = pyganim.PygAnimation(boltAnim)
         self.boltAnim_left.play()
         boltAnim = []
         for anim in config.ANIMATION_MONSTERHORYSONTAL_r:
             anim = self.transformIng(anim)
-            boltAnim.append((anim, MONSTER_DELAY))
+            boltAnim.append((anim, config.MONSTER_DELAY))
         self.boltAnim_right = pyganim.PygAnimation(boltAnim)
         self.boltAnim_right.play()
         self.removeSelf = removeSelf
