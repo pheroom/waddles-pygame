@@ -8,10 +8,14 @@ class Menu:
         self.ARIAL_50 = font.SysFont('arial', 50)
         self.font = font.Font('./emulogic.ttf', 30)
         self.point = image.load('images/smallMushroom.png').convert_alpha()
+        self.activePoint = transform.scale(image.load('images/star.png').convert_alpha(), (41,40))
+        self.activeOption = []
 
-    def append_option(self, option, callback):
+    def append_option(self, option, callback, isActive = False):
         self._option_surfaces.append(self.font.render(option, True, '#ffffff'))
         self._callbacks.append(callback)
+        if isActive:
+            self.activeOption.append(len(self._option_surfaces) - 1)
 
     def switch(self, direction):
         self._current_option_index = max(0, min(self._current_option_index + direction,
@@ -27,4 +31,6 @@ class Menu:
             if i == self._current_option_index:
                 # draw.rect(surf, (0, 50, 0), option_rect)
                 surf.blit(self.point, (option_rect.x - 40, option_rect.y + 5))
+            if i in self.activeOption:
+                surf.blit(self.activePoint, (option_rect.right + 15, option_rect.y - 2))
             surf.blit(option, option_rect)
