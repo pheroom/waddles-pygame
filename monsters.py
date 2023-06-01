@@ -4,6 +4,7 @@ import pyganim
 import random
 from config import config
 
+
 class Monster(sprite.Sprite):
     def __init__(self, x, y, left, maxLengthLeft, whenDead, removeSelf):
         sprite.Sprite.__init__(self)
@@ -30,21 +31,21 @@ class Monster(sprite.Sprite):
         self.boltAnim_left.play()
         boltAnim = []
         for anim in config.ANIMATION_MONSTERHORYSONTAL_r:
-            anim = self.transformIng(anim)
+            anim = self.transformImg(anim)
             boltAnim.append((anim, config.MONSTER_DELAY))
         self.boltAnim_right = pyganim.PygAnimation(boltAnim)
         self.boltAnim_right.play()
         self.removeSelf = removeSelf
 
     def transformImg(self, img):
-        if(isinstance(img, str)):
+        if (isinstance(img, str)):
             return transform.scale(image.load(img), (config.MONSTER_WIDTH, config.MONSTER_HEIGHT))
         return transform.scale(img, (config.HERO_WIDTH, config.HERO_WIDTH))
 
     def update(self, platforms):
         if self.dead:
             if self.startDead + 1000 < time.get_ticks():
-                self.image = Surface((0,0))
+                self.image = Surface((0, 0))
                 self.removeSelf(self)
         else:
             if self.collide_switch:
@@ -66,21 +67,21 @@ class Monster(sprite.Sprite):
 
         if (abs(self.startX - self.rect.x) > self.maxLengthLeft):
             self.xvel = -self.xvel
-            self.collide_switch = lambda a : False if a else True
-            
+            self.collide_switch = False if self.collide_switch else True
 
     def collide(self, xvel, yvel, platforms):
         for p in platforms:
-            if sprite.collide_rect(self, p) and self != p and not isinstance(p, Mushroom) and (not self.dead or not isinstance(p, Monster)):
+            if sprite.collide_rect(self, p) and self != p and not isinstance(p, Mushroom) and (
+                    not self.dead or not isinstance(p, Monster)):
                 if xvel > 0:
                     self.rect.right = p.rect.left
                     self.xvel = -self.xvel
-                    self.collide_switch = lambda a : False if a else True
+                    self.collide_switch = False if self.collide_switch else True
 
                 if xvel < 0:
                     self.rect.left = p.rect.right
                     self.xvel = -self.xvel
-                    self.collide_switch = lambda a : False if a else True
+                    self.collide_switch = False if self.collide_switch else True
 
                 if yvel > 0:
                     self.rect.bottom = p.rect.top
@@ -92,19 +93,21 @@ class Monster(sprite.Sprite):
                     self.yvel = 0
 
     def die(self):
-        self.image = transform.scale(self.image, (config.PLATFORM_WIDTH*1.5, config.PLATFORM_HEIGHT/2))
-        self.rect.height -= config.PLATFORM_HEIGHT/2
+        self.image = transform.scale(self.image, (config.PLATFORM_WIDTH * 1.5, config.PLATFORM_HEIGHT / 2))
+        self.rect.height -= config.PLATFORM_HEIGHT / 2
         self.xvel = 0
         self.whenDead(self)
         self.startDead = time.get_ticks()
         self.dead = True
+
 
 class Mushroom(sprite.Sprite):
     def __init__(self, x, y, left, up, maxLengthLeft, maxLengthUp, whenDead, removeSelf):
         sprite.Sprite.__init__(self)
         self.id = random.random()
         self.whenDead = whenDead
-        self.image = transform.scale(image.load("images/mushroom.png").convert_alpha(), (config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT))
+        self.image = transform.scale(image.load("images/mushroom.png").convert_alpha(),
+                                     (config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT))
         self.rect = Rect(x, y, config.MONSTER_WIDTH, config.MONSTER_HEIGHT)
         self.startX = x
         self.startY = y
@@ -150,7 +153,6 @@ class Mushroom(sprite.Sprite):
                 if yvel < 0:
                     self.rect.top = p.rect.bottom
                     self.yvel = 0
-
 
     def die(self):
         self.removeSelf(self)
