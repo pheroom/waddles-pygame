@@ -2,7 +2,7 @@ from pygame import *
 import time as pytime
 from config import config
 from player import Player
-from blocks import Platform, BlockTeleport, Princess, ActPlatform, Coin, Flower, Amount, PlatformCoin
+from blocks import Platform, BlockTeleport, Princess, ActPlatform, Coin, Flower, Amount, PlatformCoin, Sword
 from monsters import Monster, Mushroom
 import pytmx
 
@@ -47,6 +47,7 @@ LayerNameEntity  = 'Entity'
 
 class Level:
     def __init__(self, surf, switchScreen, backToLastScreen, lvl, levelName):
+        self.the_last_key = 'right'
         self.switchScreen = switchScreen
         self.surface = surf
         self.backToLastScreen = backToLastScreen
@@ -54,7 +55,7 @@ class Level:
         self.bg = Surface((config.WIN_WIDTH, config.WIN_HEIGHT))
         self.bg.fill(Color(config.BG_COLOR_SKY))
 
-        self.left = self.right = self.up = False
+        self.space = self.left = self.right = self.up = False
         self.running = False
         self.slowly = False
 
@@ -87,6 +88,11 @@ class Level:
         coin = Coin(x, y, removeCoin)
         self.entities.add(coin)
         self.animatedEntities.add(coin)
+
+    def createSword(self, x, y):
+        wp = Sword(x, y)
+        self.entities.add(wp)
+        return wp
 
     def createMushroom(self, x, y):
         mr = Mushroom(x, y - config.PLATFORM_HEIGHT, 3, 0,
@@ -159,7 +165,7 @@ class Level:
             elif isinstance(layer, pytmx.TiledObjectGroup):
                 if layer.name.rstrip() == LayerNamePlayer:
                     self.hero = Player(getX(layer[0]), getY(layer[0]),
-                                       self.playAnimAmount, self.totalLevelWidth, self.totalLevelHeight, self.playDeadScreen)
+                                       self.playAnimAmount, self.totalLevelWidth, self.totalLevelHeight, self.playDeadScreen, self.createSword)
                     self.entities.add(self.hero)
                 if layer.name.rstrip() == LayerNamePrincess:
                     pr = Princess(getX(layer[0]), getY(layer[0]))
@@ -239,12 +245,17 @@ class Level:
                 self.up = True
             if e.type == KEYDOWN and e.key == K_LEFT:
                 self.left = True
+                self.the_last_key = 'left'
             if e.type == KEYDOWN and e.key == K_RIGHT:
                 self.right = True
+                self.the_last_key = 'right'
             if e.type == KEYDOWN and e.key == K_LSHIFT:
                 self.running = True
             if e.type == KEYDOWN and e.key == K_LCTRL:
                 self.slowly = True
+            if e.type == KEYDOWN and e.key == K_SPACE:
+                self.space = True
+
             if self.canSkipWinScreen and e.type == KEYDOWN and e.key == K_b:
                 self.backToLastScreen()
 
@@ -256,6 +267,8 @@ class Level:
                 self.left = False
             if e.type == KEYUP and e.key == K_LSHIFT:
                 self.running = False
+            if e.type == KEYUP and e.key == K_SPACE:
+                self.space = False
             if e.type == KEYUP and e.key == K_LCTRL:
                 self.slowly = False
 
@@ -263,7 +276,7 @@ class Level:
         self.monsters.update(self.platforms)
         self.animatedEntities.update()
         self.camera.update(self.hero)
-        self.hero.update(self.left, self.right, self.up, self.running, self.slowly, self.platforms, self.actPlatforms)
+        self.hero.update(self.left, self.right, self.up, self.space, self.the_last_key, self.running, self.slowly, self.platforms, self.actPlatforms)
         for e in self.entities:
             self.surface.blit(e.image, self.camera.apply(e))
 
