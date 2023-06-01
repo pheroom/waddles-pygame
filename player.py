@@ -1,11 +1,12 @@
 from pygame import *
+
 from config import config
 import pyganim
 import blocks
 import monsters
 
 class Player(sprite.Sprite):
-    def __init__(self, x, y, playAnimAmount, maxX, maxY, afterDead):
+    def __init__(self, x, y, playAnimAmount, maxX, maxY, afterDead, createSword):
         sprite.Sprite.__init__(self)
         self.startX = x
         self.startY = y
@@ -15,6 +16,13 @@ class Player(sprite.Sprite):
         self.yvel = 0
         self.onGround = False
         self.rect = Rect(x, y, config.HERO_PHYSICAL_WIDTH, config.HERO_PHYSICAL_HEIGHT)
+
+        self.attacking_rect = createSword(x, y)
+        self.cooldown = 500
+        self.last = time.get_ticks()
+        self.attacking_orb = 15
+
+
 
         self.immunityStart = 0
         self.immunityValue = 1000
@@ -54,17 +62,27 @@ class Player(sprite.Sprite):
         self.boltAnimLeftSuperSpeed = pyganim.PygAnimation(boltAnimSuperSpeed)
         self.boltAnimLeftSuperSpeed.play()
         boltAnim = []
-        for anim in config.ANIMATION_STAY:
+        for anim in config.ANIMATION_STAY_R:
             anim = self.transformImg(anim)
             boltAnim.append((anim, config.ANIMATION_STAY_DELAY))
-        self.boltAnimStay = pyganim.PygAnimation(boltAnim)
-        self.boltAnimStay.play()
+        self.boltAnimStay_r = pyganim.PygAnimation(boltAnim)
+        self.boltAnimStay_r.play()
+        boltAnim = []
+        for anim in config.ANIMATION_STAY_L:
+            anim = self.transformImg(anim)
+            boltAnim.append((anim, config.ANIMATION_STAY_DELAY))
+        self.boltAnimStay_l = pyganim.PygAnimation(boltAnim)
+        self.boltAnimStay_l.play()
         self.boltAnimJumpLeft = pyganim.PygAnimation(self.transformAnim(config.ANIMATION_JUMP_LEFT))
         self.boltAnimJumpLeft.play()
         self.boltAnimJumpRight = pyganim.PygAnimation(self.transformAnim(config.ANIMATION_JUMP_RIGHT))
         self.boltAnimJumpRight.play()
         self.boltAnimJump = pyganim.PygAnimation(self.transformAnim(config.ANIMATION_JUMP))
         self.boltAnimJump.play()
+        self.boltAnimHitRight = pyganim.PygAnimation(self.transformAnim(config.ANIMATION_HIT_RIGHT))
+        self.boltAnimHitRight.play()
+        self.boltAnimHitLeft = pyganim.PygAnimation(self.transformAnim(config.ANIMATION_HIT_LEFT))
+        self.boltAnimHitLeft.play()
 
         self.winner = False
 
@@ -100,7 +118,8 @@ class Player(sprite.Sprite):
     def addCoin(self):
         self.coins += 1
 
-    def update(self, left, right, up, running, slowly, platforms, actPlatforms):
+    def update(self, left, right, up, space, the_last_key, running, slowly, platforms, actPlatforms):
+        self.attacking_rect.update(self.rect.x + self.attacking_orb, self.rect.y)
         if self.dead:
             if self.startDead + 1000 > time.get_ticks():
                 self.rect.y += self.yvel
@@ -127,6 +146,7 @@ class Player(sprite.Sprite):
                 self.boltAnimJump.blit(self.image, self.indentImage)
 
         if left:
+            self.attacking_orb = -15
             self.xvel = -config.MOVE_SPEED
             self.image.fill(Color(config.COLOR))
             if running:
@@ -140,6 +160,7 @@ class Player(sprite.Sprite):
                 self.boltAnimJumpLeft.blit(self.image, self.indentImage)
 
         if right:
+            self.attacking_orb = 15
             self.xvel = config.MOVE_SPEED
             self.image.fill(Color(config.COLOR))
             if running:
@@ -152,11 +173,32 @@ class Player(sprite.Sprite):
             if up:
                 self.boltAnimJumpRight.blit(self.image, self.indentImage)
 
+        if space:
+            if the_last_key == 'right':
+                self.image.fill(Color(config.COLOR))
+                self.boltAnimHitRight.blit(self.image, self.indentImage)
+            elif the_last_key == 'left':
+                self.image.fill(Color(config.COLOR))
+                self.boltAnimHitLeft.blit(self.image, self.indentImage)
+
+            now = time.get_ticks()
+            if now - self.last >= self.cooldown:
+                self.last = now
+                for p in platforms:
+                    if self.attacking_rect.rect.colliderect(p.rect) and isinstance(p, monsters.Monster):
+                        self.addPoint()
+                        p.die()
+
+
+
         if not (left or right):
             self.xvel = 0
-            if not up:
+            if not (up or space) and the_last_key == 'right':
                 self.image.fill(Color(config.COLOR))
-                self.boltAnimStay.blit(self.image, self.indentImage)
+                self.boltAnimStay_r.blit(self.image, self.indentImage)
+            elif not (up or space) and the_last_key == 'left':
+                self.image.fill(Color(config.COLOR))
+                self.boltAnimStay_l.blit(self.image, self.indentImage)
 
         if not self.onGround:
             self.yvel += config.GRAVITY
@@ -182,8 +224,7 @@ class Player(sprite.Sprite):
                         if p.rect.y - config.HERO_HEIGHT / 2 < self.rect.y:
                             self.die()
                         else:
-                            self.addPoint()
-                            p.die()
+                            self.die()
                 elif isinstance(p, blocks.BlockTeleport):
                     self.teleport(p.goX, p.goY)
                 elif isinstance(p, blocks.Princess):
@@ -199,6 +240,8 @@ class Player(sprite.Sprite):
                 elif isinstance(p, blocks.PlatformCoin):
                     self.addCoin()
                     self.addPoint()
+                    p.die()
+                elif isinstance(p, blocks.Sword):
                     p.die()
                 else:
                     if xvel > 0:

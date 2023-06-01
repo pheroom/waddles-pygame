@@ -41,6 +41,7 @@ def refreshConfig():
 
     config.ANIMATION_DELAY = 0.12
     config.ANIMATION_STAY_DELAY = 0.8
+    config.ANIMATION_HIT_DELAY = 0.5
     config.ANIMATION_RIGHT = ['images/waddles/waddles_run_r1.png',
                    'images/waddles/waddles_run_r2.png',
                    'images/waddles/waddles_run_r3.png',
@@ -52,8 +53,13 @@ def refreshConfig():
     config.ANIMATION_JUMP_LEFT = [('images/waddles/waddles_jump_l.png',  config.ANIMATION_DELAY)]
     config.ANIMATION_JUMP_RIGHT = [('images/waddles/waddles_jump_r.png',  config.ANIMATION_DELAY)]
     config.ANIMATION_JUMP = [('images/waddles/waddles_jump.png',  config.ANIMATION_DELAY)]
-    config.ANIMATION_STAY = ['images/waddles/waddles_stay1.png',
-                  'images/waddles/waddles_stay2.png']
+    config.ANIMATION_STAY_R = ['images/waddles/waddles_stay_r1.png',
+                  'images/waddles/waddles_stay_r2.png']
+    config.ANIMATION_STAY_L = ['images/waddles/waddles_stay_l1.png',
+                               'images/waddles/waddles_stay_l2.png']
+    config.ANIMATION_HIT_RIGHT = [('images/waddles/waddles_hit_r.png', config.ANIMATION_HIT_DELAY)]
+    config.ANIMATION_HIT_LEFT = [('images/waddles/waddles_hit_l.png', config.ANIMATION_HIT_DELAY)]
+
 
     config.ANIMATION_BLOCKTELEPORT = [
         ('images/portal2.png'),

@@ -44,6 +44,17 @@ class Coin(sprite.Sprite):
         if (self.startY < self.rect.y):
             self.remove(self)
 
+class Sword(sprite.Sprite):
+    def __init__(self, x, y):
+        sprite.Sprite.__init__(self)
+        self.image = Surface((0, 0))
+        self.rect = Rect(x, y, config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT)
+
+    def update(self, x, y):
+        self.rect.x = x
+        self.rect.y = y
+
+
 
 class Amount(sprite.Sprite):
     def __init__(self, x, y, amount, remove):
