@@ -1,12 +1,12 @@
 from pygame import *
-
 from config import config
+import util
 import pyganim
 import blocks
 import monsters
 
 class Player(sprite.Sprite):
-    def __init__(self, x, y, playAnimAmount, maxX, maxY, afterDead, createSword):
+    def __init__(self, x, y, playAnimAmount, maxX, maxY, afterDead, addEntities, addObjective, removeObjective):
         sprite.Sprite.__init__(self)
         self.startX = x
         self.startY = y
@@ -17,12 +17,17 @@ class Player(sprite.Sprite):
         self.onGround = False
         self.rect = Rect(x, y, config.HERO_PHYSICAL_WIDTH, config.HERO_PHYSICAL_HEIGHT)
 
-        self.attacking_rect = createSword(x, y)
-        self.cooldown = 500
-        self.last = time.get_ticks()
-        self.attacking_orb = 15
+        self.createEntities = addEntities
+        self.addObjective = addObjective
+        self.removeObjective = removeObjective
 
+        self.rightDirection = True
 
+        self.attackOrb = config.PLATFORM_WIDTH
+        self.sword = blocks.Sword(x, y, self.attackOrb)
+        addEntities(self.sword)
+        self.attackCooldown = 500
+        self.timeLastAttack = time.get_ticks()
 
         self.immunityStart = 0
         self.immunityValue = 1000
@@ -30,6 +35,7 @@ class Player(sprite.Sprite):
         self.startDead = -1
         self.dead = False
         self.lives = 3
+        self.health = config.HERO_HEALTH
 
         self.playAnimAmount = playAnimAmount
         self.points = 0
@@ -100,12 +106,24 @@ class Player(sprite.Sprite):
         self.dead = True
         self.lives -= 1
         self.startDead = time.get_ticks()
-        self.image = self.transformImg(image.load("images/mario/d.png").convert_alpha())
+        # self.image = self.transformImg(image.load("images/mario/d.png").convert_alpha())
         self.yvel = -config.JUMP_POWER
+        self.health = 0
+
+    def hit(self, damage = 1):
+        if self.immunityStart + self.immunityValue < time.get_ticks():
+            self.health -= damage
+            if self.health <= 0:
+                self.die()
 
     def teleport(self, goX, goY):
         self.rect.x = goX
         self.rect.y = goY
+
+    def addHealth(self, amount=1):
+        self.playAnimAmount(amount)
+        if(self.health < 20):
+            self.health += min(amount, 20 - self.health)
 
     def addPoint(self, amount = 200):
         self.playAnimAmount(amount)
@@ -118,13 +136,23 @@ class Player(sprite.Sprite):
     def addCoin(self):
         self.coins += 1
 
-    def update(self, left, right, up, space, the_last_key, running, slowly, platforms, actPlatforms):
-        self.attacking_rect.update(self.rect.x + self.attacking_orb, self.rect.y)
+    def setImmunity(self, value = 1000):
+        self.immunityStart = time.get_ticks()
+        self.immunityValue = value
+
+    def shot(self):
+        self.timeLastAttack = time.get_ticks()
+        bullet = blocks.Bullet(self.rect.x, self.rect.y + config.HERO_HEIGHT / 2, 'player', self.rightDirection,
+                               self.removeObjective, util.BULLET_HERO)
+        self.addObjective(bullet)
+
+    def update(self, left, right, up, space, running, slowly, platforms):
         if self.dead:
             if self.startDead + 1000 > time.get_ticks():
                 self.rect.y += self.yvel
                 self.yvel += config.GRAVITY
             else:
+                self.health = config.HERO_HEALTH
                 self.dead = False
                 self.immunityStart = time.get_ticks()
                 self.immunityValue = config.DEAD_SCREEN_TIME + 1500
@@ -146,7 +174,7 @@ class Player(sprite.Sprite):
                 self.boltAnimJump.blit(self.image, self.indentImage)
 
         if left:
-            self.attacking_orb = -15
+            self.rightDirection = False
             self.xvel = -config.MOVE_SPEED
             self.image.fill(Color(config.COLOR))
             if running:
@@ -160,7 +188,7 @@ class Player(sprite.Sprite):
                 self.boltAnimJumpLeft.blit(self.image, self.indentImage)
 
         if right:
-            self.attacking_orb = 15
+            self.rightDirection = True
             self.xvel = config.MOVE_SPEED
             self.image.fill(Color(config.COLOR))
             if running:
@@ -173,32 +201,28 @@ class Player(sprite.Sprite):
             if up:
                 self.boltAnimJumpRight.blit(self.image, self.indentImage)
 
-        if space:
-            if the_last_key == 'right':
-                self.image.fill(Color(config.COLOR))
-                self.boltAnimHitRight.blit(self.image, self.indentImage)
-            elif the_last_key == 'left':
-                self.image.fill(Color(config.COLOR))
-                self.boltAnimHitLeft.blit(self.image, self.indentImage)
-
-            now = time.get_ticks()
-            if now - self.last >= self.cooldown:
-                self.last = now
-                for p in platforms:
-                    if self.attacking_rect.rect.colliderect(p.rect) and isinstance(p, monsters.Monster):
-                        self.addPoint()
-                        p.die()
-
-
+        self.sword.update(self.rect.x if self.rightDirection else self.rect.x - self.attackOrb, self.rect.y)
+        if space and time.get_ticks() - self.timeLastAttack >= self.attackCooldown:
+            self.shot()
+            # self.image.fill(Color(config.COLOR))
+            # if self.rightDirection:
+            #     self.boltAnimHitRight.blit(self.image, self.indentImage)
+            # else:
+            #     self.boltAnimHitLeft.blit(self.image, self.indentImage)
+            # self.timeLastAttack = time.get_ticks()
+            # for p in platforms:
+            #     if sprite.collide_rect(self.sword, p) and isinstance(p, monsters.Monster):
+            #         self.addPoint()
+            #         p.die()
 
         if not (left or right):
             self.xvel = 0
-            if not (up or space) and the_last_key == 'right':
+            if not (up or space):
                 self.image.fill(Color(config.COLOR))
-                self.boltAnimStay_r.blit(self.image, self.indentImage)
-            elif not (up or space) and the_last_key == 'left':
-                self.image.fill(Color(config.COLOR))
-                self.boltAnimStay_l.blit(self.image, self.indentImage)
+                if self.rightDirection:
+                    self.boltAnimStay_r.blit(self.image, self.indentImage)
+                else:
+                    self.boltAnimStay_l.blit(self.image, self.indentImage)
 
         if not self.onGround:
             self.yvel += config.GRAVITY
@@ -208,23 +232,30 @@ class Player(sprite.Sprite):
 
         self.onGround = False
         self.rect.y += self.yvel
-        self.collide(0, self.yvel, platforms, actPlatforms)
+        self.collide(0, self.yvel, platforms)
 
         self.rect.x += self.xvel
-        self.collide(self.xvel, 0, platforms, actPlatforms)
+        self.collide(self.xvel, 0, platforms)
 
         if self.rect.x + config.PLATFORM_WIDTH < 0 or self.rect.x - config.PLATFORM_WIDTH > self.maxX or self.rect.y - config.PLATFORM_HEIGHT*5 > self.maxY:
             self.die()
 
-    def collide(self, xvel, yvel, platforms,actPlatforms):
+    def collide(self, xvel, yvel, platforms,):
         for p in platforms:
             if sprite.collide_rect(self, p):
-                if isinstance(p,monsters.Monster) and not p.dead:
-                    if self.immunityStart + self.immunityValue < time.get_ticks():
-                        if p.rect.y - config.HERO_HEIGHT / 2 < self.rect.y:
-                            self.die()
-                        else:
-                            self.die()
+                # if isinstance(p,monsters.Monster) and not p.dead:
+                #     if self.immunityStart + self.immunityValue < time.get_ticks():
+                #         if p.rect.y - config.HERO_HEIGHT / 2 < self.rect.y:
+                #             p.die()
+                #         else:
+                #             self.die()
+                if isinstance(p, monsters.Monster) and not p.dead:
+                    self.hit(3)
+                    self.setImmunity()
+                elif isinstance(p, blocks.Bullet):
+                    if p.owner != 'player':
+                        self.hit()
+                        p.die()
                 elif isinstance(p, blocks.BlockTeleport):
                     self.teleport(p.goX, p.goY)
                 elif isinstance(p, blocks.Princess):
@@ -235,7 +266,8 @@ class Player(sprite.Sprite):
                     self.addLive(1)
                     p.die()
                 elif isinstance(p, monsters.Mushroom):
-                    self.addPoint(1000)
+                    self.addHealth(3)
+                    self.addPoint(800)
                     p.die()
                 elif isinstance(p, blocks.PlatformCoin):
                     self.addCoin()

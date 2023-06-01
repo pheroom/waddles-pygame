@@ -47,7 +47,6 @@ LayerNameEntity  = 'Entity'
 
 class Level:
     def __init__(self, surf, switchScreen, backToLastScreen, lvl, levelName):
-        self.the_last_key = 'right'
         self.switchScreen = switchScreen
         self.surface = surf
         self.backToLastScreen = backToLastScreen
@@ -115,7 +114,10 @@ class Level:
                 self.actPlatforms.remove(pl)
 
     def removePlatform(self, obj):
-        self.platforms.remove(obj)
+        try:
+            self.platforms.remove(obj)
+        except:
+            print(f'{obj} not in levels.platforms!')
 
     def removeMonster(self, obj):
         self.entities.remove(obj)
@@ -128,6 +130,20 @@ class Level:
     def removeAnimatedEntity(self, obj):
         self.entities.remove(obj)
         self.animatedEntities.remove(obj)
+
+    def addAnimatedEntity(self, obj):
+        self.entities.add(obj)
+        self.animatedEntities.add(obj)
+
+    def removeObjective(self, obj):
+        self.entities.remove(obj)
+        self.animatedEntities.remove(obj)
+        self.platforms.remove(obj)
+
+    def addObjective(self, obj):
+        self.entities.add(obj)
+        self.animatedEntities.add(obj)
+        self.platforms.append(obj)
 
     def playAnimAmount(self, amount):
         amount = Amount(self.hero.rect.x, self.hero.rect.y, amount, self.removeAnimatedEntity)
@@ -164,8 +180,8 @@ class Level:
                         self.entities.add(pf)
             elif isinstance(layer, pytmx.TiledObjectGroup):
                 if layer.name.rstrip() == LayerNamePlayer:
-                    self.hero = Player(getX(layer[0]), getY(layer[0]),
-                                       self.playAnimAmount, self.totalLevelWidth, self.totalLevelHeight, self.playDeadScreen, self.createSword)
+                    self.hero = Player(getX(layer[0]), getY(layer[0]), self.playAnimAmount, self.totalLevelWidth, self.totalLevelHeight,
+                                       self.playDeadScreen, self.entities.add, self.addObjective, self.removeObjective)
                     self.entities.add(self.hero)
                 if layer.name.rstrip() == LayerNamePrincess:
                     pr = Princess(getX(layer[0]), getY(layer[0]))
@@ -210,7 +226,8 @@ class Level:
                 elif layer.name.rstrip() == LayerNameMonsters:
                     for monster in layer:
                         mn = Monster(getX(monster), getY(monster), monster.left,
-                                     monster.maxLeft * config.PLATFORM_WIDTH/tmxMap.tilewidth, self.removePlatform, self.removeMonster)
+                                     monster.maxLeft * config.PLATFORM_WIDTH/tmxMap.tilewidth,
+                                     self.removePlatform, self.removeMonster, self.addObjective, self.removeObjective)
                         self.entities.add(mn)
                         self.platforms.append(mn)
                         self.monsters.add(mn)
@@ -245,10 +262,8 @@ class Level:
                 self.up = True
             if e.type == KEYDOWN and e.key == K_LEFT:
                 self.left = True
-                self.the_last_key = 'left'
             if e.type == KEYDOWN and e.key == K_RIGHT:
                 self.right = True
-                self.the_last_key = 'right'
             if e.type == KEYDOWN and e.key == K_LSHIFT:
                 self.running = True
             if e.type == KEYDOWN and e.key == K_LCTRL:
@@ -276,12 +291,14 @@ class Level:
         self.monsters.update(self.platforms)
         self.animatedEntities.update()
         self.camera.update(self.hero)
-        self.hero.update(self.left, self.right, self.up, self.space, self.the_last_key, self.running, self.slowly, self.platforms, self.actPlatforms)
         for e in self.entities:
             self.surface.blit(e.image, self.camera.apply(e))
 
+        self.hero.update(self.left, self.right, self.up, self.space, self.running,
+                         self.slowly, self.platforms)
+
         time_diff = time.get_ticks() - self.startTime
-        self.ui.draw(self.hero.points, self.hero.coins, (time_diff - time_diff % 400) // 400)
+        self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 400) // 400)
 
         if self.hero.winner:
             if not self.winScreen:
@@ -312,7 +329,7 @@ class UI:
         self.surface = surf
         self.world = world
         self.font = font.Font('./emulogic.ttf', 25)
-        self.imgCoin = image.load("images/coin.png").convert_alpha()
+        self.imgHeart = transform.scale(image.load("images/Heart/heart.png").convert_alpha(), (32, 32))
         self.memo = {}
 
     def renderFont(self, text):
@@ -330,7 +347,7 @@ class UI:
             self.memo[num] = cur
             return cur
 
-    def draw(self, point, coins, time):
+    def draw(self, point, health, time):
         padding = 100
         smallPadding = 25
         x = 100
@@ -340,11 +357,11 @@ class UI:
         self.surface.blit(pointValue, (x, 45))
 
         x += pointValue.get_width() + padding
-        coins_value = self.renderFont('*' + str(coins))
-        self.surface.blit(self.imgCoin, (x, 45))
-        self.surface.blit(coins_value, (x + smallPadding, 45))
+        health_value = self.renderFont('*' + str(health))
+        self.surface.blit(self.imgHeart, (x - 10, 45))
+        self.surface.blit(health_value, (x + smallPadding, 45))
 
-        x += self.imgCoin.get_width() + coins_value.get_width() + smallPadding + padding
+        x += self.imgHeart.get_width() + health_value.get_width() + smallPadding + padding
         worldLabel = self.renderFont('WORLD')
         worldValue = self.renderFont(self.world)
         self.surface.blit(worldLabel, (x, 20))
@@ -361,7 +378,8 @@ if __name__ == '__main__':
     size = (config.WIN_WIDTH, config.WIN_HEIGHT)
     screen = display.set_mode(size)
     clock = time.Clock()
-    lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/1-1.tmx", '1-1')
+    # lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/1-1.tmx", '1-1')
+    lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/test.tmx", '1-1')
     running = True
     while running:
         events = event.get()

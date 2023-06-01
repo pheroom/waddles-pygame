@@ -1,6 +1,6 @@
 from pygame import *
 from config import config
-from utils import transformImg
+from util import transformImg
 import pyganim
 import random
 
@@ -44,17 +44,39 @@ class Coin(sprite.Sprite):
         if (self.startY < self.rect.y):
             self.remove(self)
 
-class Sword(sprite.Sprite):
-    def __init__(self, x, y):
+class Bullet(sprite.Sprite):
+    def __init__(self, x, y, owner, rightDirection, remove, img):
         sprite.Sprite.__init__(self)
+        self.owner = owner
+        self.startX = x
+        self.remove = remove
+        self.rightDirection = rightDirection
+        self.image = Surface((config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT))
+        self.image = transform.scale(img, (15, 15))
+        if not rightDirection:
+            self.image = transform.rotate(self.image, 180)
+        w, h = self.image.get_rect()[2], self.image.get_rect()[3]
+        self.rect = Rect(x, y - h/2, w, h)
+        self.xvel = 7
+
+    def die(self):
+        self.remove(self)
+
+    def update(self):
+        self.rect.x += self.xvel * (1 if self.rightDirection else -1)
+        if abs(self.rect.x - self.startX) > 500:
+            self.remove(self)
+
+class Sword(sprite.Sprite):
+    def __init__(self, x, y, orb):
+        sprite.Sprite.__init__(self)
+        # self.image = Surface((config.HERO_WIDTH + orb, config.HERO_HEIGHT))
         self.image = Surface((0, 0))
-        self.rect = Rect(x, y, config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT)
+        self.rect = Rect(x, y, config.HERO_WIDTH + orb, config.HERO_HEIGHT)
 
     def update(self, x, y):
         self.rect.x = x
         self.rect.y = y
-
-
 
 class Amount(sprite.Sprite):
     def __init__(self, x, y, amount, remove):

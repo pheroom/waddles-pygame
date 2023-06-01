@@ -7,7 +7,8 @@ class Menu:
         self._current_option_index = 0
         self.ARIAL_50 = font.SysFont('arial', 50)
         self.font = font.Font('./emulogic.ttf', 30)
-        self.point = image.load('images/smallMushroom.png').convert_alpha()
+        # self.point = image.load('images/smallMushroom.png').convert_alpha()
+        self.point = transform.scale(image.load('images/carrot.png').convert_alpha(), (50,50))
         self.activePoint = transform.scale(image.load('images/star.png').convert_alpha(), (41,40))
         self.activeOption = []
 
@@ -30,7 +31,7 @@ class Menu:
             option_rect.topleft = (x, y + i * option_y_padding)
             if i == self._current_option_index:
                 # draw.rect(surf, (0, 50, 0), option_rect)
-                surf.blit(self.point, (option_rect.x - 40, option_rect.y + 5))
+                surf.blit(self.point, (option_rect.x - 60, option_rect.y ))
             if i in self.activeOption:
                 surf.blit(self.activePoint, (option_rect.right + 15, option_rect.y - 2))
             surf.blit(option, option_rect)
