@@ -9,7 +9,8 @@
     ],
     "fileStates": {
         "1 - Leaf_top.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "1-1.tmx": {
             "expandedObjectLayers": [
@@ -26,10 +27,12 @@
             }
         },
         "2 - Trees.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "4 - Tree_row_BG_1.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "Autumn_entities (16 x 16).tsx": {
             "scaleInDock": 1,
@@ -43,18 +46,35 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
-        "Level - 1.tmx": {
+        "Level - 1 - копия.tmx": {
             "expandedObjectLayers": [
-                5,
                 3,
+                5,
                 4,
                 6
             ],
-            "scale": 0.5,
+            "scale": 0.25,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 689,
-                "y": 499
+                "x": 1600,
+                "y": 320
+            }
+        },
+        "Level - 1 - копия.tmx#tileset_night": {
+            "scaleInDock": 1
+        },
+        "Level - 1.tmx": {
+            "expandedObjectLayers": [
+                3,
+                5,
+                4,
+                6
+            ],
+            "scale": 0.33,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 1409.090909090909,
+                "y": 427.27272727272737
             }
         },
         "Level - 1.tmx#tileset_night": {
@@ -65,7 +85,8 @@
             "scaleInEditor": 1
         },
         "Terrain (16 x 16).tsx": {
-            "scaleInDock": 1.5
+            "scaleInDock": 1.5,
+            "scaleInEditor": 1
         },
         "Terrain (32x32).tsx": {
             "scaleInDock": 1,
@@ -88,24 +109,27 @@
         }
     },
     "last.externalTilesetPath": "D:/waddles-pygame/levels",
-    "last.imagePath": "D:/waddles-pygame/levels/1 Tiles",
+    "last.imagePath": "D:/waddles-pygame/levels",
     "map.lastUsedFormat": "tmx",
     "map.width": 100,
     "openFiles": [
+        "Level - 1 - копия.tmx",
         "Level - 1.tmx"
     ],
     "project": "Level - 1.tiled-project",
     "recentFiles": [
+        "Level - 1 - копия.tmx",
         "Level - 1.tmx",
-        "Tileset000.tsx",
-        "1-1.tmx",
-        "Terrain (32x32).tsx",
-        "Metal_Wire_fence (16 x 16).tsx",
-        "Decorations (32x32).tsx",
-        "Blocks (16 x 16).tsx",
+        "1 - Leaf_top.tsx",
+        "2 - Trees.tsx",
+        "4 - Tree_row_BG_1.tsx",
         "Autumn_entities (16 x 16).tsx",
-        "tileset.tsx",
-        "mario-tiles.tsx"
+        "Metal_Wire_fence (16 x 16).tsx",
+        "Blocks (16 x 16).tsx",
+        "Tileset000.tsx",
+        "Terrain (16 x 16).tsx",
+        "1-1.tmx",
+        "Terrain (32x32).tsx"
     ],
     "tileset.lastUsedFilter": "Файлы набора тайлов Tiled (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx"
