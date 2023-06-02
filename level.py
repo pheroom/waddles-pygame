@@ -274,6 +274,9 @@ class Level:
             if self.canSkipWinScreen and e.type == KEYDOWN and e.key == K_b:
                 self.backToLastScreen()
 
+            if e.type == KEYDOWN and e.key == K_c:
+                self.hero.switchWeapon()
+
             if e.type == KEYUP and e.key == K_UP:
                 self.up = False
             if e.type == KEYUP and e.key == K_RIGHT:
@@ -298,7 +301,7 @@ class Level:
                          self.slowly, self.platforms)
 
         time_diff = time.get_ticks() - self.startTime
-        self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 400) // 400)
+        self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 400) // 400, self.hero.weaponIsKnife)
 
         if self.hero.winner:
             if not self.winScreen:
@@ -330,6 +333,8 @@ class UI:
         self.world = world
         self.font = font.Font('./emulogic.ttf', 25)
         self.imgHeart = transform.scale(image.load("images/Heart/heart.png").convert_alpha(), (32, 32))
+        self.imgKnife = transform.rotate(transform.scale(image.load("images/knife.png").convert_alpha(), (50*1.88, 50)), 140)
+        self.imgHook = transform.rotate(transform.scale(image.load("images/bullet/bullet_hook.png").convert_alpha(), (40*1.285, 40)), 180)
         self.memo = {}
 
     def renderFont(self, text):
@@ -347,7 +352,12 @@ class UI:
             self.memo[num] = cur
             return cur
 
-    def draw(self, point, health, time):
+    def draw(self, point, health, time, weaponIsKnife):
+        if weaponIsKnife:
+            self.surface.blit(self.imgKnife, (self.surface.get_size()[0] - 120, 10))
+        else:
+            self.surface.blit(self.imgHook, (self.surface.get_size()[0] - 90, 40))
+
         padding = 100
         smallPadding = 25
         x = 100
