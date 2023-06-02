@@ -88,11 +88,6 @@ class Level:
         self.entities.add(coin)
         self.animatedEntities.add(coin)
 
-    def createSword(self, x, y):
-        wp = Sword(x, y)
-        self.entities.add(wp)
-        return wp
-
     def createMushroom(self, x, y):
         mr = Mushroom(x, y - config.PLATFORM_HEIGHT, 3, 0,
                       150, 0, self.removePlatform, self.removeMonster)
@@ -181,7 +176,7 @@ class Level:
             elif isinstance(layer, pytmx.TiledObjectGroup):
                 if layer.name.rstrip() == LayerNamePlayer:
                     self.hero = Player(getX(layer[0]), getY(layer[0]), self.playAnimAmount, self.totalLevelWidth, self.totalLevelHeight,
-                                       self.playDeadScreen, self.entities.add, self.addObjective, self.removeObjective)
+                                       self.playDeadScreen, self.entities.add, self.entities.remove, self.addObjective, self.removeObjective)
                     self.entities.add(self.hero)
                 if layer.name.rstrip() == LayerNamePrincess:
                     pr = Princess(getX(layer[0]), getY(layer[0]))
@@ -256,6 +251,7 @@ class Level:
                 self.deadScreen = False
             return
 
+        needSwitchWeapon = False
         for e in events:
             if e.type == KEYDOWN and e.key == K_ESCAPE:
                 self.backToLastScreen()
@@ -276,7 +272,7 @@ class Level:
                 self.backToLastScreen()
 
             if e.type == KEYDOWN and e.key == K_c:
-                self.hero.switchWeapon()
+                needSwitchWeapon = True
 
             if e.type == KEYUP and e.key == K_UP:
                 self.up = False
@@ -297,6 +293,9 @@ class Level:
         self.camera.update(self.hero)
         for e in self.entities:
             self.surface.blit(e.image, self.camera.apply(e))
+
+        if needSwitchWeapon:
+            self.hero.switchWeapon()
 
         self.hero.update(self.left, self.right, self.up, self.space, self.running,
                          self.slowly, self.platforms)
@@ -389,8 +388,8 @@ if __name__ == '__main__':
     size = (config.WIN_WIDTH, config.WIN_HEIGHT)
     screen = display.set_mode(size)
     clock = time.Clock()
-    # lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/1-1.tmx", '1-1')
-    lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/lvl1.tmx", '1-1')
+    lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/1-1.tmx", '1-1')
+    # lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/lvl1.tmx", '1-1')
     running = True
     while running:
         events = event.get()
