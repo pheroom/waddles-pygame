@@ -52,7 +52,8 @@ class Bullet(sprite.Sprite):
         self.remove = remove
         self.rightDirection = rightDirection
         self.image = Surface((config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT))
-        self.image = transform.scale(img, (15, 15))
+        w, h = img.get_rect()[2], img.get_rect()[3]
+        self.image = transform.scale(img, (15 * w/h, 15))
         if not rightDirection:
             self.image = transform.rotate(self.image, 180)
         w, h = self.image.get_rect()[2], self.image.get_rect()[3]

@@ -21,6 +21,7 @@ class Player(sprite.Sprite):
         self.addObjective = addObjective
         self.removeObjective = removeObjective
 
+        self.weaponIsKnife = True
         self.rightDirection = True
 
         self.attackOrb = config.PLATFORM_WIDTH
@@ -140,6 +141,9 @@ class Player(sprite.Sprite):
         self.immunityStart = time.get_ticks()
         self.immunityValue = value
 
+    def switchWeapon(self):
+        self.weaponIsKnife = not self.weaponIsKnife
+
     def shot(self):
         self.timeLastAttack = time.get_ticks()
         bullet = blocks.Bullet(self.rect.x, self.rect.y + config.HERO_HEIGHT / 2, 'player', self.rightDirection,
@@ -203,17 +207,20 @@ class Player(sprite.Sprite):
 
         self.sword.update(self.rect.x if self.rightDirection else self.rect.x - self.attackOrb, self.rect.y)
         if space and time.get_ticks() - self.timeLastAttack >= self.attackCooldown:
-            self.shot()
-            # self.image.fill(Color(config.COLOR))
-            # if self.rightDirection:
-            #     self.boltAnimHitRight.blit(self.image, self.indentImage)
-            # else:
-            #     self.boltAnimHitLeft.blit(self.image, self.indentImage)
-            # self.timeLastAttack = time.get_ticks()
-            # for p in platforms:
-            #     if sprite.collide_rect(self.sword, p) and isinstance(p, monsters.Monster):
-            #         self.addPoint()
-            #         p.die()
+            if self.weaponIsKnife:
+                self.image.fill(Color(config.COLOR))
+                if self.rightDirection:
+                    self.boltAnimHitRight.blit(self.image, self.indentImage)
+                else:
+                    self.boltAnimHitLeft.blit(self.image, self.indentImage)
+                self.timeLastAttack = time.get_ticks()
+                for p in platforms:
+                    if sprite.collide_rect(self.sword, p) and isinstance(p, monsters.Monster):
+                        self.addPoint()
+                        p.die()
+            else:
+                self.shot()
+
 
         if not (left or right):
             self.xvel = 0
