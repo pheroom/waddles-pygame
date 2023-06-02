@@ -23,9 +23,9 @@ def refreshConfig():
     config.BG_COLOR_DUNGEON = '#000000'
     config.BG_COLOR_SKY = '#5C94FC'
 
-    config.HERO_PHYSICAL_WIDTH = config.PLATFORM_WIDTH * 0.8
+    config.HERO_PHYSICAL_WIDTH = config.PLATFORM_WIDTH * 0.6875
     config.HERO_PHYSICAL_HEIGHT = config.PLATFORM_HEIGHT
-    config.HERO_WIDTH = config.PLATFORM_WIDTH
+    config.HERO_WIDTH = config.PLATFORM_WIDTH * 0.6875
     config.HERO_HEIGHT = config.PLATFORM_HEIGHT
     config.MOVE_SPEED = 4 * config.HERO_WIDTH / 32
     config.COLOR = "#888888"

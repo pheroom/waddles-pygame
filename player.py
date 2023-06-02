@@ -6,7 +6,7 @@ import blocks
 import monsters
 
 class Player(sprite.Sprite):
-    def __init__(self, x, y, playAnimAmountWithRect, maxX, maxY, afterDead, addEntities, addObjective, removeObjective):
+    def __init__(self, x, y, playAnimAmountWithRect, maxX, maxY, afterDead, addEntities, removeEntities, addObjective, removeObjective):
         sprite.Sprite.__init__(self)
         self.startX = x
         self.startY = y
@@ -17,7 +17,8 @@ class Player(sprite.Sprite):
         self.onGround = False
         self.rect = Rect(x, y, config.HERO_PHYSICAL_WIDTH, config.HERO_PHYSICAL_HEIGHT)
 
-        self.createEntities = addEntities
+        self.addEntities = addEntities
+        self.removeEntities = removeEntities
         self.addObjective = addObjective
         self.removeObjective = removeObjective
 
@@ -26,6 +27,7 @@ class Player(sprite.Sprite):
 
         self.attackOrb = config.PLATFORM_WIDTH
         self.sword = blocks.Sword(x, y, self.attackOrb)
+        self.hook = blocks.Hook(x, y)
         addEntities(self.sword)
         self.attackCooldown = 500
         self.timeLastAttack = time.get_ticks()
@@ -91,6 +93,9 @@ class Player(sprite.Sprite):
         self.boltAnimHitLeft = pyganim.PygAnimation(self.transformAnim(config.ANIMATION_HIT_LEFT))
         self.boltAnimHitLeft.play()
 
+        self.boltAnimStay = pyganim.PygAnimation([[self.transformImg(image.load('./images/waddles.png')), config.ANIMATION_STAY_DELAY]])
+        self.boltAnimStay.play()
+
         self.winner = False
 
     def transformAnim(self, anim):
@@ -98,8 +103,8 @@ class Player(sprite.Sprite):
 
     def transformImg(self, img):
         if(isinstance(img, str)):
-            return transform.scale(image.load(img), (config.HERO_WIDTH, config.HERO_WIDTH))
-        return transform.scale(img, (config.HERO_WIDTH, config.HERO_WIDTH))
+            return transform.scale(image.load(img), (config.HERO_WIDTH, config.HERO_HEIGHT))
+        return transform.scale(img, (config.HERO_WIDTH, config.HERO_HEIGHT))
 
     def die(self):
         if self.startDead + 500 > time.get_ticks():
@@ -143,7 +148,14 @@ class Player(sprite.Sprite):
         self.immunityValue = value
 
     def switchWeapon(self):
-        self.weaponIsKnife = not self.weaponIsKnife
+        if self.weaponIsKnife:
+            self.removeEntities(self.sword)
+            self.addEntities(self.hook)
+            self.weaponIsKnife = False
+        else:
+            self.removeEntities(self.hook)
+            self.addEntities(self.sword)
+            self.weaponIsKnife = True
 
     def shot(self):
         self.timeLastAttack = time.get_ticks()
@@ -175,61 +187,48 @@ class Player(sprite.Sprite):
                     self.yvel += config.JUMP_SLOW_POWER
                 elif running and (left or right):
                     self.yvel -= config.JUMP_EXTRA_POWER
-                self.image.fill(Color(config.COLOR))
-                self.boltAnimJump.blit(self.image, self.indentImage)
+                # self.image.fill(Color(config.COLOR))
+                # self.boltAnimJump.blit(self.image, self.indentImage)
 
         if left:
             self.rightDirection = False
             self.xvel = -config.MOVE_SPEED
-            self.image.fill(Color(config.COLOR))
+            # self.image.fill(Color(config.COLOR))
             if running:
                 self.xvel -= config.MOVE_EXTRA_SPEED
-                if not up:
-                    self.boltAnimLeftSuperSpeed.blit(self.image, self.indentImage)
-            else:
-                if not up:
-                    self.boltAnimLeft.blit(self.image, self.indentImage)
-            if up:
-                self.boltAnimJumpLeft.blit(self.image, self.indentImage)
+            #     if not up:
+            #         self.boltAnimLeftSuperSpeed.blit(self.image, self.indentImage)
+            # else:
+            #     if not up:
+            #         self.boltAnimLeft.blit(self.image, self.indentImage)
+            # if up:
+            #     self.boltAnimJumpLeft.blit(self.image, self.indentImage)
 
         if right:
             self.rightDirection = True
             self.xvel = config.MOVE_SPEED
-            self.image.fill(Color(config.COLOR))
+            # self.image.fill(Color(config.COLOR))
             if running:
                 self.xvel += config.MOVE_EXTRA_SPEED
-                if not up:
-                    self.boltAnimRightSuperSpeed.blit(self.image, self.indentImage)
-            else:
-                if not up:
-                    self.boltAnimRight.blit(self.image, self.indentImage)
-            if up:
-                self.boltAnimJumpRight.blit(self.image, self.indentImage)
-
-        self.sword.update(self.rect.x if self.rightDirection else self.rect.x - self.attackOrb, self.rect.y)
-        if space and time.get_ticks() - self.timeLastAttack >= self.attackCooldown:
-            if self.weaponIsKnife:
-                self.image.fill(Color(config.COLOR))
-                if self.rightDirection:
-                    self.boltAnimHitRight.blit(self.image, self.indentImage)
-                else:
-                    self.boltAnimHitLeft.blit(self.image, self.indentImage)
-                self.timeLastAttack = time.get_ticks()
-                for p in platforms:
-                    if sprite.collide_rect(self.sword, p) and isinstance(p, monsters.Monster):
-                        p.hit(2)
-            else:
-                self.shot()
-
+            #     if not up:
+            #         self.boltAnimRightSuperSpeed.blit(self.image, self.indentImage)
+            # else:
+            #     if not up:
+            #         self.boltAnimRight.blit(self.image, self.indentImage)
+            # if up:
+            #     self.boltAnimJumpRight.blit(self.image, self.indentImage)
 
         if not (left or right):
             self.xvel = 0
-            if not (up or space):
-                self.image.fill(Color(config.COLOR))
-                if self.rightDirection:
-                    self.boltAnimStay_r.blit(self.image, self.indentImage)
-                else:
-                    self.boltAnimStay_l.blit(self.image, self.indentImage)
+            # if not (up or space):
+            #     self.image.fill(Color(config.COLOR))
+            #     if self.rightDirection:
+            #         self.boltAnimStay_r.blit(self.image, self.indentImage)
+            #     else:
+            #         self.boltAnimStay_l.blit(self.image, self.indentImage)
+
+        self.image.fill(Color(config.COLOR))
+        self.boltAnimStay.blit(self.image, self.indentImage)
 
         if not self.onGround:
             self.yvel += config.GRAVITY
@@ -243,6 +242,28 @@ class Player(sprite.Sprite):
 
         self.rect.x += self.xvel
         self.collide(self.xvel, 0, platforms)
+
+        # self.sword.update(self.rect.x if self.rightDirection else self.rect.x - self.attackOrb, self.rect.y, self.rightDirection)
+
+        if space and time.get_ticks() - self.timeLastAttack >= self.attackCooldown:
+            if self.weaponIsKnife:
+                # self.image.fill(Color(config.COLOR))
+                # if self.rightDirection:
+                #     self.boltAnimHitRight.blit(self.image, self.indentImage)
+                # else:
+                #     self.boltAnimHitLeft.blit(self.image, self.indentImage)
+                self.timeLastAttack = time.get_ticks()
+                self.sword.attack(platforms)
+                # for p in platforms:
+                #     if sprite.collide_rect(self.sword, p) and isinstance(p, monsters.Monster):
+                #         p.hit(2)
+            else:
+                self.shot()
+        if self.weaponIsKnife:
+            self.sword.update(self.rect.right if self.rightDirection else self.rect.x - self.attackOrb, self.rect.y,
+                          self.rightDirection)
+        else:
+            self.hook.update(self.rect.right if self.rightDirection else self.rect.x, self.rect.y, self.rightDirection)
 
         if self.rect.x + config.PLATFORM_WIDTH < 0 or self.rect.x - config.PLATFORM_WIDTH > self.maxX or self.rect.y - config.PLATFORM_HEIGHT*5 > self.maxY:
             self.die()
@@ -274,7 +295,7 @@ class Player(sprite.Sprite):
                     p.die()
                 elif isinstance(p, monsters.Mushroom):
                     self.addHealth(3)
-                    self.addPoint(800)
+                    # self.addPoint(800)
                     p.die()
                 elif isinstance(p, blocks.PlatformCoin):
                     self.addCoin()
