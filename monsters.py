@@ -7,7 +7,7 @@ from config import config
 
 
 class Monster(sprite.Sprite):
-    def __init__(self, x, y, left, maxLengthLeft, whenDead, removeSelf, addEntities, removeEntities):
+    def __init__(self, x, y, left, maxLengthLeft, whenDead, removeSelf, addEntities, removeEntities, playAnimAmountWithRect):
         sprite.Sprite.__init__(self)
         self.image = Surface((config.MONSTER_WIDTH, config.MONSTER_HEIGHT))
         self.image.fill(Color(config.MONSTER_COLOR))
@@ -41,6 +41,7 @@ class Monster(sprite.Sprite):
         self.boltAnim_right = pyganim.PygAnimation(boltAnim)
         self.boltAnim_right.play()
 
+        self.playAnimAmount = lambda amount, color: playAnimAmountWithRect(self.rect.x, self.rect.y, amount, color)
         self.addEntities = addEntities
         self.whenDead = whenDead
         self.removeSelf = removeSelf
@@ -60,6 +61,7 @@ class Monster(sprite.Sprite):
         self.dead = True
 
     def hit(self, damage = 1):
+        self.playAnimAmount(damage, '#151515')
         self.health -= damage
         if self.health <= 0:
             self.die()

@@ -145,8 +145,8 @@ class Level:
         self.animatedEntities.add(obj)
         self.platforms.append(obj)
 
-    def playAnimAmount(self, amount):
-        amount = Amount(self.hero.rect.x, self.hero.rect.y, amount, self.removeAnimatedEntity)
+    def playAnimAmount(self, x, y, amount, color):
+        amount = Amount(x, y, amount, self.removeAnimatedEntity, color)
         self.entities.add(amount)
         self.animatedEntities.add(amount)
 
@@ -227,7 +227,8 @@ class Level:
                     for monster in layer:
                         mn = Monster(getX(monster), getY(monster), monster.left,
                                      monster.maxLeft * config.PLATFORM_WIDTH/tmxMap.tilewidth,
-                                     self.removePlatform, self.removeMonster, self.addObjective, self.removeObjective)
+                                     self.removePlatform, self.removeMonster, self.addObjective, self.removeObjective,
+                                     self.playAnimAmount)
                         self.entities.add(mn)
                         self.platforms.append(mn)
                         self.monsters.add(mn)
@@ -248,7 +249,7 @@ class Level:
                 self.surface.blit(deadImg, (config.WIN_WIDTH // 2 - 100, config.WIN_HEIGHT // 2 - 15))
                 self.surface.blit(deadLabel, (config.WIN_WIDTH // 2 - 32, config.WIN_HEIGHT // 2 - 15))
                 time_diff = time.get_ticks() - self.startTime
-                self.ui.draw(self.hero.points, self.hero.coins, (time_diff - time_diff % 400) // 400)
+                self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 400) // 400, self.hero.weaponIsKnife)
             else:
                 if self.hero.lives == 0:
                     self.backToLastScreen()
@@ -389,7 +390,7 @@ if __name__ == '__main__':
     screen = display.set_mode(size)
     clock = time.Clock()
     # lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/1-1.tmx", '1-1')
-    lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/test.tmx", '1-1')
+    lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/lvl1.tmx", '1-1')
     running = True
     while running:
         events = event.get()

@@ -33,6 +33,7 @@ class LevelSelectionScreen():
         self.menu = Menu()
         self.bg = transform.scale(image.load('images/bg2.png'), (config.WIN_WIDTH, config.WIN_HEIGHT))
         self.menu.append_option('1-1', lambda: self.switchScreen(lvl1Screen))
+        self.menu.append_option('2-1', lambda: self.switchScreen(lvl2Screen))
         self.menu.append_option('Back to menu', lambda: self.switchScreen(MainScreen))
 
     def run(self, events):
@@ -128,6 +129,9 @@ display.set_icon(marioIcon)
 
 def lvl1Screen(screen, switchScreen):
     return Level(screen, switchScreen, lambda: game.switchScreen(lvlSelectionScreen), "levels/1-1.tmx", '1-1')
+
+def lvl2Screen(screen, switchScreen):
+    return Level(screen, switchScreen, lambda: game.switchScreen(lvlSelectionScreen), "levels/lvl1.tmx", '2-1')
 
 def lvlSelectionScreen(screen, switchScreen):
     return LevelSelectionScreen(screen, switchScreen)

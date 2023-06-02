@@ -6,7 +6,7 @@ import blocks
 import monsters
 
 class Player(sprite.Sprite):
-    def __init__(self, x, y, playAnimAmount, maxX, maxY, afterDead, addEntities, addObjective, removeObjective):
+    def __init__(self, x, y, playAnimAmountWithRect, maxX, maxY, afterDead, addEntities, addObjective, removeObjective):
         sprite.Sprite.__init__(self)
         self.startX = x
         self.startY = y
@@ -38,7 +38,7 @@ class Player(sprite.Sprite):
         self.lives = 3
         self.health = config.HERO_HEALTH
 
-        self.playAnimAmount = playAnimAmount
+        self.playAnimAmount = lambda amount,color: playAnimAmountWithRect(self.rect.x, self.rect.y, amount, color)
         self.points = 0
         self.coins = 0
 
@@ -113,6 +113,7 @@ class Player(sprite.Sprite):
 
     def hit(self, damage = 1):
         if self.immunityStart + self.immunityValue < time.get_ticks():
+            self.playAnimAmount(damage, '#FF0000')
             self.health -= damage
             if self.health <= 0:
                 self.die()
@@ -122,16 +123,16 @@ class Player(sprite.Sprite):
         self.rect.y = goY
 
     def addHealth(self, amount=1):
-        self.playAnimAmount(amount)
+        self.playAnimAmount(amount, '#008000')
         if(self.health < 20):
             self.health += min(amount, 20 - self.health)
 
     def addPoint(self, amount = 200):
-        self.playAnimAmount(amount)
+        self.playAnimAmount(amount, '#ffffff')
         self.points += amount
 
     def addLive(self, amount = 1):
-        self.playAnimAmount(amount)
+        self.playAnimAmount(amount, '#ffc0cb')
         self.lives += amount
 
     def addCoin(self):
@@ -216,8 +217,7 @@ class Player(sprite.Sprite):
                 self.timeLastAttack = time.get_ticks()
                 for p in platforms:
                     if sprite.collide_rect(self.sword, p) and isinstance(p, monsters.Monster):
-                        self.addPoint()
-                        p.die()
+                        p.hit(2)
             else:
                 self.shot()
 
