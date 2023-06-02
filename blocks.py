@@ -53,7 +53,7 @@ class Bullet(sprite.Sprite):
         self.rightDirection = rightDirection
         self.image = Surface((config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT))
         w, h = img.get_rect()[2], img.get_rect()[3]
-        self.image = transform.scale(img, (15 * w/h, 15))
+        self.image = transform.scale(img, (13 * config.PLATFORM_WIDTH / 32 * w/h, 13 * config.PLATFORM_HEIGHT / 32))
         if not rightDirection:
             self.image = transform.rotate(self.image, 180)
         w, h = self.image.get_rect()[2], self.image.get_rect()[3]
@@ -80,18 +80,19 @@ class Sword(sprite.Sprite):
         self.rect.y = y
 
 class Amount(sprite.Sprite):
-    def __init__(self, x, y, amount, remove):
+    def __init__(self, x, y, amount, remove, color = '#ffffff'):
         sprite.Sprite.__init__(self)
         self.startX = x
         self.startY = y
         self.remove = remove
-        self.image = font.Font('./emulogic.ttf', 12).render(str(amount), False, '#ffffff')
+        self.image = font.Font('./emulogic.ttf', round(12 * config.PLATFORM_WIDTH/32)).render(str(amount), False, color)
+        # self.image = font.Font('./emulogic.ttf', 12).render(str(amount), False, color)
         self.rect = Rect(x, y, config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT)
-        self.yvel = -5
+        self.yvel = -4
 
     def update(self):
         self.rect.y += self.yvel
-        if self.rect.y + 80 <= self.startY:
+        if self.rect.y + 50 <= self.startY:
             self.remove(self)
 
 class ActPlatform(Platform):
