@@ -1,4 +1,4 @@
-from math import sin
+from math import pi, sin, cos
 from pygame import *
 from config import config
 from util import transformImg
@@ -96,6 +96,8 @@ class Sword(sprite.Sprite):
         self.orb = orb
         self.w, self.h = orb, config.HERO_HEIGHT
         self.rect = Rect(x, y, self.w, self.h)
+        self.animStep = pi/180
+        self.r = config.PLATFORM_WIDTH*0.15
 
     def update(self, x, y, rightDir):
         self.attackArea.update(x, y)
@@ -103,14 +105,17 @@ class Sword(sprite.Sprite):
         self.rect.y = y
         if self.animationStage > 0:
             if rightDir:
+                # self.image = transform.rotate(self.img, self.animationStage)
                 self.image = transform.rotate(self.img, self.animationStage)
             else:
-                self.image = transform.rotate(self.img, 90 - self.animationStage + 90)
+                self.image = transform.rotate(self.img, pi - self.animationStage)
                 self.rect.x += self.w - self.image.get_width()
             # if self.animationStage < 50:
             #     self.rect.x - 5
             self.rect.y += self.h - self.image.get_height()
-            self.animationStage -= 5
+            self.rect.x += cos(self.animStep * (self.animationStage)) * self.r
+            self.rect.y -= sin(self.animStep * (self.animationStage)) * self.r
+            self.animationStage -= 3
         else:
             self.image = self.imgR if rightDir else self.imgL
 
@@ -142,12 +147,12 @@ class Hook(sprite.Sprite):
 class Amount(sprite.Sprite):
     def __init__(self, x, y, amount, remove, color = '#ffffff'):
         sprite.Sprite.__init__(self)
-        self.startX = x
+        self.startX = x + random.randint(0, config.PLATFORM_WIDTH//3) * (-1 if random.randint(0,1) else 1)
         self.startY = y
         self.remove = remove
         self.image = font.Font('./emulogic.ttf', round(12 * config.PLATFORM_WIDTH/32)).render(str(amount), False, color)
         # self.image = font.Font('./emulogic.ttf', 12).render(str(amount), False, color)
-        self.rect = Rect(x, y, config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT)
+        self.rect = Rect(self.startX, self.startY, config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT)
         self.yvel = -4
 
     def update(self):
