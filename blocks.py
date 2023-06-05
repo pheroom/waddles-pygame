@@ -191,7 +191,7 @@ class BlockTeleport(Platform):
 
 class Princess(Platform):
     def __init__(self, x, y):
-        Platform.__init__(self, x , y - (config.HERO_HEIGHT - 32))
+        Platform.__init__(self, x , y)
         boltAnim = []
         self.image = Surface((config.HERO_WIDTH, config.HERO_HEIGHT))
         self.image.fill(Color(config.COLOR))

@@ -3,7 +3,7 @@
  <tileset firstgid="1" source="tileset.tsx"/>
  <tileset firstgid="129" source="mario-tiles.tsx"/>
  <tileset firstgid="912" name="tileset_night" tilewidth="32" tileheight="32" tilecount="128" columns="8">
-  <image source="C:/Users/ender/OneDrive/Рабочий стол/bitmaps/tileset_night.png" width="256" height="512"/>
+  <image source="tileset_night.png" width="256" height="512"/>
  </tileset>
  <tileset firstgid="1040" source="Terrain (32x32).tsx"/>
  <tileset firstgid="1287" source="Decorations (32x32).tsx"/>
@@ -109,7 +109,7 @@
     <property name="maxLeft" type="int" value="40"/>
    </properties>
   </object>
-  <object id="14" gid="388" x="3041.33" y="190.667" width="32" height="32">
+  <object id="14" gid="388" x="3036" y="190" width="32" height="32">
    <properties>
     <property name="left" type="int" value="0"/>
     <property name="maxLeft" type="int" value="0"/>
@@ -122,8 +122,8 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="4" name="Princess" locked="1">
-  <object id="17" gid="181" x="2977.33" y="540" width="32" height="32"/>
+ <objectgroup id="4" name="Princess">
+  <object id="17" gid="181" x="2977.33" y="542.666" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="5" name="Player" locked="1">
   <object id="18" gid="821" x="198.667" y="550.667" width="32" height="32"/>
