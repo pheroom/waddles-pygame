@@ -40,7 +40,7 @@ def hexToColour( hash_colour ):
 LayerNamePlatforms = 'Platforms'
 LayerNameActPlatforms = 'ActPlatforms'
 LayerNameBackground = 'Background'
-LayerNameBlocksBG = 'BlocksBG'
+LayerNameBackgroundObject = 'BlocksBG'
 LayerNamePlayer = 'Player'
 LayerNameMonsters  = 'Monsters'
 LayerNamePrincess  = 'Princess'
@@ -172,7 +172,7 @@ class Level:
                         self.floor = max(self.floor, y * config.PLATFORM_HEIGHT)
                         self.entities.add(pf)
                         self.platforms.append(pf)
-                    if tile_bitmap and (layer.name.rstrip() == LayerNameBackground or layer.name.rstrip() == LayerNameBlocksBG):
+                    if tile_bitmap and (layer.name.rstrip() == LayerNameBackground or layer.name.rstrip() == LayerNameBackgroundObject):
                         pf = Platform(x * config.PLATFORM_WIDTH, y * config.PLATFORM_HEIGHT, img=tile_bitmap)
                         self.entities.add(pf)
             elif isinstance(layer, pytmx.TiledObjectGroup):
