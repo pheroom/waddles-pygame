@@ -241,7 +241,7 @@ class Level:
                 bg = Surface((config.WIN_WIDTH, config.WIN_HEIGHT))
                 bg.fill(Color(config.BG_COLOR_DUNGEON))
                 self.surface.blit(bg, (0, 0))
-                deadImg = transform.scale(image.load('./images/mario/r5.png').convert_alpha(), (64, 64))
+                deadImg = transform.scale(image.load('./images/waddles/waddles_dead.png').convert_alpha(), (64, 64))
                 deadLabel = font.Font('./emulogic.ttf', 45).render('*' + str(self.hero.lives), False, '#ffffff')
                 self.surface.blit(deadImg, (config.WIN_WIDTH // 2 - 100, config.WIN_HEIGHT // 2 - 15))
                 self.surface.blit(deadLabel, (config.WIN_WIDTH // 2 - 32, config.WIN_HEIGHT // 2 - 15))
@@ -363,7 +363,7 @@ class UI:
         padding = 100
         smallPadding = 25
         x = 100
-        pointLabel = self.renderFont('MARIO')
+        pointLabel = self.renderFont('WADDLES')
         pointValue = self.renderFont('0' * self.util(point) + str(point))
         self.surface.blit(pointLabel, (x, 20))
         self.surface.blit(pointValue, (x, 45))
@@ -374,7 +374,7 @@ class UI:
         self.surface.blit(health_value, (x + smallPadding, 45))
 
         x += self.imgHeart.get_width() + health_value.get_width() + smallPadding + padding
-        worldLabel = self.renderFont('WORLD')
+        worldLabel = self.renderFont('LEVEL')
         worldValue = self.renderFont(self.world)
         self.surface.blit(worldLabel, (x, 20))
         self.surface.blit(worldValue, (x + (worldLabel.get_size()[0] - worldValue.get_size()[0]) // 2, 45))

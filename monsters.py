@@ -29,13 +29,13 @@ class Monster(sprite.Sprite):
         self.timeLastAttack = time.get_ticks()
 
         boltAnim = []
-        for anim in config.ANIMATION_MONSTERHORYSONTAL_l:
+        for anim in config.ANIMATION_USUAL_DWARF_L:
             anim = self.transformImg(anim)
             boltAnim.append((anim, config.MONSTER_DELAY))
         self.boltAnim_left = pyganim.PygAnimation(boltAnim)
         self.boltAnim_left.play()
         boltAnim = []
-        for anim in config.ANIMATION_MONSTERHORYSONTAL_r:
+        for anim in config.ANIMATION_USUAL_DWARF_R:
             anim = self.transformImg(anim)
             boltAnim.append((anim, config.MONSTER_DELAY))
         self.boltAnim_right = pyganim.PygAnimation(boltAnim)

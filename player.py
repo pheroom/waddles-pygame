@@ -71,17 +71,11 @@ class Player(sprite.Sprite):
         self.boltAnimLeftSuperSpeed = pyganim.PygAnimation(boltAnimSuperSpeed)
         self.boltAnimLeftSuperSpeed.play()
         boltAnim = []
-        for anim in config.ANIMATION_STAY_R:
+        for anim in config.ANIMATION_STAY:
             anim = self.transformImg(anim)
             boltAnim.append((anim, config.ANIMATION_STAY_DELAY))
-        self.boltAnimStay_r = pyganim.PygAnimation(boltAnim)
-        self.boltAnimStay_r.play()
-        boltAnim = []
-        for anim in config.ANIMATION_STAY_L:
-            anim = self.transformImg(anim)
-            boltAnim.append((anim, config.ANIMATION_STAY_DELAY))
-        self.boltAnimStay_l = pyganim.PygAnimation(boltAnim)
-        self.boltAnimStay_l.play()
+        self.boltAnimStay = pyganim.PygAnimation(boltAnim)
+        self.boltAnimStay.play()
         self.boltAnimJumpLeft = pyganim.PygAnimation(self.transformAnim(config.ANIMATION_JUMP_LEFT))
         self.boltAnimJumpLeft.play()
         self.boltAnimJumpRight = pyganim.PygAnimation(self.transformAnim(config.ANIMATION_JUMP_RIGHT))
@@ -92,9 +86,6 @@ class Player(sprite.Sprite):
         self.boltAnimHitRight.play()
         self.boltAnimHitLeft = pyganim.PygAnimation(self.transformAnim(config.ANIMATION_HIT_LEFT))
         self.boltAnimHitLeft.play()
-
-        self.boltAnimStay = pyganim.PygAnimation([[self.transformImg(image.load('./images/waddles.png')), config.ANIMATION_STAY_DELAY]])
-        self.boltAnimStay.play()
 
         self.winner = False
 
@@ -112,7 +103,7 @@ class Player(sprite.Sprite):
         self.dead = True
         self.lives -= 1
         self.startDead = time.get_ticks()
-        # self.image = self.transformImg(image.load("images/mario/d.png").convert_alpha())
+        self.image = self.transformImg(image.load("images/waddles/waddles_dead.png").convert_alpha())
         self.yvel = -config.JUMP_POWER
         self.health = 0
 
@@ -187,48 +178,43 @@ class Player(sprite.Sprite):
                     self.yvel += config.JUMP_SLOW_POWER
                 elif running and (left or right):
                     self.yvel -= config.JUMP_EXTRA_POWER
-                # self.image.fill(Color(config.COLOR))
-                # self.boltAnimJump.blit(self.image, self.indentImage)
+                self.image.fill(Color(config.COLOR))
+                self.boltAnimJump.blit(self.image, self.indentImage)
 
         if left:
             self.rightDirection = False
             self.xvel = -config.MOVE_SPEED
-            # self.image.fill(Color(config.COLOR))
+            self.image.fill(Color(config.COLOR))
             if running:
                 self.xvel -= config.MOVE_EXTRA_SPEED
-            #     if not up:
-            #         self.boltAnimLeftSuperSpeed.blit(self.image, self.indentImage)
-            # else:
-            #     if not up:
-            #         self.boltAnimLeft.blit(self.image, self.indentImage)
-            # if up:
-            #     self.boltAnimJumpLeft.blit(self.image, self.indentImage)
+                if not up:
+                    self.boltAnimLeftSuperSpeed.blit(self.image, self.indentImage)
+            else:
+                if not up:
+                    self.boltAnimLeft.blit(self.image, self.indentImage)
+            if up:
+                self.boltAnimJumpLeft.blit(self.image, self.indentImage)
 
         if right:
             self.rightDirection = True
             self.xvel = config.MOVE_SPEED
-            # self.image.fill(Color(config.COLOR))
+            self.image.fill(Color(config.COLOR))
             if running:
                 self.xvel += config.MOVE_EXTRA_SPEED
-            #     if not up:
-            #         self.boltAnimRightSuperSpeed.blit(self.image, self.indentImage)
-            # else:
-            #     if not up:
-            #         self.boltAnimRight.blit(self.image, self.indentImage)
-            # if up:
-            #     self.boltAnimJumpRight.blit(self.image, self.indentImage)
+                if not up:
+                    self.boltAnimRightSuperSpeed.blit(self.image, self.indentImage)
+            else:
+                if not up:
+                    self.boltAnimRight.blit(self.image, self.indentImage)
+            if up:
+                self.boltAnimJumpRight.blit(self.image, self.indentImage)
 
         if not (left or right):
             self.xvel = 0
-            # if not (up or space):
-            #     self.image.fill(Color(config.COLOR))
-            #     if self.rightDirection:
-            #         self.boltAnimStay_r.blit(self.image, self.indentImage)
-            #     else:
-            #         self.boltAnimStay_l.blit(self.image, self.indentImage)
+            if not (up or space):
+                self.image.fill(Color(config.COLOR))
+                self.boltAnimStay.blit(self.image, self.indentImage)
 
-        self.image.fill(Color(config.COLOR))
-        self.boltAnimStay.blit(self.image, self.indentImage)
 
         if not self.onGround:
             self.yvel += config.GRAVITY
@@ -247,11 +233,11 @@ class Player(sprite.Sprite):
 
         if space and time.get_ticks() - self.timeLastAttack >= self.attackCooldown:
             if self.weaponIsKnife:
-                # self.image.fill(Color(config.COLOR))
-                # if self.rightDirection:
-                #     self.boltAnimHitRight.blit(self.image, self.indentImage)
-                # else:
-                #     self.boltAnimHitLeft.blit(self.image, self.indentImage)
+                self.image.fill(Color(config.COLOR))
+                if self.rightDirection:
+                    self.boltAnimHitRight.blit(self.image, self.indentImage)
+                else:
+                    self.boltAnimHitLeft.blit(self.image, self.indentImage)
                 self.timeLastAttack = time.get_ticks()
                 self.sword.attack(platforms)
                 # for p in platforms:
