@@ -46,30 +46,6 @@ class Coin(sprite.Sprite):
         if (self.startY < self.rect.y):
             self.remove(self)
 
-class Bullet(sprite.Sprite):
-    def __init__(self, x, y, owner, rightDirection, remove, img):
-        sprite.Sprite.__init__(self)
-        self.owner = owner
-        self.startX = x
-        self.remove = remove
-        self.rightDirection = rightDirection
-        self.image = Surface((config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT))
-        w, h = img.get_rect()[2], img.get_rect()[3]
-        self.image = transform.scale(img, (13 * config.PLATFORM_WIDTH / 32 * w/h, 13 * config.PLATFORM_HEIGHT / 32))
-        if not rightDirection:
-            self.image = transform.rotate(self.image, 180)
-        w, h = self.image.get_rect()[2], self.image.get_rect()[3]
-        self.rect = Rect(x, y - h/2, w, h)
-        self.xvel = 12
-
-    def die(self):
-        self.remove(self)
-
-    def update(self):
-        self.rect.x += self.xvel * (1 if self.rightDirection else -1)
-        if abs(self.rect.x - self.startX) > 500:
-            self.remove(self)
-
 class Rectangle(sprite.Sprite):
     def __init__(self, x, y, w, h):
         sprite.Sprite.__init__(self)
@@ -80,69 +56,6 @@ class Rectangle(sprite.Sprite):
     def update(self, x, y):
         self.rect.x = x
         self.rect.y = y
-
-class Sword(sprite.Sprite):
-    def __init__(self, x, y, orb):
-        sprite.Sprite.__init__(self)
-        # self.image = Surface((orb, config.HERO_HEIGHT))
-        # self.image = Surface((0, 0))
-        self.attackArea = Rectangle(x, y, orb, config.HERO_HEIGHT)
-        self.img = transform.scale(image.load("images/knife.png").convert_alpha(),
-                                   (30 * 1.88 * config.PLATFORM_WIDTH/64, 30 * config.PLATFORM_HEIGHT/ 64))
-        self.imgR = transform.rotate(self.img, 45)
-        self.imgL = transform.rotate(self.img, 135)
-        self.animationStage = 0
-        self.image = self.imgR
-        self.orb = orb
-        self.w, self.h = orb, config.HERO_HEIGHT
-        self.rect = Rect(x, y, self.w, self.h)
-        self.animStep = pi/180
-        self.r = config.PLATFORM_WIDTH*0.15
-
-    def update(self, x, y, rightDir):
-        self.attackArea.update(x, y)
-        self.rect.x = x + (-15 if rightDir else 20) * config.PLATFORM_WIDTH/64
-        self.rect.y = y
-        if self.animationStage > 0:
-            if rightDir:
-                # self.image = transform.rotate(self.img, self.animationStage)
-                self.image = transform.rotate(self.img, self.animationStage)
-            else:
-                self.image = transform.rotate(self.img, pi - self.animationStage)
-                self.rect.x += self.w - self.image.get_width()
-            # if self.animationStage < 50:
-            #     self.rect.x - 5
-            self.rect.y += self.h - self.image.get_height()
-            self.rect.x += cos(self.animStep * (self.animationStage)) * self.r
-            self.rect.y -= sin(self.animStep * (self.animationStage)) * self.r
-            self.animationStage -= 3
-        else:
-            self.image = self.imgR if rightDir else self.imgL
-
-        self.rightDirection = rightDir
-
-    def attack(self, platforms):
-        if self.animationStage <= 0:
-            self.animationStage = 90
-        for p in platforms:
-            if sprite.collide_rect(self.attackArea, p) and isinstance(p, monsters.Monster):
-                p.hit(2)
-
-class Hook(sprite.Sprite):
-    def __init__(self, x, y):
-        sprite.Sprite.__init__(self)
-        self.img = transform.scale(image.load("images/bullet/bullet_hook.png").convert_alpha(),
-                                   (30 * 1.285 * config.PLATFORM_WIDTH/64, 30 * config.PLATFORM_HEIGHT/ 64))
-        self.imgR = transform.rotate(self.img, 45)
-        self.imgL = transform.rotate(self.img, 135)
-        self.image = self.imgR
-        self.rect = Rect(x, y, 30 * 1.285 * config.PLATFORM_WIDTH/64,30 * config.PLATFORM_HEIGHT/ 64)
-
-    def update(self, x, y, rightDir):
-        self.rect.x = x + (-17* config.PLATFORM_WIDTH/64 if rightDir else -self.img.get_width()+ 5* config.PLATFORM_WIDTH/64)
-        self.rect.y = y + 8 * config.PLATFORM_HEIGHT/64
-        self.image = self.imgR if rightDir else self.imgL
-        self.rightDirection = rightDir
 
 class Amount(sprite.Sprite):
     def __init__(self, x, y, amount, remove, color = '#ffffff'):
