@@ -220,6 +220,7 @@ class Flower(sprite.Sprite):
         self.whenDead = whenDead
         self.id = random.random()
 
+
     def update(self):
         self.image.fill(Color(config.COLOR))
         self.boltAnim.blit(self.image, (0, 0))

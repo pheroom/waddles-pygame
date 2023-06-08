@@ -79,6 +79,12 @@ class Level:
         self.startWin = 0
         self.canSkipWinScreen = False
 
+        mixer.init()
+        mixer.music.load('music/true_8_bit.mp3')
+        mixer.music.set_volume(0.3)
+        mixer.music.play(loops=-1, start=0.0)
+
+
     def animateCoin(self, x, y):
         def removeCoin(v):
             self.entities.remove(v)
@@ -257,6 +263,7 @@ class Level:
         for e in events:
             if e.type == KEYDOWN and e.key == K_ESCAPE:
                 self.backToLastScreen()
+                mixer.music.stop()
             if e.type == KEYDOWN and e.key == K_UP:
                 self.up = True
             if e.type == KEYDOWN and e.key == K_LEFT:

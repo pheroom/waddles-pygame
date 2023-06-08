@@ -7,6 +7,7 @@ import monsters
 
 class Player(sprite.Sprite):
     def __init__(self, x, y, playAnimAmountWithRect, maxX, maxY, afterDead, addEntities, removeEntities, addObjective, removeObjective):
+        mixer.init()
         sprite.Sprite.__init__(self)
         self.startX = x
         self.startY = y
@@ -87,6 +88,19 @@ class Player(sprite.Sprite):
         self.boltAnimHitLeft = pyganim.PygAnimation(self.transformAnim(config.ANIMATION_HIT_LEFT))
         self.boltAnimHitLeft.play()
 
+        self.s_jump = mixer.Sound('music/8bit_jump.wav')
+        self.s_jump.set_volume(0.2)
+        self.s_hit = mixer.Sound('music/sword_whoosh.wav')
+        self.s_hit.set_volume(0.1)
+        self.s_walk = mixer.Sound('music/walk.wav')
+        self.s_walk.set_volume(0.4)
+        self.s_damage = mixer.Sound('music/hero_damage.wav')
+        self.s_damage.set_volume(0.3)
+        self.s_die = mixer.Sound('music/die.wav')
+        self.s_die.set_volume(0.2)
+        self.s_heal = mixer.Sound('music/heal.wav')
+        self.s_heal.set_volume(0.4)
+
         self.winner = False
 
     def transformAnim(self, anim):
@@ -98,6 +112,7 @@ class Player(sprite.Sprite):
         return transform.scale(img, (config.HERO_WIDTH, config.HERO_HEIGHT))
 
     def die(self):
+        self.s_die.play()
         if self.startDead + 500 > time.get_ticks():
             return
         self.dead = True
@@ -109,6 +124,7 @@ class Player(sprite.Sprite):
 
     def hit(self, damage = 1):
         if self.immunityStart + self.immunityValue < time.get_ticks():
+            self.s_damage.play()
             self.playAnimAmount(damage, '#FF0000')
             self.health -= damage
             if self.health <= 0:
@@ -120,6 +136,7 @@ class Player(sprite.Sprite):
 
     def addHealth(self, amount=1):
         self.playAnimAmount(amount, '#008000')
+        self.s_heal.play()
         if(self.health < 20):
             self.health += min(amount, 20 - self.health)
 
@@ -173,6 +190,7 @@ class Player(sprite.Sprite):
 
         if up:
             if self.onGround:
+                self.s_jump.play()
                 self.yvel = -config.JUMP_POWER
                 if slowly:
                     self.yvel += config.JUMP_SLOW_POWER
@@ -232,6 +250,7 @@ class Player(sprite.Sprite):
         # self.sword.update(self.rect.x if self.rightDirection else self.rect.x - self.attackOrb, self.rect.y, self.rightDirection)
 
         if space and time.get_ticks() - self.timeLastAttack >= self.attackCooldown:
+            self.s_hit.play()
             if self.weaponIsKnife:
                 self.image.fill(Color(config.COLOR))
                 if self.rightDirection:
@@ -277,7 +296,7 @@ class Player(sprite.Sprite):
                         self.addPoint(10000)
                         self.winner = True
                 elif isinstance(p, blocks.Flower):
-                    self.addLive(1)
+                    self.addHealth(1)
                     p.die()
                 elif isinstance(p, monsters.Mushroom):
                     self.addHealth(3)

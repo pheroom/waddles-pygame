@@ -97,10 +97,14 @@ def refreshConfig():
         ('images/coin2.png')]
 
     config.ANIMATION_FLOWER = [
-        ('images/flower/flower1.png'),
-        ('images/flower/flower2.png'),
-        ('images/flower/flower3.png'),
-        ('images/flower/flower4.png')]
+        ('images/Heart/heart1.png'),
+    ('images/Heart/heart2.png'),
+    ('images/Heart/heart3.png'),
+    ('images/Heart/heart4.png'),
+    ('images/Heart/heart3.png'),
+    ('images/Heart/heart2.png')]
+
+    config.VOLUME = 1
 
 refreshConfig()
 

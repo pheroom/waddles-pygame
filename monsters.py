@@ -8,6 +8,7 @@ from config import config
 
 class Monster(sprite.Sprite):
     def __init__(self, x, y, left, maxLengthLeft, whenDead, removeSelf, addEntities, removeEntities, playAnimAmountWithRect):
+        mixer.init()
         sprite.Sprite.__init__(self)
         self.image = Surface((config.MONSTER_WIDTH, config.MONSTER_HEIGHT))
         self.image.fill(Color(config.MONSTER_COLOR))
@@ -47,6 +48,9 @@ class Monster(sprite.Sprite):
         self.removeSelf = removeSelf
         self.removeEntities = removeEntities
 
+        self.s_damage = mixer.Sound('music/monster_damage.wav')
+        self.s_damage.set_volume(0.5)
+
     def transformImg(self, img):
         if (isinstance(img, str)):
             return transform.scale(image.load(img), (config.MONSTER_WIDTH, config.MONSTER_HEIGHT))
@@ -61,6 +65,7 @@ class Monster(sprite.Sprite):
         self.dead = True
 
     def hit(self, damage = 1):
+        self.s_damage.play()
         self.playAnimAmount(damage, '#151515')
         self.health -= damage
         if self.health <= 0:
