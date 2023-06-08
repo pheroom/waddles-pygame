@@ -48,6 +48,7 @@ LayerNameEntity  = 'Entity'
 
 class Level:
     def __init__(self, surf, switchScreen, backToLastScreen, lvl, levelName):
+        mixer.init()
         self.switchScreen = switchScreen
         self.surface = surf
         self.backToLastScreen = backToLastScreen
@@ -79,7 +80,6 @@ class Level:
         self.startWin = 0
         self.canSkipWinScreen = False
 
-        mixer.init()
         mixer.music.load('music/true_8_bit.mp3')
         mixer.music.set_volume(0.3)
         mixer.music.play(loops=-1, start=0.0)
@@ -252,7 +252,7 @@ class Level:
                 self.surface.blit(deadImg, (config.WIN_WIDTH // 2 - 100, config.WIN_HEIGHT // 2 - 15))
                 self.surface.blit(deadLabel, (config.WIN_WIDTH // 2 - 32, config.WIN_HEIGHT // 2 - 15))
                 time_diff = time.get_ticks() - self.startTime
-                self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 400) // 400, self.hero.weaponIsKnife)
+                self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 1000) // 1000, self.hero.weaponIsKnife)
             else:
                 if self.hero.lives == 0:
                     self.backToLastScreen()
@@ -310,7 +310,7 @@ class Level:
                          self.slowly, self.platforms)
 
         time_diff = time.get_ticks() - self.startTime
-        self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 400) // 400, self.hero.weaponIsKnife)
+        self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 1000) // 1000, self.hero.weaponIsKnife)
 
         if self.hero.winner:
             if not self.winScreen:
@@ -318,7 +318,7 @@ class Level:
                 self.startWin = time.get_ticks()
 
             if self.startWin + 600 < time.get_ticks():
-                label = font.Font('./emulogic.ttf', 30).render('THANK YOU MARIO!', False, '#ffffff')
+                label = font.Font('./emulogic.ttf', 30).render('YOU RESCUED MABEL!', False, '#ffffff')
                 self.surface.blit(label, (config.WIN_WIDTH // 2 - label.get_width()//2, config.WIN_HEIGHT // 2 - 200))
             if self.startWin + 1200 < time.get_ticks():
                 label = font.Font('./emulogic.ttf', 30).render('YOUR QUEST IS OVER.', False, '#ffffff')
@@ -330,7 +330,7 @@ class Level:
                 label = font.Font('./emulogic.ttf', 30).render('PUSH BUTTON B', False, '#ffffff')
                 self.surface.blit(label, (config.WIN_WIDTH // 2 - label.get_width()//2, config.WIN_HEIGHT // 2 + 10))
             if self.startWin + 3200 < time.get_ticks():
-                label = font.Font('./emulogic.ttf', 30).render('TO SELECT A WORLD', False, '#ffffff')
+                label = font.Font('./emulogic.ttf', 30).render('TO SELECT A NEW LEVEL', False, '#ffffff')
                 self.surface.blit(label, (config.WIN_WIDTH // 2 - label.get_width()//2, config.WIN_HEIGHT // 2 + 60))
 
             if self.startWin + config.WIN_SCREEN_TIME < time.get_ticks():
@@ -372,13 +372,13 @@ class UI:
         x = 100
         pointLabel = self.renderFont('WADDLES')
         pointValue = self.renderFont('0' * self.util(point) + str(point))
-        self.surface.blit(pointLabel, (x, 20))
-        self.surface.blit(pointValue, (x, 45))
-
+        self.surface.blit(pointLabel, (x, 32.5))
+        # self.surface.blit(pointValue, (x, 45))
         x += pointValue.get_width() + padding
+
         health_value = self.renderFont('*' + str(health))
-        self.surface.blit(self.imgHeart, (x - 10, 45))
-        self.surface.blit(health_value, (x + smallPadding, 45))
+        self.surface.blit(self.imgHeart, (x - 10, 32.5))
+        self.surface.blit(health_value, (x + smallPadding, 32.5))
 
         x += self.imgHeart.get_width() + health_value.get_width() + smallPadding + padding
         worldLabel = self.renderFont('LEVEL')

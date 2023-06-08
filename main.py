@@ -3,10 +3,10 @@ from config import config, saveConfigOnExit, refreshConfig
 from menu import Menu
 from level import Level
 
+mixer.init()
+s_menu = mixer.Sound('music/menu.wav')
+s_menu.set_volume(0.18)
 class MainScreen():
-    mixer.init()
-    s_menu = mixer.Sound('music/menu.wav')
-    s_menu.set_volume(0.18)
     def __init__(self, surf, switchScreen):
         self.switchScreen = switchScreen
         self.surface = surf
@@ -20,7 +20,7 @@ class MainScreen():
     def run(self, events):
         for e in events:
             if e.type == KEYDOWN:
-                self.s_menu.play()
+                s_menu.play()
                 if e.key == K_UP:
                     self.menu.switch(-1)
                 elif e.key == K_DOWN:
@@ -47,7 +47,7 @@ class LevelSelectionScreen():
     def run(self, events):
         for e in events:
             if e.type == KEYDOWN:
-                self.s_menu.play()
+                s_menu.play()
                 if e.key == K_UP:
                     self.menu.switch(-1)
                 elif e.key == K_DOWN:
@@ -64,17 +64,17 @@ class SettingsScreen():
         self.surface = surf
         self.menu = Menu()
         self.bg = transform.scale(image.load('images/bg-dwarfs.jpg'), (config.WIN_WIDTH, config.WIN_HEIGHT))
-        def switchScale(size):
-            config.PLATFORM_WIDTH = size
-            config.PLATFORM_HEIGHT = size
-            refreshConfig()
+        # def switchScale(size):
+        #     config.PLATFORM_WIDTH = size
+        #     config.PLATFORM_HEIGHT = size
+        #     refreshConfig()
         self.menu.append_option('Selection scale', lambda: self.switchScreen(selectScaleScreen))
         self.menu.append_option('Back to menu', lambda: self.switchScreen(MainScreen))
 
     def run(self, events):
         for e in events:
             if e.type == KEYDOWN:
-                self.s_menu.play()
+                s_menu.play()
                 if e.key == K_UP:
                     self.menu.switch(-1)
                 elif e.key == K_DOWN:
@@ -105,7 +105,7 @@ class SelectScaleScreen():
     def run(self, events):
         for e in events:
             if e.type == KEYDOWN:
-                self.s_menu.play()
+                s_menu.play()
                 if e.key == K_UP:
                     self.menu.switch(-1)
                 elif e.key == K_DOWN:

@@ -17,6 +17,8 @@ class Player(sprite.Sprite):
         self.yvel = 0
         self.onGround = False
         self.rect = Rect(x, y, config.HERO_PHYSICAL_WIDTH, config.HERO_PHYSICAL_HEIGHT)
+        
+        
 
         self.addEntities = addEntities
         self.removeEntities = removeEntities
@@ -91,7 +93,7 @@ class Player(sprite.Sprite):
         self.s_jump = mixer.Sound('music/8bit_jump.wav')
         self.s_jump.set_volume(0.2)
         self.s_hit = mixer.Sound('music/sword_whoosh.wav')
-        self.s_hit.set_volume(0.1)
+        self.s_hit.set_volume(0.2)
         self.s_walk = mixer.Sound('music/walk.wav')
         self.s_walk.set_volume(0.4)
         self.s_damage = mixer.Sound('music/hero_damage.wav')

@@ -50,6 +50,9 @@ class Monster(sprite.Sprite):
 
         self.s_damage = mixer.Sound('music/monster_damage.wav')
         self.s_damage.set_volume(0.5)
+        self.s_shot = mixer.Sound('music/bullet.wav')
+        self.s_shot.set_volume(0.2)
+
 
     def transformImg(self, img):
         if (isinstance(img, str)):
