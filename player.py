@@ -103,7 +103,7 @@ class Player(sprite.Sprite):
         self.dead = True
         self.lives -= 1
         self.startDead = time.get_ticks()
-        self.image = self.transformImg(image.load("images/waddles/waddles_dead.png").convert_alpha())
+        self.image = transform.scale(image.load("images/waddles/waddles_dead.png").convert_alpha(), (config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT) )
         self.yvel = -config.JUMP_POWER
         self.health = 0
 
