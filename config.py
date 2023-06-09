@@ -10,6 +10,7 @@ with open("configfile.pickle", 'rb') as f:
 
 config.PLATFORM_WIDTH = configData['PLATFORM_WIDTH']
 config.PLATFORM_HEIGHT = configData['PLATFORM_HEIGHT']
+config.VOLUME_LEVEL = configData['VOLUME_LEVEL']
 
 def refreshConfig():
     config.PLATFORM_COLOR = "#FF6262"
@@ -104,7 +105,6 @@ def refreshConfig():
     ('images/Heart/heart3.png'),
     ('images/Heart/heart2.png')]
 
-    config.VOLUME = 1
 
 refreshConfig()
 
