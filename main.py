@@ -5,7 +5,7 @@ from level import Level
 
 mixer.init()
 s_menu = mixer.Sound('music/menu.wav')
-s_menu.set_volume(0.18)
+s_menu.set_volume(0.15 + config.VOLUME_LEVEL)
 class MainScreen():
     def __init__(self, surf, switchScreen):
         self.switchScreen = switchScreen
@@ -66,6 +66,7 @@ class SettingsScreen():
         #     config.PLATFORM_HEIGHT = size
         #     refreshConfig()
         self.menu.append_option('Selection scale', lambda: self.switchScreen(selectScaleScreen))
+        self.menu.append_option('Selection volume', lambda: self.switchScreen(selectVolumeScreen))
         self.menu.append_option('Back to menu', lambda: self.switchScreen(MainScreen))
 
     def run(self, events):
@@ -114,12 +115,45 @@ class SelectScaleScreen():
         self.surface.blit(self.title, (100, 100))
         self.menu.draw(self.surface, 100, 200, 75)
 
+class SelectVolumeScreen():
+    def __init__(self, surf, switchScreen):
+        self.switchScreen = switchScreen
+        self.surface = surf
+        self.menu = Menu()
+        self.bg = transform.scale(image.load('images/bg-dwarfs.jpg'), (config.WIN_WIDTH, config.WIN_HEIGHT))
+        self.title = font.Font('./emulogic.ttf', 45).render('Select game volume', False, '#ffffff')
+        def switchVolume(level):
+            config.VOLUME_LEVEL = level
+            refreshConfig()
+            self.switchScreen(settingsScreen)
+        self.menu.append_option('Quiet', lambda: switchVolume(-0.1), config.VOLUME_LEVEL == -0.1)
+        self.menu.append_option('Average', lambda: switchVolume(0), config.VOLUME_LEVEL == 0)
+        self.menu.append_option('Loud', lambda: switchVolume(0.1), config.VOLUME_LEVEL == 0.1)
+        self.menu.append_option('Back to settings', lambda: self.switchScreen(settingsScreen))
+
+    def run(self, events):
+        for e in events:
+            if e.type == KEYDOWN:
+                s_menu.play()
+                if e.key == K_UP:
+                    self.menu.switch(-1)
+                elif e.key == K_DOWN:
+                    self.menu.switch(1)
+                elif e.key == K_SPACE:
+                    self.menu.select()
+
+        self.surface.blit(self.bg, (0,0))
+        self.surface.blit(self.title, (100, 100))
+        self.menu.draw(self.surface, 100, 200, 75)
+
+
 class Game():
     def __init__(self, surf):
         self.currentScreen = None
         self.surface = surf
 
     def switchScreen(self, Screen):
+        s_menu.set_volume(0.15 + config.VOLUME_LEVEL)
         self.currentScreen = Screen and Screen(self.surface, self.switchScreen)
 
     def run(self, events):
@@ -145,6 +179,7 @@ def lvl3Screen(screen, switchScreen):
     return Level(screen, switchScreen, lambda: game.switchScreen(lvlSelectionScreen), "levels/lvl2.tmx", '1-2')
 
 def lvlSelectionScreen(screen, switchScreen):
+    mixer.music.stop()
     return LevelSelectionScreen(screen, switchScreen)
 
 def settingsScreen(screen, switchScreen):
@@ -152,6 +187,9 @@ def settingsScreen(screen, switchScreen):
 
 def selectScaleScreen(screen, switchScreen):
     return SelectScaleScreen(screen, switchScreen)
+
+def selectVolumeScreen(screen, switchScreen):
+    return SelectVolumeScreen(screen, switchScreen)
 
 game.switchScreen(MainScreen)
 while game.currentScreen is not None:
