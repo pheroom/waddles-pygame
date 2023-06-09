@@ -16,7 +16,6 @@ class MainScreen():
         self.menu.append_option('Settings', lambda: self.switchScreen(settingsScreen))
         self.menu.append_option('Quit', lambda: self.switchScreen(None))
 
-
     def run(self, events):
         for e in events:
             if e.type == KEYDOWN:
@@ -41,8 +40,6 @@ class LevelSelectionScreen():
         self.menu.append_option('1-1', lambda: self.switchScreen(lvl2Screen))
         self.menu.append_option('1-2', lambda: self.switchScreen(lvl3Screen))
         self.menu.append_option('Back to menu', lambda: self.switchScreen(MainScreen))
-        self.s_menu = mixer.Sound('music/menu.wav')
-        self.s_menu.set_volume(0.18)
 
     def run(self, events):
         for e in events:
