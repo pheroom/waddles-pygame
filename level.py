@@ -82,8 +82,12 @@ class Level:
         self.canSkipWinScreen = False
 
         mixer.music.load('music/true_8_bit.mp3')
-        mixer.music.set_volume(0.3)
+        mixer.music.set_volume(0.3 + config.VOLUME_LEVEL)
         mixer.music.play(loops=-1, start=0.0)
+
+        self.s_winner = mixer.Sound('music/Winner_song.mp3')
+        self.s_winner.set_volume(0.3 + config.VOLUME_LEVEL)
+        self.bool_winner = True
 
 
     def animateCoin(self, x, y):
@@ -243,6 +247,7 @@ class Level:
     def run(self, events):
         if self.deadScreen:
             if self.canSkipWinScreen:
+                self.s_winner.stop()
                 self.backToLastScreen()
                 return
 
@@ -258,6 +263,7 @@ class Level:
                 self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 1000) // 1000, self.hero.weaponIsKnife)
             else:
                 if self.hero.lives == 0:
+                    self.s_winner.stop()
                     self.backToLastScreen()
                 self.deadScreen = False
             return
@@ -265,8 +271,8 @@ class Level:
         needSwitchWeapon = False
         for e in events:
             if e.type == KEYDOWN and e.key == K_ESCAPE:
+                self.s_winner.stop()
                 self.backToLastScreen()
-                mixer.music.stop()
             if e.type == KEYDOWN and e.key == K_UP:
                 self.up = True
             if e.type == KEYDOWN and e.key == K_LEFT:
@@ -281,6 +287,7 @@ class Level:
                 self.space = True
 
             if self.canSkipWinScreen and e.type == KEYDOWN and e.key == K_b:
+                self.s_winner.stop()
                 self.backToLastScreen()
 
             if e.type == KEYDOWN and e.key == K_c:
@@ -317,6 +324,10 @@ class Level:
         self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 1000) // 1000, self.hero.weaponIsKnife)
 
         if self.hero.winner:
+            if self.bool_winner:
+                mixer.music.stop()
+                self.s_winner.play()
+                self.bool_winner = False
             if not self.winScreen:
                 self.winScreen = True
                 self.startWin = time.get_ticks()

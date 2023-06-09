@@ -92,17 +92,17 @@ class Player(sprite.Sprite):
         self.boltAnimHitLeft.play()
 
         self.s_jump = mixer.Sound('music/8bit_jump.wav')
-        self.s_jump.set_volume(0.2)
+        self.s_jump.set_volume(0.2 + config.VOLUME_LEVEL)
         self.s_hit = mixer.Sound('music/sword_whoosh.wav')
-        self.s_hit.set_volume(0.2)
+        self.s_hit.set_volume(0.2 + config.VOLUME_LEVEL)
         self.s_walk = mixer.Sound('music/walk.wav')
-        self.s_walk.set_volume(0.4)
+        self.s_walk.set_volume(0.4 + config.VOLUME_LEVEL)
         self.s_damage = mixer.Sound('music/hero_damage.wav')
-        self.s_damage.set_volume(0.3)
+        self.s_damage.set_volume(0.3 + config.VOLUME_LEVEL)
         self.s_die = mixer.Sound('music/die.wav')
-        self.s_die.set_volume(0.2)
+        self.s_die.set_volume(0.2 + config.VOLUME_LEVEL)
         self.s_heal = mixer.Sound('music/heal.wav')
-        self.s_heal.set_volume(0.4)
+        self.s_heal.set_volume(0.3 + config.VOLUME_LEVEL)
 
         self.winner = False
 
@@ -160,6 +160,12 @@ class Player(sprite.Sprite):
 
     def switchWeapon(self):
         self.removeEntities(self.weapons[self.curWeaponIndex])
+        if self.weapons[self.curWeaponIndex] == self.weapons[1]:
+            self.s_hit = mixer.Sound('music/sword_whoosh.wav')
+            self.s_hit.set_volume(0.2 + config.VOLUME_LEVEL)
+        else:
+            self.s_hit = mixer.Sound('music/hook_whoosh.wav')
+            self.s_hit.set_volume(0.2 + config.VOLUME_LEVEL)
         if self.curWeaponIndex + 1 < len(self.weapons):
             self.curWeaponIndex += 1
         else:
