@@ -2,8 +2,8 @@ from pygame import *
 import time as pytime
 from config import config
 from player import Player
-from blocks import Platform, BlockTeleport, Princess, ActPlatform, Coin, Flower, Amount, PlatformCoin
-from monsters import Dwarf, Mushroom
+from blocks import Platform, BlockTeleport, Princess, ActPlatform, Coin, Flower, Amount, PlatformCoin, Sword
+from monsters import Monster, Mushroom
 import pytmx
 
 class Camera(object):
@@ -40,7 +40,7 @@ def hexToColour( hash_colour ):
 LayerNamePlatforms = 'Platforms'
 LayerNameActPlatforms = 'ActPlatforms'
 LayerNameBackground = 'Background'
-LayerNameBackgroundObject = 'BlocksBG'
+LayerNameBlocksBG = 'BlocksBG'
 LayerNamePlayer = 'Player'
 LayerNameMonsters  = 'Monsters'
 LayerNamePrincess  = 'Princess'
@@ -48,6 +48,7 @@ LayerNameEntity  = 'Entity'
 
 class Level:
     def __init__(self, surf, switchScreen, backToLastScreen, lvl, levelName):
+        mixer.init()
         self.switchScreen = switchScreen
         self.surface = surf
         self.backToLastScreen = backToLastScreen
@@ -63,7 +64,6 @@ class Level:
         self.platforms = []
         self.animatedEntities = sprite.Group()
         self.monsters = sprite.Group()
-        self.bullets = sprite.Group()
         self.backgrounds = sprite.Group()
         self.blocksBG = sprite.Group()
         self.actPlatforms = []
@@ -79,6 +79,11 @@ class Level:
         self.winScreen = False
         self.startWin = 0
         self.canSkipWinScreen = False
+
+        mixer.music.load('music/true_8_bit.mp3')
+        mixer.music.set_volume(0.3)
+        mixer.music.play(loops=-1, start=0.0)
+
 
     def animateCoin(self, x, y):
         def removeCoin(v):
@@ -135,14 +140,12 @@ class Level:
 
     def removeObjective(self, obj):
         self.entities.remove(obj)
-        # self.animatedEntities.remove(obj)
-        self.bullets.remove(obj)
-        self.removePlatform(obj)
+        self.animatedEntities.remove(obj)
+        self.platforms.remove(obj)
 
     def addObjective(self, obj):
         self.entities.add(obj)
-        # self.animatedEntities.add(obj)
-        self.bullets.add(obj)
+        self.animatedEntities.add(obj)
         self.platforms.append(obj)
 
     def playAnimAmount(self, x, y, amount, color):
@@ -175,7 +178,7 @@ class Level:
                         self.floor = max(self.floor, y * config.PLATFORM_HEIGHT)
                         self.entities.add(pf)
                         self.platforms.append(pf)
-                    if tile_bitmap and (layer.name.rstrip() == LayerNameBackground or layer.name.rstrip() == LayerNameBackgroundObject):
+                    if tile_bitmap and (layer.name.rstrip() == LayerNameBackground or layer.name.rstrip() == LayerNameBlocksBG):
                         pf = Platform(x * config.PLATFORM_WIDTH, y * config.PLATFORM_HEIGHT, img=tile_bitmap)
                         self.entities.add(pf)
             elif isinstance(layer, pytmx.TiledObjectGroup):
@@ -225,10 +228,10 @@ class Level:
                             self.actPlatforms.append(pf)
                 elif layer.name.rstrip() == LayerNameMonsters:
                     for monster in layer:
-                        mn = Dwarf(getX(monster), getY(monster), monster.left,
-                                   monster.maxLeft * config.PLATFORM_WIDTH / tmxMap.tilewidth,
-                                   self.removePlatform, self.removeMonster, self.addObjective, self.removeObjective,
-                                   self.playAnimAmount)
+                        mn = Monster(getX(monster), getY(monster), monster.left,
+                                     monster.maxLeft * config.PLATFORM_WIDTH/tmxMap.tilewidth,
+                                     self.removePlatform, self.removeMonster, self.addObjective, self.removeObjective,
+                                     self.playAnimAmount)
                         self.entities.add(mn)
                         self.platforms.append(mn)
                         self.monsters.add(mn)
@@ -244,12 +247,12 @@ class Level:
                 bg = Surface((config.WIN_WIDTH, config.WIN_HEIGHT))
                 bg.fill(Color(config.BG_COLOR_DUNGEON))
                 self.surface.blit(bg, (0, 0))
-                deadImg = transform.scale(image.load('./images/mario/r5.png').convert_alpha(), (64, 64))
+                deadImg = transform.scale(image.load('./images/waddles/waddles_dead.png').convert_alpha(), (64, 64))
                 deadLabel = font.Font('./emulogic.ttf', 45).render('*' + str(self.hero.lives), False, '#ffffff')
                 self.surface.blit(deadImg, (config.WIN_WIDTH // 2 - 100, config.WIN_HEIGHT // 2 - 15))
                 self.surface.blit(deadLabel, (config.WIN_WIDTH // 2 - 32, config.WIN_HEIGHT // 2 - 15))
                 time_diff = time.get_ticks() - self.startTime
-                self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 400) // 400, self.hero.weaponIsKnife)
+                self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 1000) // 1000, self.hero.weaponIsKnife)
             else:
                 if self.hero.lives == 0:
                     self.backToLastScreen()
@@ -260,6 +263,7 @@ class Level:
         for e in events:
             if e.type == KEYDOWN and e.key == K_ESCAPE:
                 self.backToLastScreen()
+                mixer.music.stop()
             if e.type == KEYDOWN and e.key == K_UP:
                 self.up = True
             if e.type == KEYDOWN and e.key == K_LEFT:
@@ -293,19 +297,20 @@ class Level:
                 self.slowly = False
 
         self.surface.blit(self.bg, (0, 0))
-        self.bullets.update(self.platforms)
         self.monsters.update(self.platforms)
         self.animatedEntities.update()
         self.camera.update(self.hero)
         for e in self.entities:
             self.surface.blit(e.image, self.camera.apply(e))
+
         if needSwitchWeapon:
             self.hero.switchWeapon()
+
         self.hero.update(self.left, self.right, self.up, self.space, self.running,
                          self.slowly, self.platforms)
 
         time_diff = time.get_ticks() - self.startTime
-        self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 400) // 400, self.hero.weaponIsKnife)
+        self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 1000) // 1000, self.hero.weaponIsKnife)
 
         if self.hero.winner:
             if not self.winScreen:
@@ -313,7 +318,7 @@ class Level:
                 self.startWin = time.get_ticks()
 
             if self.startWin + 600 < time.get_ticks():
-                label = font.Font('./emulogic.ttf', 30).render('THANK YOU MARIO!', False, '#ffffff')
+                label = font.Font('./emulogic.ttf', 30).render('YOU RESCUED MABEL!', False, '#ffffff')
                 self.surface.blit(label, (config.WIN_WIDTH // 2 - label.get_width()//2, config.WIN_HEIGHT // 2 - 200))
             if self.startWin + 1200 < time.get_ticks():
                 label = font.Font('./emulogic.ttf', 30).render('YOUR QUEST IS OVER.', False, '#ffffff')
@@ -325,7 +330,7 @@ class Level:
                 label = font.Font('./emulogic.ttf', 30).render('PUSH BUTTON B', False, '#ffffff')
                 self.surface.blit(label, (config.WIN_WIDTH // 2 - label.get_width()//2, config.WIN_HEIGHT // 2 + 10))
             if self.startWin + 3200 < time.get_ticks():
-                label = font.Font('./emulogic.ttf', 30).render('TO SELECT A WORLD', False, '#ffffff')
+                label = font.Font('./emulogic.ttf', 30).render('TO SELECT A NEW LEVEL', False, '#ffffff')
                 self.surface.blit(label, (config.WIN_WIDTH // 2 - label.get_width()//2, config.WIN_HEIGHT // 2 + 60))
 
             if self.startWin + config.WIN_SCREEN_TIME < time.get_ticks():
@@ -337,7 +342,7 @@ class UI:
         self.world = world
         self.font = font.Font('./emulogic.ttf', 25)
         self.imgHeart = transform.scale(image.load("images/Heart/heart.png").convert_alpha(), (32, 32))
-        self.imgKnife = transform.rotate(transform.scale(image.load("images/weapon/knife.png").convert_alpha(), (50 * 1.88, 50)), 140)
+        self.imgKnife = transform.rotate(transform.scale(image.load("images/knife.png").convert_alpha(), (50*1.88, 50)), 140)
         self.imgHook = transform.rotate(transform.scale(image.load("images/bullet/bullet_hook.png").convert_alpha(), (40*1.285, 40)), 180)
         self.memo = {}
 
@@ -365,18 +370,18 @@ class UI:
         padding = 100
         smallPadding = 25
         x = 100
-        pointLabel = self.renderFont('MARIO')
+        pointLabel = self.renderFont('WADDLES')
         pointValue = self.renderFont('0' * self.util(point) + str(point))
-        self.surface.blit(pointLabel, (x, 20))
-        self.surface.blit(pointValue, (x, 45))
-
+        self.surface.blit(pointLabel, (x, 32.5))
+        # self.surface.blit(pointValue, (x, 45))
         x += pointValue.get_width() + padding
+
         health_value = self.renderFont('*' + str(health))
-        self.surface.blit(self.imgHeart, (x - 10, 45))
-        self.surface.blit(health_value, (x + smallPadding, 45))
+        self.surface.blit(self.imgHeart, (x - 10, 32.5))
+        self.surface.blit(health_value, (x + smallPadding, 32.5))
 
         x += self.imgHeart.get_width() + health_value.get_width() + smallPadding + padding
-        worldLabel = self.renderFont('WORLD')
+        worldLabel = self.renderFont('LEVEL')
         worldValue = self.renderFont(self.world)
         self.surface.blit(worldLabel, (x, 20))
         self.surface.blit(worldValue, (x + (worldLabel.get_size()[0] - worldValue.get_size()[0]) // 2, 45))
@@ -393,7 +398,7 @@ if __name__ == '__main__':
     screen = display.set_mode(size)
     clock = time.Clock()
     lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/1-1.tmx", '1-1')
-    # lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/lvl2.tmx", '1-1')
+    # lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/lvl1.tmx", '1-1')
     running = True
     while running:
         events = event.get()

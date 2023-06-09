@@ -109,9 +109,9 @@ class BlockTeleport(Platform):
 
 class Princess(Platform):
     def __init__(self, x, y):
-        Platform.__init__(self, x , y)
+        Platform.__init__(self, x, y)
         boltAnim = []
-        self.image = Surface((config.HERO_WIDTH, config.HERO_HEIGHT))
+        self.image = Surface((config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT))
         self.image.fill(Color(config.COLOR))
         self.image.set_colorkey(Color(config.COLOR))
         for anim in config.ANIMATION_PRINCESS:
@@ -137,6 +137,7 @@ class Flower(sprite.Sprite):
         self.removeDeepPlatform = removeDeepPlatform
         self.whenDead = whenDead
         self.id = random.random()
+
 
     def update(self):
         self.image.fill(Color(config.COLOR))

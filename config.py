@@ -10,6 +10,7 @@ with open("configfile.pickle", 'rb') as f:
 
 config.PLATFORM_WIDTH = configData['PLATFORM_WIDTH']
 config.PLATFORM_HEIGHT = configData['PLATFORM_HEIGHT']
+config.VOLUME_LEVEL = configData['VOLUME_LEVEL']
 
 def refreshConfig():
     config.PLATFORM_COLOR = "#FF6262"
@@ -56,10 +57,8 @@ def refreshConfig():
     config.ANIMATION_JUMP_LEFT = [('images/waddles/waddles_jump_l.png',  config.ANIMATION_DELAY)]
     config.ANIMATION_JUMP_RIGHT = [('images/waddles/waddles_jump_r.png',  config.ANIMATION_DELAY)]
     config.ANIMATION_JUMP = [('images/waddles/waddles_jump.png',  config.ANIMATION_DELAY)]
-    config.ANIMATION_STAY_R = ['images/waddles/waddles_stay_r1.png',
-                  'images/waddles/waddles_stay_r2.png']
-    config.ANIMATION_STAY_L = ['images/waddles/waddles_stay_l1.png',
-                               'images/waddles/waddles_stay_l2.png']
+    config.ANIMATION_STAY = ['images/waddles/waddles_stay1.png',
+                  'images/waddles/waddles_stay2.png']
     config.ANIMATION_HIT_RIGHT = [('images/waddles/waddles_hit_r.png', config.ANIMATION_HIT_DELAY)]
     config.ANIMATION_HIT_LEFT = [('images/waddles/waddles_hit_l.png', config.ANIMATION_HIT_DELAY)]
 
@@ -73,14 +72,21 @@ def refreshConfig():
     config.MONSTER_HEIGHT = config.PLATFORM_HEIGHT
     config.MONSTER_COLOR = "#2110FF"
 
-    config.ANIMATION_MONSTERHORYSONTAL_l = ['images/usual_dwarf/usual_dwarf_run_l1.png',
+    config.ANIMATION_USUAL_DWARF_L = ['images/usual_dwarf/usual_dwarf_run_l1.png',
                                'images/usual_dwarf/usual_dwarf_run_l2.png',
                                'images/usual_dwarf/usual_dwarf_run_l3.png',
                                'images/usual_dwarf/usual_dwarf_run_l4.png']
-    config.ANIMATION_MONSTERHORYSONTAL_r = ['images/usual_dwarf/usual_dwarf_run_r1.png',
+    config.ANIMATION_USUAL_DWARF_R = ['images/usual_dwarf/usual_dwarf_run_r1.png',
                                'images/usual_dwarf/usual_dwarf_run_r2.png',
                                'images/usual_dwarf/usual_dwarf_run_r3.png',
                                'images/usual_dwarf/usual_dwarf_run_r4.png']
+
+    config.ANIMATION_PUKING_DWARF_r = ['images/usual_dwarf/puking_dwarf1.png',
+                                            'images/usual_dwarf/puking_dwarf_r2.png',
+                                            'images/usual_dwarf/puking_dwarf_r3.png']
+    config.ANIMATION_PUKING_DWARF_l = ['images/usual_dwarf/puking_dwarf1.png',
+                                     'images/usual_dwarf/puking_dwarf_l2.png',
+                                     'images/usual_dwarf/puking_dwarf_l3.png']
 
 
     config.ANIMATION_PRINCESS = [
@@ -92,10 +98,13 @@ def refreshConfig():
         ('images/coin2.png')]
 
     config.ANIMATION_FLOWER = [
-        ('images/flower/flower1.png'),
-        ('images/flower/flower2.png'),
-        ('images/flower/flower3.png'),
-        ('images/flower/flower4.png')]
+        ('images/Heart/heart1.png'),
+    ('images/Heart/heart2.png'),
+    ('images/Heart/heart3.png'),
+    ('images/Heart/heart4.png'),
+    ('images/Heart/heart3.png'),
+    ('images/Heart/heart2.png')]
+
 
 refreshConfig()
 
