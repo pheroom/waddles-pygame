@@ -4,6 +4,7 @@ import util
 import pyganim
 import blocks
 import monsters
+import weapon
 
 class Player(sprite.Sprite):
     def __init__(self, x, y, playAnimAmountWithRect, maxX, maxY, afterDead, addEntities, removeEntities, addObjective, removeObjective):
@@ -17,8 +18,6 @@ class Player(sprite.Sprite):
         self.yvel = 0
         self.onGround = False
         self.rect = Rect(x, y, config.HERO_PHYSICAL_WIDTH, config.HERO_PHYSICAL_HEIGHT)
-        
-        
 
         self.addEntities = addEntities
         self.removeEntities = removeEntities
@@ -29,9 +28,11 @@ class Player(sprite.Sprite):
         self.rightDirection = True
 
         self.attackOrb = config.PLATFORM_WIDTH
-        self.sword = blocks.Sword(x, y, self.attackOrb)
-        self.hook = blocks.Hook(x, y)
-        addEntities(self.sword)
+        sword = weapon.Sword(x, y, self.attackOrb)
+        hook = weapon.Hook(x, y, self.addObjective, self.removeObjective)
+        self.weapons = [sword, hook]
+        self.curWeaponIndex = 0
+        addEntities(self.weapons[self.curWeaponIndex])
         self.attackCooldown = 500
         self.timeLastAttack = time.get_ticks()
 
@@ -158,20 +159,22 @@ class Player(sprite.Sprite):
         self.immunityValue = value
 
     def switchWeapon(self):
-        if self.weaponIsKnife:
-            self.removeEntities(self.sword)
-            self.addEntities(self.hook)
-            self.weaponIsKnife = False
+        self.removeEntities(self.weapons[self.curWeaponIndex])
+        if self.curWeaponIndex + 1 < len(self.weapons):
+            self.curWeaponIndex += 1
         else:
-            self.removeEntities(self.hook)
-            self.addEntities(self.sword)
-            self.weaponIsKnife = True
+            self.curWeaponIndex = 0
+        self.addEntities(self.weapons[self.curWeaponIndex])
+        # if self.weaponIsKnife:
+        #     self.removeEntities(self.sword)
+        #     self.addEntities(self.hook)
+        #     self.weaponIsKnife = False
+        # else:
+        #     self.removeEntities(self.hook)
+        #     self.addEntities(self.sword)
+        #     self.weaponIsKnife = True
 
-    def shot(self):
-        self.timeLastAttack = time.get_ticks()
-        bullet = blocks.Bullet(self.rect.x, self.rect.y + config.HERO_HEIGHT / 2, 'player', self.rightDirection,
-                               self.removeObjective, util.BULLET_HERO)
-        self.addObjective(bullet)
+
 
     def update(self, left, right, up, space, running, slowly, platforms):
         if self.dead:
@@ -253,24 +256,29 @@ class Player(sprite.Sprite):
 
         if space and time.get_ticks() - self.timeLastAttack >= self.attackCooldown:
             self.s_hit.play()
-            if self.weaponIsKnife:
-                self.image.fill(Color(config.COLOR))
-                if self.rightDirection:
-                    self.boltAnimHitRight.blit(self.image, self.indentImage)
-                else:
-                    self.boltAnimHitLeft.blit(self.image, self.indentImage)
-                self.timeLastAttack = time.get_ticks()
-                self.sword.attack(platforms)
+            self.timeLastAttack = time.get_ticks()
+            self.weapons[self.curWeaponIndex].attack(platforms)
+            # if self.weaponIsKnife:
+                # self.image.fill(Color(config.COLOR))
+                # if self.rightDirection:
+                #     self.boltAnimHitRight.blit(self.image, self.indentImage)
+                # else:
+                #     self.boltAnimHitLeft.blit(self.image, self.indentImage)
+                # self.timeLastAttack = time.get_ticks()
+                # self.sword.attack(platforms)
                 # for p in platforms:
                 #     if sprite.collide_rect(self.sword, p) and isinstance(p, monsters.Monster):
                 #         p.hit(2)
-            else:
-                self.shot()
-        if self.weaponIsKnife:
-            self.sword.update(self.rect.right if self.rightDirection else self.rect.x - self.attackOrb, self.rect.y,
-                          self.rightDirection)
-        else:
-            self.hook.update(self.rect.right if self.rightDirection else self.rect.x, self.rect.y, self.rightDirection)
+            # else:
+            #     self.shot()
+
+        # if self.weaponIsKnife:
+        #     self.sword.update(self.rect.right if self.rightDirection else self.rect.x - self.attackOrb, self.rect.y,
+        #                   self.rightDirection)
+        # else:
+        #     self.hook.update(self.rect.right if self.rightDirection else self.rect.x, self.rect.y, self.rightDirection)
+
+        self.weapons[self.curWeaponIndex].update(self.rect, self.rightDirection)
 
         if self.rect.x + config.PLATFORM_WIDTH < 0 or self.rect.x - config.PLATFORM_WIDTH > self.maxX or self.rect.y - config.PLATFORM_HEIGHT*5 > self.maxY:
             self.die()
@@ -284,10 +292,10 @@ class Player(sprite.Sprite):
                 #             p.die()
                 #         else:
                 #             self.die()
-                if isinstance(p, monsters.Monster) and not p.dead:
+                if isinstance(p, monsters.Dwarf) and not p.dead:
                     self.hit(3)
                     self.setImmunity()
-                elif isinstance(p, blocks.Bullet):
+                elif isinstance(p, weapon.Bullet):
                     if p.owner != 'player':
                         self.hit()
                         p.die()
@@ -308,7 +316,7 @@ class Player(sprite.Sprite):
                     self.addCoin()
                     self.addPoint()
                     p.die()
-                elif isinstance(p, blocks.Sword):
+                elif isinstance(p, weapon.Sword):
                     p.die()
                 else:
                     if xvel > 0:

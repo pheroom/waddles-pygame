@@ -2,8 +2,8 @@ from pygame import *
 import time as pytime
 from config import config
 from player import Player
-from blocks import Platform, BlockTeleport, Princess, ActPlatform, Coin, Flower, Amount, PlatformCoin, Sword
-from monsters import Monster, Mushroom
+from blocks import Platform, BlockTeleport, Princess, ActPlatform, Coin, Flower, Amount, PlatformCoin
+from monsters import Dwarf, Mushroom
 import pytmx
 
 class Camera(object):
@@ -40,7 +40,7 @@ def hexToColour( hash_colour ):
 LayerNamePlatforms = 'Platforms'
 LayerNameActPlatforms = 'ActPlatforms'
 LayerNameBackground = 'Background'
-LayerNameBlocksBG = 'BlocksBG'
+LayerNameBackgroundObject = 'BlocksBG'
 LayerNamePlayer = 'Player'
 LayerNameMonsters  = 'Monsters'
 LayerNamePrincess  = 'Princess'
@@ -64,6 +64,7 @@ class Level:
         self.platforms = []
         self.animatedEntities = sprite.Group()
         self.monsters = sprite.Group()
+        self.bullets = sprite.Group()
         self.backgrounds = sprite.Group()
         self.blocksBG = sprite.Group()
         self.actPlatforms = []
@@ -140,12 +141,14 @@ class Level:
 
     def removeObjective(self, obj):
         self.entities.remove(obj)
-        self.animatedEntities.remove(obj)
-        self.platforms.remove(obj)
+        # self.animatedEntities.remove(obj)
+        self.bullets.remove(obj)
+        self.removePlatform(obj)
 
     def addObjective(self, obj):
         self.entities.add(obj)
-        self.animatedEntities.add(obj)
+        # self.animatedEntities.add(obj)
+        self.bullets.add(obj)
         self.platforms.append(obj)
 
     def playAnimAmount(self, x, y, amount, color):
@@ -178,7 +181,7 @@ class Level:
                         self.floor = max(self.floor, y * config.PLATFORM_HEIGHT)
                         self.entities.add(pf)
                         self.platforms.append(pf)
-                    if tile_bitmap and (layer.name.rstrip() == LayerNameBackground or layer.name.rstrip() == LayerNameBlocksBG):
+                    if tile_bitmap and (layer.name.rstrip() == LayerNameBackground or layer.name.rstrip() == LayerNameBackgroundObject):
                         pf = Platform(x * config.PLATFORM_WIDTH, y * config.PLATFORM_HEIGHT, img=tile_bitmap)
                         self.entities.add(pf)
             elif isinstance(layer, pytmx.TiledObjectGroup):
@@ -228,10 +231,10 @@ class Level:
                             self.actPlatforms.append(pf)
                 elif layer.name.rstrip() == LayerNameMonsters:
                     for monster in layer:
-                        mn = Monster(getX(monster), getY(monster), monster.left,
-                                     monster.maxLeft * config.PLATFORM_WIDTH/tmxMap.tilewidth,
-                                     self.removePlatform, self.removeMonster, self.addObjective, self.removeObjective,
-                                     self.playAnimAmount)
+                        mn = Dwarf(getX(monster), getY(monster), monster.left,
+                                   monster.maxLeft * config.PLATFORM_WIDTH / tmxMap.tilewidth,
+                                   self.removePlatform, self.removeMonster, self.addObjective, self.removeObjective,
+                                   self.playAnimAmount)
                         self.entities.add(mn)
                         self.platforms.append(mn)
                         self.monsters.add(mn)
@@ -297,6 +300,7 @@ class Level:
                 self.slowly = False
 
         self.surface.blit(self.bg, (0, 0))
+        self.bullets.update(self.platforms)
         self.monsters.update(self.platforms)
         self.animatedEntities.update()
         self.camera.update(self.hero)
@@ -342,7 +346,7 @@ class UI:
         self.world = world
         self.font = font.Font('./emulogic.ttf', 25)
         self.imgHeart = transform.scale(image.load("images/Heart/heart.png").convert_alpha(), (32, 32))
-        self.imgKnife = transform.rotate(transform.scale(image.load("images/knife.png").convert_alpha(), (50*1.88, 50)), 140)
+        self.imgKnife = transform.rotate(transform.scale(image.load("images/weapon/knife.png").convert_alpha(), (50 * 1.88, 50)), 140)
         self.imgHook = transform.rotate(transform.scale(image.load("images/bullet/bullet_hook.png").convert_alpha(), (40*1.285, 40)), 180)
         self.memo = {}
 
