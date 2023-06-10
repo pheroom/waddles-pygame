@@ -8,7 +8,7 @@ class Menu:
         self.ARIAL_50 = font.SysFont('arial', 50)
         self.font = font.Font('./emulogic.ttf', 30)
         # self.point = image.load('images/smallMushroom.png').convert_alpha()
-        self.point = transform.scale(image.load('images/carrot.png').convert_alpha(), (50,50))
+        self.point = transform.scale(image.load('images/cap.png').convert_alpha(), (50,50))
         self.activePoint = transform.scale(image.load('images/star.png').convert_alpha(), (41,40))
         self.activeOption = []
 
