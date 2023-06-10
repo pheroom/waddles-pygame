@@ -11,3 +11,4 @@ def transformImg(img, isPng = True):
 
 BULLET_MONSTER = image.load('./images/bullet/bullet_rainbow.png')
 BULLET_HERO = image.load('./images/bullet/bullet_hook.png')
+BULLET_MUSHROOM = image.load('./images/bullet/mushroom.png')

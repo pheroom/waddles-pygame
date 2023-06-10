@@ -50,7 +50,6 @@ class Rectangle(sprite.Sprite):
     def __init__(self, x, y, w, h):
         sprite.Sprite.__init__(self)
         self.image = Surface((w,h))
-        # self.image = Surface((0, 0))
         self.rect = Rect(x, y, w, h)
 
     def update(self, x, y):

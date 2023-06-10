@@ -29,8 +29,10 @@ class Player(sprite.Sprite):
 
         self.attackOrb = config.PLATFORM_WIDTH
         sword = weapon.Sword(x, y, self.attackOrb)
+        swordRainbow = weapon.RainbowSword(x, y, self.attackOrb)
+        swordMushroom = weapon.MushroomSword(x, y, self.attackOrb, self.addObjective, self.removeObjective)
         hook = weapon.Hook(x, y, self.addObjective, self.removeObjective)
-        self.weapons = [sword, hook]
+        self.weapons = [hook,swordMushroom, swordRainbow, sword]
         self.curWeaponIndex = 0
         addEntities(self.weapons[self.curWeaponIndex])
         self.attackCooldown = 500
