@@ -412,8 +412,8 @@ if __name__ == '__main__':
     size = (config.WIN_WIDTH, config.WIN_HEIGHT)
     screen = display.set_mode(size)
     clock = time.Clock()
-    lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/1-1.tmx", '1-1')
-    # lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/lvl1.tmx", '1-1')
+    # lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/1-1.tmx", '1-1')
+    lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/lvl2.tmx", '1-1')
     running = True
     while running:
         events = event.get()

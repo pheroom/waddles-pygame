@@ -54,7 +54,6 @@ class Dwarf(sprite.Sprite):
         self.removeSelf = removeSelf
         self.removeEntities = removeEntities
 
-
     def transformImg(self, img):
         if (isinstance(img, str)):
             return transform.scale(image.load(img), (config.MONSTER_WIDTH, config.MONSTER_HEIGHT))
@@ -74,6 +73,12 @@ class Dwarf(sprite.Sprite):
         self.health -= damage
         if self.health <= 0:
             self.die()
+
+    def shot(self):
+        self.timeLastAttack = time.get_ticks()
+        bullet = weapon.Bullet(self.rect.x, self.rect.y + config.MONSTER_HEIGHT/2, 'monster',
+                               self.rightDirection, self.removeEntities, util.BULLET_MONSTER)
+        self.addEntities(bullet)
 
     def update(self, platforms):
         if self.dead:
