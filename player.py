@@ -162,11 +162,12 @@ class Player(sprite.Sprite):
 
     def switchWeapon(self):
         self.removeEntities(self.weapons[self.curWeaponIndex])
-        if self.weapons[self.curWeaponIndex] == self.weapons[1]:
+        if self.weapons[self.curWeaponIndex] == self.weapons[0]:
+            self.s_hit = mixer.Sound('music/hook_whoosh.wav')
             self.s_hit = mixer.Sound('music/sword_whoosh.wav')
             self.s_hit.set_volume(0.2 + config.VOLUME_LEVEL)
         else:
-            self.s_hit = mixer.Sound('music/hook_whoosh.wav')
+            self.s_hit = mixer.Sound('music/sword_whoosh.wav')
             self.s_hit.set_volume(0.2 + config.VOLUME_LEVEL)
         if self.curWeaponIndex + 1 < len(self.weapons):
             self.curWeaponIndex += 1

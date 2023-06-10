@@ -81,12 +81,12 @@ def refreshConfig():
                                'images/usual_dwarf/usual_dwarf_run_r3.png',
                                'images/usual_dwarf/usual_dwarf_run_r4.png']
 
-    config.ANIMATION_PUKING_DWARF_r = ['images/usual_dwarf/puking_dwarf1.png',
-                                            'images/usual_dwarf/puking_dwarf_r2.png',
-                                            'images/usual_dwarf/puking_dwarf_r3.png']
-    config.ANIMATION_PUKING_DWARF_l = ['images/usual_dwarf/puking_dwarf1.png',
-                                     'images/usual_dwarf/puking_dwarf_l2.png',
-                                     'images/usual_dwarf/puking_dwarf_l3.png']
+    config.ANIMATION_PUKING_DWARF_r = ['images/puking_dwarf/puking_dwarf1.png',
+                                            'images/puking_dwarf/puking_dwarf_r2.png',
+                                            'images/puking_dwarf/puking_dwarf_r3.png']
+    config.ANIMATION_PUKING_DWARF_l = ['images/puking_dwarf/puking_dwarf1.png',
+                                     'images/puking_dwarf/puking_dwarf_l2.png',
+                                     'images/puking_dwarf/puking_dwarf_l3.png']
 
 
     config.ANIMATION_PRINCESS = [
