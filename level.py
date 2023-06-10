@@ -42,7 +42,8 @@ LayerNameActPlatforms = 'ActPlatforms'
 LayerNameBackground = 'Background'
 LayerNameBackgroundObject = 'BlocksBG'
 LayerNamePlayer = 'Player'
-LayerNameMonsters  = 'Monsters'
+LayerNameDwarf  = 'Monsters'
+LayerNameDwarfLegless  = 'MonstersLegless'
 LayerNamePrincess  = 'Princess'
 LayerNameEntity  = 'Entity'
 
@@ -233,10 +234,18 @@ class Level:
                             self.entities.add(pf)
                             self.platforms.append(pf)
                             self.actPlatforms.append(pf)
-                elif layer.name.rstrip() == LayerNameMonsters:
+                elif layer.name.rstrip() == LayerNameDwarf:
                     for monster in layer:
                         mn = Dwarf(getX(monster), getY(monster), monster.left,
                                    monster.maxLeft * config.PLATFORM_WIDTH / tmxMap.tilewidth,
+                                   self.removePlatform, self.removeMonster, self.addObjective, self.removeObjective,
+                                   self.playAnimAmount)
+                        self.entities.add(mn)
+                        self.platforms.append(mn)
+                        self.monsters.add(mn)
+                elif layer.name.rstrip() == LayerNameDwarfLegless:
+                    for monster in layer:
+                        mn = DwarfLegless(getX(monster), getY(monster), monster.rightDirection,
                                    self.removePlatform, self.removeMonster, self.addObjective, self.removeObjective,
                                    self.playAnimAmount)
                         self.entities.add(mn)
