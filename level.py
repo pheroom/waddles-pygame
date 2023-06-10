@@ -3,7 +3,7 @@ import time as pytime
 from config import config
 from player import Player
 from blocks import Platform, BlockTeleport, Princess, ActPlatform, Coin, Flower, Amount, PlatformCoin
-from monsters import Dwarf, Mushroom
+from monsters import Dwarf, Mushroom, DwarfLegless
 import pytmx
 
 class Camera(object):
