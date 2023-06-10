@@ -57,7 +57,7 @@ class Dwarf(sprite.Sprite):
     def transformImg(self, img):
         if (isinstance(img, str)):
             return transform.scale(image.load(img), (config.MONSTER_WIDTH, config.MONSTER_HEIGHT))
-        return transform.scale(img, (config.HERO_WIDTH, config.HERO_WIDTH))
+        return transform.scale(img, (config.MONSTER_WIDTH, config.MONSTER_HEIGHT))
 
     def die(self):
         self.image = transform.scale(self.image, (config.PLATFORM_WIDTH * 1.5, config.PLATFORM_HEIGHT / 2))
@@ -107,7 +107,6 @@ class Dwarf(sprite.Sprite):
 
         if (abs(self.startX - self.rect.x) > self.maxLengthLeft):
             self.xvel = -self.xvel
-            # self.rightDirection = False if self.rightDirection else True
             self.rightDirection = not self.rightDirection
 
     def collide(self, xvel, yvel, platforms):
@@ -154,18 +153,16 @@ class DwarfLegless(sprite.Sprite):
         self.attackCooldown = 2000
         self.timeLastAttack = time.get_ticks()
 
-        boltAnim = []
-        for anim in config.ANIMATION_PUKING_DWARF_l:
-            anim = self.transformImg(anim)
-            boltAnim.append((anim, config.MONSTER_DELAY))
-        self.boltAnim_left = pyganim.PygAnimation(boltAnim)
-        self.boltAnim_left.play()
-        boltAnim = []
-        for anim in config.ANIMATION_PUKING_DWARF_r:
-            anim = self.transformImg(anim)
-            boltAnim.append((anim, config.MONSTER_DELAY))
-        self.boltAnim_right = pyganim.PygAnimation(boltAnim)
-        self.boltAnim_right.play()
+        anims = config.ANIMATION_PUKING_DWARF_r if rightDirection else config.ANIMATION_PUKING_DWARF_l
+        self.boltAnim_attack = []
+        for i in range(0, len(anims)):
+            self.boltAnim_attack.append(pyganim.PygAnimation(self.transformAnim(anims[i])))
+            self.boltAnim_attack[-1].play()
+
+        self.boltAnim_stay = pyganim.PygAnimation([[self.transformImg(config.ANIMATION_DWARF_STAY[0]), 100]])
+        self.boltAnim_stay.play()
+
+        self.lastAnimIndex = 0
 
         self.playAnimAmount = lambda amount, color: playAnimAmountWithRect(self.rect.x, self.rect.y, amount, color)
         self.addEntities = addEntities
@@ -173,10 +170,13 @@ class DwarfLegless(sprite.Sprite):
         self.removeSelf = removeSelf
         self.removeEntities = removeEntities
 
+    def transformAnim(self, anim):
+        return [(self.transformImg(anim), 100)]
+
     def transformImg(self, img):
         if (isinstance(img, str)):
             return transform.scale(image.load(img), (config.MONSTER_WIDTH, config.MONSTER_HEIGHT))
-        return transform.scale(img, (config.HERO_WIDTH, config.HERO_WIDTH))
+        return transform.scale(img, (config.MONSTER_WIDTH, config.MONSTER_HEIGHT))
 
     def die(self):
         self.image = transform.scale(self.image, (config.PLATFORM_WIDTH * 1.5, config.PLATFORM_HEIGHT / 2))
@@ -205,14 +205,23 @@ class DwarfLegless(sprite.Sprite):
                 self.image = Surface((0, 0))
                 self.removeSelf(self)
         else:
-            if self.rightDirection:
-                self.image.fill(Color(config.MONSTER_COLOR))
-                self.boltAnim_right.blit(self.image, self.indentImage)
-            else:
-                self.image.fill(Color(config.MONSTER_COLOR))
-                self.boltAnim_left.blit(self.image, self.indentImage)
+            self.image.fill(Color(config.MONSTER_COLOR))
             if random.randint(0,10) == 6 and time.get_ticks() - self.timeLastAttack >= self.attackCooldown:
+                self.lastAnimIndex = random.randint(0,2)
+                self.boltAnim_attack[self.lastAnimIndex].blit(self.image, self.indentImage)
                 self.shot()
+            else:
+                if time.get_ticks() - self.timeLastAttack < 500:
+                    self.boltAnim_attack[self.lastAnimIndex].blit(self.image, self.indentImage)
+                else:
+                    self.boltAnim_stay.blit(self.image, self.indentImage)
+
+            # if self.rightDirection:
+            #     self.image.fill(Color(config.MONSTER_COLOR))
+            #     self.boltAnim_right.blit(self.image, self.indentImage)
+            # else:
+            #     self.image.fill(Color(config.MONSTER_COLOR))
+            #     self.boltAnim_left.blit(self.image, self.indentImage)
 
         for p in platforms:
             if sprite.collide_rect(self, p) and self != p and not isinstance(p, Mushroom) and (

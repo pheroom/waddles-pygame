@@ -422,7 +422,7 @@ if __name__ == '__main__':
     screen = display.set_mode(size)
     clock = time.Clock()
     # lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/1-1.tmx", '1-1')
-    lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/lvl2.tmx", '1-1')
+    lvl1 = Level(screen, lambda: print('switch'), lambda: print('back'), "levels/lvl3.tmx", '1-1')
     running = True
     while running:
         events = event.get()

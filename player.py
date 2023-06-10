@@ -162,6 +162,8 @@ class Player(sprite.Sprite):
 
     def switchWeapon(self):
         self.removeEntities(self.weapons[self.curWeaponIndex])
+
+        #whatafuck:
         if self.weapons[self.curWeaponIndex] == self.weapons[0]:
             self.s_hit = mixer.Sound('music/hook_whoosh.wav')
             self.s_hit = mixer.Sound('music/sword_whoosh.wav')
@@ -169,21 +171,12 @@ class Player(sprite.Sprite):
         else:
             self.s_hit = mixer.Sound('music/sword_whoosh.wav')
             self.s_hit.set_volume(0.2 + config.VOLUME_LEVEL)
+
         if self.curWeaponIndex + 1 < len(self.weapons):
             self.curWeaponIndex += 1
         else:
             self.curWeaponIndex = 0
         self.addEntities(self.weapons[self.curWeaponIndex])
-        # if self.weaponIsKnife:
-        #     self.removeEntities(self.sword)
-        #     self.addEntities(self.hook)
-        #     self.weaponIsKnife = False
-        # else:
-        #     self.removeEntities(self.hook)
-        #     self.addEntities(self.sword)
-        #     self.weaponIsKnife = True
-
-
 
     def update(self, left, right, up, space, running, slowly, platforms):
         if self.dead:
@@ -247,7 +240,6 @@ class Player(sprite.Sprite):
                 self.image.fill(Color(config.COLOR))
                 self.boltAnimStay.blit(self.image, self.indentImage)
 
-
         if not self.onGround:
             self.yvel += config.GRAVITY
 
@@ -261,31 +253,10 @@ class Player(sprite.Sprite):
         self.rect.x += self.xvel
         self.collide(self.xvel, 0, platforms)
 
-        # self.sword.update(self.rect.x if self.rightDirection else self.rect.x - self.attackOrb, self.rect.y, self.rightDirection)
-
         if space and time.get_ticks() - self.timeLastAttack >= self.attackCooldown:
             self.s_hit.play()
             self.timeLastAttack = time.get_ticks()
             self.weapons[self.curWeaponIndex].attack(platforms)
-            # if self.weaponIsKnife:
-                # self.image.fill(Color(config.COLOR))
-                # if self.rightDirection:
-                #     self.boltAnimHitRight.blit(self.image, self.indentImage)
-                # else:
-                #     self.boltAnimHitLeft.blit(self.image, self.indentImage)
-                # self.timeLastAttack = time.get_ticks()
-                # self.sword.attack(platforms)
-                # for p in platforms:
-                #     if sprite.collide_rect(self.sword, p) and isinstance(p, monsters.Monster):
-                #         p.hit(2)
-            # else:
-            #     self.shot()
-
-        # if self.weaponIsKnife:
-        #     self.sword.update(self.rect.right if self.rightDirection else self.rect.x - self.attackOrb, self.rect.y,
-        #                   self.rightDirection)
-        # else:
-        #     self.hook.update(self.rect.right if self.rightDirection else self.rect.x, self.rect.y, self.rightDirection)
 
         self.weapons[self.curWeaponIndex].update(self.rect, self.rightDirection)
 
@@ -302,6 +273,9 @@ class Player(sprite.Sprite):
                 #         else:
                 #             self.die()
                 if isinstance(p, monsters.Dwarf) and not p.dead:
+                    self.hit(3)
+                    self.setImmunity()
+                if isinstance(p, monsters.DwarfLegless) and not p.dead:
                     self.hit(3)
                     self.setImmunity()
                 elif isinstance(p, weapon.Bullet):
