@@ -30,7 +30,7 @@ def refreshConfig():
     config.HERO_HEIGHT = config.PLATFORM_HEIGHT
     config.MOVE_SPEED = 4 * config.HERO_WIDTH / 32
     config.COLOR = "#888888"
-    config.JUMP_POWER = 10 * config.HERO_HEIGHT / 32
+    config.JUMP_POWER = 9 * config.HERO_HEIGHT / 32
     config.GRAVITY = 0.4 * config.HERO_HEIGHT / 32
 
     config.JUMP_SLOW_POWER = 2 * config.HERO_HEIGHT / 32
