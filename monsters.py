@@ -257,13 +257,13 @@ class Gideon(sprite.Sprite):
         boltAnim = []
         for anim in config.ANIMATION_GIDEON_L:
             anim = self.transformImg(anim)
-            boltAnim.append((anim, config.MONSTER_DELAY))
+            boltAnim.append((anim, config.GIDEON_DELAY))
         self.boltAnim_left = pyganim.PygAnimation(boltAnim)
         self.boltAnim_left.play()
         boltAnim = []
         for anim in config.ANIMATION_GIDEON_R:
             anim = self.transformImg(anim)
-            boltAnim.append((anim, config.MONSTER_DELAY))
+            boltAnim.append((anim, config.GIDEON_DELAY))
         self.boltAnim_right = pyganim.PygAnimation(boltAnim)
         self.boltAnim_right.play()
 
