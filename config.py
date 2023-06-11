@@ -90,6 +90,9 @@ def refreshConfig():
                                      'images/puking_dwarf/puking_dwarf_l2.png',
                                      'images/puking_dwarf/puking_dwarf_l3.png']
 
+    config.ANIMATION_GIDEON_L = ['images/gideon/gideon_l.png']
+    config.ANIMATION_GIDEON_R = ['images/gideon/gideon_r.png']
+
 
     config.ANIMATION_PRINCESS = [
         'images/mabel/mabel_stay1.png',

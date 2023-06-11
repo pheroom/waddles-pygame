@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="100" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="24">
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="100" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="32">
  <tileset firstgid="1" source="tileset.tsx"/>
  <tileset firstgid="129" source="mario-tiles.tsx"/>
  <tileset firstgid="912" name="tileset_night" tilewidth="32" tileheight="32" tilecount="128" columns="8">
@@ -53,7 +53,7 @@
 0,0,0,0,0,0,1317,1318,0,0,0,0,0,0,0,0,1317,1318,0,0,0,0,0,0,0,1295,0,0,0,1317,1318,0,0,0,0,0,0,0,0,1317,1318,0,0,0,0,0,0,1302,0,0,0,0,0,0,0,0,0,1299,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1381,1382,0,0,0,0,0,1394,1395,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,1297,0,0,0,1303,1304,1305,1303,1304,1305,1306,1302,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1309,1306,1305,0,0,0,0,0,0,1297,0,0,0,0,0,0,0,0,0,0,0,1365,0,0,0,0,0,1385,1386,0,0,0,0,1390,1391,1392,1393,0,0,0,1403,1404,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,1297,0,0,0,0,0,0,0,0,0,0,0,1309,0,0,1303,1304,1303,1304,1303,1304,1303,1304,1305,1306,1304,1305,1303,1304,1305,1306,0,0,0,1316,0,0,1306,0,0,0,0,1297,0,0,0,0,0,0,0,0,1397,1398,0,0,0,0,0,0,0,0,1394,1395,0,0,0,0,1399,1400,1401,1402,0,0,0,1412,1413,1365,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1316,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1296,1297,1297,1296,0,0,0,0,0,0,0,0,0,1406,1407,0,0,0,0,0,0,0,0,1403,1404,0,0,0,0,1408,1409,1410,1411,0,0,1344,1345,1422,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1316,0,1306,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1306,0,0,0,0,0,0,1296,1297,1297,1296,0,0,0,0,0,0,0,0,0,1406,1407,0,0,0,0,0,0,0,0,1403,1404,0,0,0,0,1408,1409,1410,1411,0,0,1344,1345,1422,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1415,1416,0,0,0,0,0,0,0,0,1412,1413,1344,1345,0,0,1417,1418,1419,1420,0,0,1354,1355,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1364,0,1424,1425,0,0,0,0,0,0,0,0,1364,1422,1354,1355,1365,0,1426,1427,1428,1348,1349,1349,0,0,0,0,0,0,1365,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -61,46 +61,76 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="3" name="Monsters" locked="1">
-  <object id="1" gid="388" x="996.667" y="510.667" width="32" height="32">
+ <objectgroup id="10" name="MonsterGideon" locked="1">
+  <object id="29" gid="531" x="2096" y="287.667" width="32" height="32">
+   <properties>
+    <property name="left" type="int" value="2"/>
+    <property name="maxLeft" type="int" value="64"/>
+    <property name="maxUp" type="int" value="64"/>
+    <property name="up" type="int" value="2"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="9" name="MonstersLegless" locked="1">
+  <object id="24" gid="533" x="692" y="224" width="32" height="32">
+   <properties>
+    <property name="rightDirection" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="25" gid="533" x="978" y="384" width="32" height="32">
+   <properties>
+    <property name="rightDirection" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="26" gid="533" x="2712.73" y="352" width="32" height="32">
+   <properties>
+    <property name="rightDirection" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="27" gid="533" x="3040" y="192" width="32" height="32">
+   <properties>
+    <property name="rightDirection" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="28" gid="533" x="1888" y="512" width="32" height="32">
+   <properties>
+    <property name="rightDirection" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="30" gid="533" x="2975.67" y="256" width="32" height="32">
+   <properties>
+    <property name="rightDirection" type="bool" value="false"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="3" name="Monsters">
+  <object id="1" gid="388" x="942" y="510" width="32" height="32">
    <properties>
     <property name="left" type="int" value="2"/>
     <property name="maxLeft" type="int" value="200"/>
    </properties>
   </object>
-  <object id="2" gid="388" x="1238" y="508" width="32" height="32">
+  <object id="2" gid="388" x="1236" y="511.333" width="32" height="32">
    <properties>
     <property name="left" type="int" value="2"/>
     <property name="maxLeft" type="int" value="200"/>
    </properties>
   </object>
-  <object id="3" gid="388" x="1118.67" y="509.333" width="32" height="32">
+  <object id="3" gid="388" x="1081.34" y="511.333" width="32" height="32">
    <properties>
-    <property name="left" type="int" value="2"/>
+    <property name="left" type="int" value="4"/>
     <property name="maxLeft" type="int" value="200"/>
-   </properties>
-  </object>
-  <object id="4" gid="388" x="946" y="383" width="32" height="32">
-   <properties>
-    <property name="left" type="int" value="1"/>
-    <property name="maxLeft" type="int" value="40"/>
    </properties>
   </object>
   <object id="5" gid="388" x="1266" y="384" width="32" height="32">
    <properties>
-    <property name="left" type="int" value="1"/>
+    <property name="left" type="int" value="2"/>
     <property name="maxLeft" type="int" value="64"/>
-   </properties>
-  </object>
-  <object id="6" gid="388" x="674" y="223" width="32" height="32">
-   <properties>
-    <property name="left" type="int" value="1"/>
-    <property name="maxLeft" type="int" value="32"/>
    </properties>
   </object>
   <object id="7" gid="388" x="368" y="223" width="32" height="32">
    <properties>
-    <property name="left" type="int" value="2"/>
+    <property name="left" type="int" value="3"/>
     <property name="maxLeft" type="int" value="128"/>
    </properties>
   </object>
@@ -112,19 +142,13 @@
   </object>
   <object id="10" gid="388" x="2025.33" y="541.333" width="32" height="32">
    <properties>
-    <property name="left" type="int" value="1"/>
+    <property name="left" type="int" value="2"/>
     <property name="maxLeft" type="int" value="40"/>
-   </properties>
-  </object>
-  <object id="11" gid="388" x="2722.67" y="349.333" width="32" height="32">
-   <properties>
-    <property name="left" type="int" value="1"/>
-    <property name="maxLeft" type="int" value="60"/>
    </properties>
   </object>
   <object id="12" gid="388" x="2473.33" y="542.667" width="32" height="32">
    <properties>
-    <property name="left" type="int" value="2"/>
+    <property name="left" type="int" value="3"/>
     <property name="maxLeft" type="int" value="200"/>
    </properties>
   </object>
@@ -134,13 +158,7 @@
     <property name="maxLeft" type="int" value="40"/>
    </properties>
   </object>
-  <object id="14" gid="388" x="3038.33" y="190.167" width="32" height="32">
-   <properties>
-    <property name="left" type="int" value="0"/>
-    <property name="maxLeft" type="int" value="0"/>
-   </properties>
-  </object>
-  <object id="15" gid="388" x="3056" y="541.333" width="32" height="32">
+  <object id="15" gid="388" x="3072" y="542.666" width="32" height="32">
    <properties>
     <property name="left" type="int" value="1"/>
     <property name="maxLeft" type="int" value="32"/>
@@ -153,7 +171,7 @@
  <objectgroup id="5" name="Player" locked="1">
   <object id="18" gid="821" x="198.667" y="550.667" width="32" height="32"/>
  </objectgroup>
- <objectgroup id="6" name="ActPlatforms">
+ <objectgroup id="6" name="ActPlatforms" locked="1">
   <object id="22" gid="1495" x="896" y="416" width="32" height="32">
    <properties>
     <property name="flower" type="bool" value="true"/>
@@ -180,7 +198,7 @@
 1083,1083,1240,1208,1247,0,0,0,1240,1241,1197,1193,1194,1194,1195,0,0,0,0,1174,1200,1194,1194,1194,1265,1266,0,0,0,0,0,0,0,0,1174,1176,0,0,0,0,0,0,0,0,0,0,0,0,1246,1247,1194,1199,1200,1265,1266,1194,1180,1214,0,0,0,0,0,0,1466,1467,1467,0,0,0,1435,1436,1437,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1445,1446,1446,1446,1446,1447,0,0,1140,1140,
 1083,1083,1259,1209,1266,0,0,0,1259,1260,1197,1193,1194,1194,1214,0,0,0,1250,1200,1213,1213,1213,1213,1214,0,0,0,0,0,0,0,1174,1184,1200,1194,1176,0,0,0,0,0,0,0,0,0,0,0,1265,1266,1194,1194,1194,1194,1194,1180,1214,0,0,0,0,0,0,0,0,0,0,0,0,1481,1460,1446,1447,0,0,0,0,0,0,0,0,0,0,1435,1436,1436,1436,1437,0,0,1445,1446,1446,1446,1446,1457,0,0,1130,1083,
 1083,1083,1240,1241,0,0,0,0,1240,1241,1197,1193,1180,1214,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1251,1202,1251,1200,1199,1251,1251,1199,1251,1251,1251,1251,1251,1251,1252,0,0,0,0,0,0,1212,1194,1246,1247,1180,1214,0,0,0,0,0,0,0,0,0,0,0,0,0,1445,1446,1446,1447,0,0,0,0,0,0,0,0,0,0,1455,1456,1456,1456,1457,0,0,1445,1446,1446,1456,1457,0,0,0,1132,1133,
-1083,1083,1259,1260,0,0,0,1246,1206,1260,1197,1193,1195,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1212,1265,1266,1214,0,0,0,0,0,0,0,0,0,0,0,0,0,1435,1460,1446,1446,1447,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1445,1446,1457,0,0,0,0,0,1151,1152,
+1083,1083,1259,1260,0,0,0,1246,1206,1260,1197,1193,1195,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1254,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1254,0,0,0,0,0,0,1212,1265,1266,1214,0,0,0,0,0,0,0,0,0,0,0,0,0,1435,1460,1446,1446,1447,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1445,1446,1457,0,0,0,0,0,1151,1152,
 1126,1127,1240,1241,0,0,0,1265,1187,1241,1197,1193,1195,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1435,1460,1446,1446,1446,1447,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1435,1460,1457,0,0,0,0,0,0,1083,1083,
 1145,1146,1259,1260,0,0,0,0,1259,1260,1197,1193,1195,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1445,1446,1446,1446,1446,1447,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1435,1460,1447,0,0,0,0,0,0,0,1083,1083,
 1083,1083,1240,1208,1247,0,0,0,1240,1241,1197,1193,1237,1187,1206,1175,1175,1175,1175,1175,1175,1199,1209,1181,1175,1175,1175,1175,1175,1200,1175,1175,1175,1175,1175,1175,1175,1175,1175,1175,1175,1251,1251,1238,1237,1238,1175,1175,1175,1175,1175,1175,1175,1175,1175,1175,1175,1175,1251,1176,1437,0,0,0,0,0,1481,1460,1446,1446,1446,1446,1447,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1435,1460,1446,1458,1482,0,0,0,0,0,0,1083,1083,

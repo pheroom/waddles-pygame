@@ -32,7 +32,7 @@ class Player(sprite.Sprite):
         swordRainbow = weapon.RainbowSword(x, y, self.attackOrb)
         swordMushroom = weapon.MushroomSword(x, y, self.attackOrb, self.addObjective, self.removeObjective)
         hook = weapon.Hook(x, y, self.addObjective, self.removeObjective)
-        self.weapons = [hook,swordMushroom, swordRainbow, sword]
+        self.weapons = [hook, swordMushroom, swordRainbow, sword]
         self.curWeaponIndex = 0
         addEntities(self.weapons[self.curWeaponIndex])
         self.attackCooldown = 500
@@ -164,13 +164,12 @@ class Player(sprite.Sprite):
         self.removeEntities(self.weapons[self.curWeaponIndex])
 
         #whatafuck:
-        if self.weapons[self.curWeaponIndex] == self.weapons[0]:
-            self.s_hit = mixer.Sound('music/hook_whoosh.wav')
-            self.s_hit = mixer.Sound('music/sword_whoosh.wav')
-            self.s_hit.set_volume(0.2 + config.VOLUME_LEVEL)
-        else:
-            self.s_hit = mixer.Sound('music/sword_whoosh.wav')
-            self.s_hit.set_volume(0.2 + config.VOLUME_LEVEL)
+        # if self.weapons[self.curWeaponIndex] == self.weapons[0] or self.weapons[1]:
+        #     self.s_hit = mixer.Sound('music/hook_whoosh.wav')
+        #     self.s_hit.set_volume(0.2 + config.VOLUME_LEVEL)
+        # else:
+        #     self.s_hit = mixer.Sound('music/sword_whoosh.wav')
+        #     self.s_hit.set_volume(0.2 + config.VOLUME_LEVEL)
 
         if self.curWeaponIndex + 1 < len(self.weapons):
             self.curWeaponIndex += 1
@@ -275,7 +274,10 @@ class Player(sprite.Sprite):
                 if isinstance(p, monsters.Dwarf) and not p.dead:
                     self.hit(3)
                     self.setImmunity()
-                if isinstance(p, monsters.DwarfLegless) and not p.dead:
+                elif isinstance(p, monsters.DwarfLegless) and not p.dead:
+                    self.hit(3)
+                    self.setImmunity()
+                elif isinstance(p, monsters.Gideon) and not p.dead:
                     self.hit(3)
                     self.setImmunity()
                 elif isinstance(p, weapon.Bullet):
