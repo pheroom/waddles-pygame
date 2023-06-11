@@ -159,7 +159,7 @@ class DwarfLegless(sprite.Sprite):
             self.boltAnim_attack.append(pyganim.PygAnimation(self.transformAnim(anims[i])))
             self.boltAnim_attack[-1].play()
 
-        self.boltAnim_stay = pyganim.PygAnimation([[self.transformImg(config.ANIMATION_DWARF_STAY[0]), 100]])
+        self.boltAnim_stay = pyganim.PygAnimation([[self.transformImg(config.ANIMATION_PUKING_DWARF_STAY[0]), 100]])
         self.boltAnim_stay.play()
 
         self.lastAnimIndex = 0
@@ -207,7 +207,7 @@ class DwarfLegless(sprite.Sprite):
         else:
             self.image.fill(Color(config.MONSTER_COLOR))
             if random.randint(0,10) == 6 and time.get_ticks() - self.timeLastAttack >= self.attackCooldown:
-                self.lastAnimIndex = random.randint(0,2)
+                self.lastAnimIndex = random.randint(0,1)
                 self.boltAnim_attack[self.lastAnimIndex].blit(self.image, self.indentImage)
                 self.shot()
             else:

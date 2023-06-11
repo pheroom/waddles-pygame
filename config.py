@@ -73,7 +73,6 @@ def refreshConfig():
     config.MONSTER_HEIGHT = config.PLATFORM_HEIGHT
     config.MONSTER_COLOR = "#2110FF"
 
-    config.ANIMATION_DWARF_STAY = ['images/usual_dwarf/dwarf_stay.png']
 
     config.ANIMATION_USUAL_DWARF_L = ['images/usual_dwarf/usual_dwarf_run_l1.png',
                                'images/usual_dwarf/usual_dwarf_run_l2.png',
@@ -84,11 +83,11 @@ def refreshConfig():
                                'images/usual_dwarf/usual_dwarf_run_r3.png',
                                'images/usual_dwarf/usual_dwarf_run_r4.png']
 
-    config.ANIMATION_PUKING_DWARF_l = ['images/puking_dwarf/puking_dwarf1.png',
-                                            'images/puking_dwarf/puking_dwarf_r2.png',
+    config.ANIMATION_PUKING_DWARF_STAY = ['images/puking_dwarf/puking_dwarf1.png']
+
+    config.ANIMATION_PUKING_DWARF_l = ['images/puking_dwarf/puking_dwarf_r2.png',
                                             'images/puking_dwarf/puking_dwarf_r3.png']
-    config.ANIMATION_PUKING_DWARF_r = ['images/puking_dwarf/puking_dwarf1.png',
-                                     'images/puking_dwarf/puking_dwarf_l2.png',
+    config.ANIMATION_PUKING_DWARF_r = ['images/puking_dwarf/puking_dwarf_l2.png',
                                      'images/puking_dwarf/puking_dwarf_l3.png']
 
     config.ANIMATION_GIDEON_L = ['images/gideon/gideon_l1.png',
