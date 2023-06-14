@@ -3,7 +3,7 @@ import time as pytime
 from config import config, refreshConfig
 from player import Player
 from blocks import Platform, BlockTeleport, Princess, ActPlatform, Coin, Flower, Amount, PlatformCoin
-from monsters import Dwarf, Mushroom, DwarfLegless
+from monsters import Dwarf, Mushroom, DwarfLegless, Gideon
 import pytmx
 
 class Camera(object):
@@ -42,10 +42,11 @@ LayerNameActPlatforms = 'ActPlatforms'
 LayerNameBackground = 'Background'
 LayerNameBackgroundObject = 'BlocksBG'
 LayerNamePlayer = 'Player'
-LayerNameDwarf  = 'Monsters'
-LayerNameDwarfLegless  = 'MonstersLegless'
-LayerNamePrincess  = 'Princess'
-LayerNameEntity  = 'Entity'
+LayerNameDwarf = 'Monsters'
+LayerNameDwarfLegless = 'MonstersLegless'
+LayerNameGideon = 'MonsterGideon'
+LayerNamePrincess = 'Princess'
+LayerNameEntity = 'Entity'
 
 class Level:
     def __init__(self, surf, switchScreen, backToLastScreen, lvl, levelName):
@@ -248,6 +249,16 @@ class Level:
                 elif layer.name.rstrip() == LayerNameDwarfLegless:
                     for monster in layer:
                         mn = DwarfLegless(getX(monster), getY(monster), monster.rightDirection,
+                                   self.removePlatform, self.removeMonster, self.addObjective, self.removeObjective,
+                                   self.playAnimAmount)
+                        self.entities.add(mn)
+                        self.platforms.append(mn)
+                        self.monsters.add(mn)
+                elif layer.name.rstrip() == LayerNameGideon:
+                    for monster in layer:
+                        mn = Gideon(getX(monster), getY(monster), monster.left, monster.up,
+                                    monster.maxLeft * config.PLATFORM_WIDTH / tmxMap.tilewidth,
+                                    monster.maxUp * config.PLATFORM_WIDTH / tmxMap.tilewidth,
                                    self.removePlatform, self.removeMonster, self.addObjective, self.removeObjective,
                                    self.playAnimAmount)
                         self.entities.add(mn)

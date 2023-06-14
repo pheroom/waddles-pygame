@@ -88,7 +88,7 @@ class Sword(sprite.Sprite):
         if self.animationStage <= 0:
             self.animationStage = 90
         for p in platforms:
-            if sprite.collide_rect(self.attackArea, p) and (isinstance(p, monsters.Dwarf) or isinstance(p, monsters.DwarfLegless)):
+            if sprite.collide_rect(self.attackArea, p) and (isinstance(p, monsters.Dwarf) or isinstance(p, monsters.DwarfLegless) or isinstance(p, monsters.Gideon)):
                 p.hit(2)
 
 class RainbowSword(sprite.Sprite):
@@ -144,7 +144,7 @@ class RainbowSword(sprite.Sprite):
                     # p.die()
                     p.changeOwner('rainbowSword')
                     p.changeDirection()
-                if isinstance(p, monsters.Dwarf) or isinstance(p, monsters.DwarfLegless):
+                if isinstance(p, monsters.Dwarf) or isinstance(p, monsters.DwarfLegless) or isinstance(p, monsters.Gideon):
                     p.hit(2)
 
 class MushroomSword(sprite.Sprite):
