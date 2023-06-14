@@ -1,6 +1,6 @@
 from pygame import *
 import time as pytime
-from config import config
+from config import config, saveConfigOnExit, refreshConfig
 from player import Player
 from blocks import Platform, BlockTeleport, Princess, ActPlatform, Coin, Flower, Amount, PlatformCoin
 from monsters import Dwarf, Mushroom, DwarfLegless, Gideon
@@ -54,6 +54,7 @@ class Level:
         self.switchScreen = switchScreen
         self.surface = surf
         self.backToLastScreen = backToLastScreen
+        self.levelName = levelName
 
         self.bg = Surface((config.WIN_WIDTH, config.WIN_HEIGHT))
         self.bg.fill(Color(config.BG_COLOR_SKY))
@@ -344,6 +345,12 @@ class Level:
         self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 1000) // 1000, self.hero.weaponIsKnife)
 
         if self.hero.winner:
+            if self.levelName == '1-1':
+                config.LEVEL_2_AVAILABLE = True
+                refreshConfig()
+            elif self.levelName == '1-2':
+                config.LEVEL_3_AVAILABLE = True
+                refreshConfig()
             if self.bool_winner:
                 mixer.music.stop()
                 self.s_winner.play()

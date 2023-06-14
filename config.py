@@ -11,8 +11,16 @@ with open("configfile.pickle", 'rb') as f:
 config.PLATFORM_WIDTH = configData['PLATFORM_WIDTH']
 config.PLATFORM_HEIGHT = configData['PLATFORM_HEIGHT']
 config.VOLUME_LEVEL = configData['VOLUME_LEVEL']
+config.LEVEL_3_AVAILABLE = configData['LEVEL_3_AVAILABLE']
+config.LEVEL_2_AVAILABLE = configData['LEVEL_2_AVAILABLE']
+
 
 def refreshConfig():
+    config.MENU_COLOR_WHITE = '#ffffff'
+    config.MENU_COLOR_GREY = '#616161'
+    config.MENU_COLOR_RED = '#730c05'
+    config.MENU_COLOR_BLUE = '#3cb9cf'
+
     config.PLATFORM_COLOR = "#FF6262"
 
     config.WIN_SCREEN_TIME = 3000

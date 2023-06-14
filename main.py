@@ -12,19 +12,23 @@ class MainScreen():
         self.surface = surf
         self.menu = Menu()
         self.bg = transform.scale(image.load('images/bg-dwarfs.jpg'), (config.WIN_WIDTH, config.WIN_HEIGHT))
-        self.menu.append_option('Level Selection', lambda: self.switchScreen(lvlSelectionScreen))
-        self.menu.append_option('Settings', lambda: self.switchScreen(settingsScreen))
-        self.menu.append_option('Quit', lambda: self.switchScreen(None))
+        self.menu.append_option('Level Selection', lambda: self.switchScreen(lvlSelectionScreen), config.MENU_COLOR_WHITE)
+        self.menu.append_option('Settings', lambda: self.switchScreen(settingsScreen), config.MENU_COLOR_WHITE)
+        self.menu.append_option('Quit', lambda: self.switchScreen(None), config.MENU_COLOR_WHITE)
+        self.menu.append_option('RESET PROGRESS', lambda: self.switchScreen(resetProgress), config.MENU_COLOR_RED)
+        self.menu.append_option('FULL PROGRESS', lambda: self.switchScreen(fullProgress), config.MENU_COLOR_BLUE)
 
     def run(self, events):
         for e in events:
             if e.type == KEYDOWN:
-                s_menu.play()
                 if e.key == K_UP:
+                    s_menu.play()
                     self.menu.switch(-1)
                 elif e.key == K_DOWN:
+                    s_menu.play()
                     self.menu.switch(1)
                 elif e.key == K_SPACE:
+                    s_menu.play()
                     self.menu.select()
 
         self.surface.blit(self.bg, (0,0))
@@ -36,24 +40,34 @@ class LevelSelectionScreen():
         self.surface = surf
         self.menu = Menu()
         self.bg = transform.scale(image.load('images/bg2.png'), (config.WIN_WIDTH, config.WIN_HEIGHT))
-        self.menu.append_option('1-1', lambda: self.switchScreen(lvl1Screen))
-        self.menu.append_option('1-2', lambda: self.switchScreen(lvl2Screen))
-        self.menu.append_option('1-3', lambda: self.switchScreen(lvl3Screen))
-        self.menu.append_option('Back to menu', lambda: self.switchScreen(MainScreen))
+        self.menu.append_option('1-1', lambda: self.switchScreen(lvl1Screen), config.MENU_COLOR_WHITE)
+        if config.LEVEL_2_AVAILABLE:
+            self.menu.append_option('1-2', lambda: self.switchScreen(lvl2Screen), config.MENU_COLOR_WHITE)
+        else:
+            self.menu.append_option('1-2', lambda: self.switchScreen(lvlSelectionScreen), config.MENU_COLOR_GREY)
+        if config.LEVEL_3_AVAILABLE:
+            self.menu.append_option('1-3', lambda: self.switchScreen(lvl3Screen), config.MENU_COLOR_WHITE)
+        else:
+            self.menu.append_option('1-3', lambda: self.switchScreen(lvlSelectionScreen), config.MENU_COLOR_GREY)
+        self.menu.append_option('Back to menu', lambda: self.switchScreen(MainScreen), config.MENU_COLOR_WHITE)
 
     def run(self, events):
         for e in events:
             if e.type == KEYDOWN:
-                s_menu.play()
                 if e.key == K_UP:
+                    s_menu.play()
                     self.menu.switch(-1)
                 elif e.key == K_DOWN:
+                    s_menu.play()
                     self.menu.switch(1)
                 elif e.key == K_SPACE:
+                    s_menu.play()
                     self.menu.select()
 
         self.surface.blit(self.bg, (0,0))
         self.menu.draw(self.surface, 700, 50, 75)
+
+
 
 class SettingsScreen():
     def __init__(self, surf, switchScreen):
@@ -65,19 +79,21 @@ class SettingsScreen():
         #     config.PLATFORM_WIDTH = size
         #     config.PLATFORM_HEIGHT = size
         #     refreshConfig()
-        self.menu.append_option('Selection scale', lambda: self.switchScreen(selectScaleScreen))
-        self.menu.append_option('Selection volume', lambda: self.switchScreen(selectVolumeScreen))
-        self.menu.append_option('Back to menu', lambda: self.switchScreen(MainScreen))
+        self.menu.append_option('Selection scale', lambda: self.switchScreen(selectScaleScreen), config.MENU_COLOR_WHITE)
+        self.menu.append_option('Selection volume', lambda: self.switchScreen(selectVolumeScreen), config.MENU_COLOR_WHITE)
+        self.menu.append_option('Back to menu', lambda: self.switchScreen(MainScreen), config.MENU_COLOR_WHITE)
 
     def run(self, events):
         for e in events:
             if e.type == KEYDOWN:
-                s_menu.play()
                 if e.key == K_UP:
+                    s_menu.play()
                     self.menu.switch(-1)
                 elif e.key == K_DOWN:
+                    s_menu.play()
                     self.menu.switch(1)
                 elif e.key == K_SPACE:
+                    s_menu.play()
                     self.menu.select()
 
         self.surface.blit(self.bg, (0,0))
@@ -95,20 +111,22 @@ class SelectScaleScreen():
             config.PLATFORM_HEIGHT = size
             refreshConfig()
             self.switchScreen(settingsScreen)
-        self.menu.append_option('Small', lambda: switchScale(32), config.PLATFORM_WIDTH == 32)
-        self.menu.append_option('Medium', lambda: switchScale(48), config.PLATFORM_WIDTH == 48)
-        self.menu.append_option('Large', lambda: switchScale(64), config.PLATFORM_WIDTH == 64)
-        self.menu.append_option('Back to settings', lambda: self.switchScreen(settingsScreen))
+        self.menu.append_option('Small', lambda: switchScale(32), config.PLATFORM_WIDTH == 32, config.MENU_COLOR_WHITE)
+        self.menu.append_option('Medium', lambda: switchScale(48), config.PLATFORM_WIDTH == 48, config.MENU_COLOR_WHITE)
+        self.menu.append_option('Large', lambda: switchScale(64), config.PLATFORM_WIDTH == 64, config.MENU_COLOR_WHITE)
+        self.menu.append_option('Back to settings', lambda: self.switchScreen(settingsScreen), config.MENU_COLOR_WHITE)
 
     def run(self, events):
         for e in events:
             if e.type == KEYDOWN:
-                s_menu.play()
                 if e.key == K_UP:
+                    s_menu.play()
                     self.menu.switch(-1)
                 elif e.key == K_DOWN:
+                    s_menu.play()
                     self.menu.switch(1)
                 elif e.key == K_SPACE:
+                    s_menu.play()
                     self.menu.select()
 
         self.surface.blit(self.bg, (0,0))
@@ -126,20 +144,22 @@ class SelectVolumeScreen():
             config.VOLUME_LEVEL = level
             refreshConfig()
             self.switchScreen(settingsScreen)
-        self.menu.append_option('Quiet', lambda: switchVolume(-0.1), config.VOLUME_LEVEL == -0.1)
-        self.menu.append_option('Average', lambda: switchVolume(0), config.VOLUME_LEVEL == 0)
-        self.menu.append_option('Loud', lambda: switchVolume(0.1), config.VOLUME_LEVEL == 0.1)
-        self.menu.append_option('Back to settings', lambda: self.switchScreen(settingsScreen))
+        self.menu.append_option('Quiet', lambda: switchVolume(-0.1), config.VOLUME_LEVEL == -0.1, config.MENU_COLOR_WHITE)
+        self.menu.append_option('Average', lambda: switchVolume(0), config.VOLUME_LEVEL == 0, config.MENU_COLOR_WHITE)
+        self.menu.append_option('Loud', lambda: switchVolume(0.1), config.VOLUME_LEVEL == 0.1, config.MENU_COLOR_WHITE)
+        self.menu.append_option('Back to settings', lambda: self.switchScreen(settingsScreen), config.MENU_COLOR_WHITE)
 
     def run(self, events):
         for e in events:
             if e.type == KEYDOWN:
-                s_menu.play()
                 if e.key == K_UP:
+                    s_menu.play()
                     self.menu.switch(-1)
                 elif e.key == K_DOWN:
+                    s_menu.play()
                     self.menu.switch(1)
                 elif e.key == K_SPACE:
+                    s_menu.play()
                     self.menu.select()
 
         self.surface.blit(self.bg, (0,0))
@@ -180,6 +200,18 @@ def lvl3Screen(screen, switchScreen):
 
 def lvlSelectionScreen(screen, switchScreen):
     mixer.music.stop()
+    return LevelSelectionScreen(screen, switchScreen)
+
+def resetProgress(screen, switchScreen):
+    config.LEVEL_2_AVAILABLE = False
+    config.LEVEL_3_AVAILABLE = False
+    refreshConfig()
+    return LevelSelectionScreen(screen, switchScreen)
+
+def fullProgress(screen, switchScreen):
+    config.LEVEL_2_AVAILABLE = True
+    config.LEVEL_3_AVAILABLE = True
+    refreshConfig()
     return LevelSelectionScreen(screen, switchScreen)
 
 def settingsScreen(screen, switchScreen):
