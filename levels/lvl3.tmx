@@ -98,7 +98,7 @@
 </data>
  </layer>
  <objectgroup id="9" name="MonstersLegless">
-  <object id="27" gid="762" x="508.667" y="576" width="32" height="32">
+  <object id="27" gid="762" x="224" y="256" width="32" height="32">
    <properties>
     <property name="rightDirection" value="False"/>
    </properties>

@@ -37,8 +37,8 @@ class LevelSelectionScreen():
         self.menu = Menu()
         self.bg = transform.scale(image.load('images/bg2.png'), (config.WIN_WIDTH, config.WIN_HEIGHT))
         self.menu.append_option('1-1', lambda: self.switchScreen(lvl1Screen))
-        self.menu.append_option('1-2', lambda: self.switchScreen(lvl2Screen))
-        self.menu.append_option('1-3', lambda: self.switchScreen(lvl3Screen))
+        '1-1' in config.END_LEVELS and self.menu.append_option('1-2', lambda: self.switchScreen(lvl2Screen))
+        '1-2' in config.END_LEVELS and self.menu.append_option('1-3', lambda: self.switchScreen(lvl3Screen))
         self.menu.append_option('Back to menu', lambda: self.switchScreen(MainScreen))
 
     def run(self, events):
@@ -67,6 +67,7 @@ class SettingsScreen():
         #     refreshConfig()
         self.menu.append_option('Selection scale', lambda: self.switchScreen(selectScaleScreen))
         self.menu.append_option('Selection volume', lambda: self.switchScreen(selectVolumeScreen))
+        self.menu.append_option('Selection screen resolution', lambda: self.switchScreen(selectScreenResolution))
         self.menu.append_option('Back to menu', lambda: self.switchScreen(MainScreen))
 
     def run(self, events):
@@ -81,7 +82,7 @@ class SettingsScreen():
                     self.menu.select()
 
         self.surface.blit(self.bg, (0,0))
-        self.menu.draw(self.surface, 700, 50, 75)
+        self.menu.draw(self.surface, 100, 50, 75)
 
 class SelectScaleScreen():
     def __init__(self, surf, switchScreen):
@@ -146,6 +147,40 @@ class SelectVolumeScreen():
         self.surface.blit(self.title, (100, 100))
         self.menu.draw(self.surface, 100, 200, 75)
 
+class SelectScreenResolutionScreen():
+    def __init__(self, surf, switchScreen):
+        self.switchScreen = switchScreen
+        self.surface = surf
+        self.menu = Menu()
+        self.bg = transform.scale(image.load('images/bg-dwarfs.jpg'), (config.WIN_WIDTH, config.WIN_HEIGHT))
+        self.title = font.Font('./emulogic.ttf', 45).render('Select game volume', False, '#ffffff')
+        def switchResolution(width, height):
+            config.WIN_WIDTH = width
+            config.WIN_HEIGHT = height
+            display.set_mode((width, height))
+            refreshConfig()
+            self.switchScreen(settingsScreen)
+        def createOption(w, h):
+            self.menu.append_option(f'{w}x{h}', lambda: switchResolution(w, h), config.WIN_WIDTH == w and config.WIN_HEIGHT == h)
+        createOption(800, 600)
+        createOption(1280, 720)
+        createOption(1600, 900)
+        self.menu.append_option('Back to settings', lambda: self.switchScreen(settingsScreen))
+
+    def run(self, events):
+        for e in events:
+            if e.type == KEYDOWN:
+                s_menu.play()
+                if e.key == K_UP:
+                    self.menu.switch(-1)
+                elif e.key == K_DOWN:
+                    self.menu.switch(1)
+                elif e.key == K_SPACE:
+                    self.menu.select()
+
+        self.surface.blit(self.bg, (0,0))
+        self.surface.blit(self.title, (100, 100))
+        self.menu.draw(self.surface, 100, 200, 75)
 
 class Game():
     def __init__(self, surf):
@@ -190,6 +225,9 @@ def selectScaleScreen(screen, switchScreen):
 
 def selectVolumeScreen(screen, switchScreen):
     return SelectVolumeScreen(screen, switchScreen)
+
+def selectScreenResolution(screen, switchScreen):
+    return SelectScreenResolutionScreen(screen, switchScreen)
 
 game.switchScreen(MainScreen)
 while game.currentScreen is not None:
