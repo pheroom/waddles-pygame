@@ -1,6 +1,6 @@
 from pygame import *
 import time as pytime
-from config import config
+from config import config, refreshConfig
 from player import Player
 from blocks import Platform, BlockTeleport, Princess, ActPlatform, Coin, Flower, Amount, PlatformCoin
 from monsters import Dwarf, Mushroom, DwarfLegless, Gideon
@@ -73,8 +73,10 @@ class Level:
 
         self.startTime = time.get_ticks()
 
+        self.levelName = levelName
+
         self.firstRenderMap(pytmx.load_pygame(lvl))
-        self.ui = UI(self.surface, levelName)
+        self.ui = UI(self.surface, self.levelName)
 
         self.deadScreen = False
         self.startDead = 0
@@ -280,7 +282,7 @@ class Level:
                 self.surface.blit(deadImg, (config.WIN_WIDTH // 2 - 100, config.WIN_HEIGHT // 2 - 15))
                 self.surface.blit(deadLabel, (config.WIN_WIDTH // 2 - 32, config.WIN_HEIGHT // 2 - 15))
                 time_diff = time.get_ticks() - self.startTime
-                self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 1000) // 1000, self.hero.weaponIsKnife)
+                self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 1000) // 1000, self.hero.getWeaponImg())
             else:
                 if self.hero.lives == 0:
                     self.s_winner.stop()
@@ -341,16 +343,16 @@ class Level:
                          self.slowly, self.platforms)
 
         time_diff = time.get_ticks() - self.startTime
-        self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 1000) // 1000, self.hero.weaponIsKnife)
+        self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 1000) // 1000, self.hero.getWeaponImg())
 
         if self.hero.winner:
-            if self.bool_winner:
-                mixer.music.stop()
-                self.s_winner.play()
-                self.bool_winner = False
             if not self.winScreen:
                 self.winScreen = True
                 self.startWin = time.get_ticks()
+                mixer.music.stop()
+                self.s_winner.play()
+                config.END_LEVELS.append(self.levelName)
+                refreshConfig()
 
             if self.startWin + 600 < time.get_ticks():
                 label = font.Font('./emulogic.ttf', 30).render('YOU RESCUED MABEL!', False, '#ffffff')
@@ -377,8 +379,10 @@ class UI:
         self.world = world
         self.font = font.Font('./emulogic.ttf', 25)
         self.imgHeart = transform.scale(image.load("images/Heart/heart.png").convert_alpha(), (32, 32))
-        self.imgKnife = transform.rotate(transform.scale(image.load("images/weapon/knife.png").convert_alpha(), (50 * 1.88, 50)), 140)
+        self.imgKnife = transform.rotate(transform.scale(image.load("images/weapon/knife.png").convert_alpha(), (40 * 1.88, 40)), 140)
         self.imgHook = transform.rotate(transform.scale(image.load("images/bullet/bullet_hook.png").convert_alpha(), (40*1.285, 40)), 180)
+        self.imgTape = image.load('images/ui/tape.png')
+        self.imgSweater = transform.scale(image.load('images/ui/sweater.png'), (150, 110))
         self.memo = {}
 
     def renderFont(self, text):
@@ -396,11 +400,9 @@ class UI:
             self.memo[num] = cur
             return cur
 
-    def draw(self, point, health, time, weaponIsKnife):
-        if weaponIsKnife:
-            self.surface.blit(self.imgKnife, (self.surface.get_size()[0] - 120, 10))
-        else:
-            self.surface.blit(self.imgHook, (self.surface.get_size()[0] - 90, 40))
+    def draw(self, point, health, time, weaponImg):
+        self.surface.blit(self.imgSweater, (self.surface.get_size()[0] - 145, 0))
+        self.surface.blit(weaponImg, (self.surface.get_size()[0] - 120, 20))
 
         padding = 100
         smallPadding = 25
@@ -424,6 +426,7 @@ class UI:
         x += worldLabel.get_width() + padding
         timeLabel = self.renderFont('TIME')
         timeValue = self.renderFont(time)
+        self.surface.blit(self.imgTape, (x-20, 20))
         self.surface.blit(timeLabel, (x, 20))
         self.surface.blit(timeValue, (x + timeLabel.get_size()[0] - timeValue.get_size()[0], 45))
 

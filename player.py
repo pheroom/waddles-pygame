@@ -127,6 +127,9 @@ class Player(sprite.Sprite):
         self.yvel = -config.JUMP_POWER
         self.health = 0
 
+    def getWeaponImg(self):
+        return self.weapons[self.curWeaponIndex].getImg()
+
     def hit(self, damage = 1):
         if self.immunityStart + self.immunityValue < time.get_ticks():
             self.s_damage.play()
@@ -176,6 +179,11 @@ class Player(sprite.Sprite):
         else:
             self.curWeaponIndex = 0
         self.addEntities(self.weapons[self.curWeaponIndex])
+
+    def addWeapon(self, newWeapon, needSwitching = True):
+        self.weapons.append(newWeapon)
+        if(needSwitching):
+            self.curWeaponIndex = len(self.weapons)
 
     def update(self, left, right, up, space, running, slowly, platforms):
         if self.dead:
@@ -275,10 +283,10 @@ class Player(sprite.Sprite):
                     self.hit(3)
                     self.setImmunity()
                 elif isinstance(p, monsters.DwarfLegless) and not p.dead:
-                    self.hit(3)
+                    self.hit(1)
                     self.setImmunity()
                 elif isinstance(p, monsters.Gideon) and not p.dead:
-                    self.hit(3)
+                    self.hit(2)
                     self.setImmunity()
                 elif isinstance(p, weapon.Bullet):
                     if p.owner != 'player':
