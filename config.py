@@ -11,8 +11,11 @@ with open("configfile.pickle", 'rb') as f:
 config.PLATFORM_WIDTH = configData['PLATFORM_WIDTH']
 config.PLATFORM_HEIGHT = configData['PLATFORM_HEIGHT']
 config.VOLUME_LEVEL = configData['VOLUME_LEVEL']
-config.LEVEL_3_AVAILABLE = configData['LEVEL_3_AVAILABLE']
-config.LEVEL_2_AVAILABLE = configData['LEVEL_2_AVAILABLE']
+
+config.WIN_WIDTH = configData['WIN_WIDTH']
+config.WIN_HEIGHT = configData['WIN_HEIGHT']
+
+config.END_LEVELS = configData['END_LEVELS']
 
 
 def refreshConfig():
@@ -26,8 +29,8 @@ def refreshConfig():
     config.WIN_SCREEN_TIME = 3000
     config.DEAD_SCREEN_TIME = 2000
 
-    config.WIN_WIDTH = 1280
-    config.WIN_HEIGHT = 720
+    # config.WIN_WIDTH = 1280
+    # config.WIN_HEIGHT = 720
 
     config.BG_COLOR_DUNGEON = '#000000'
     config.BG_COLOR_SKY = '#5C94FC'

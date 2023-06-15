@@ -57,7 +57,7 @@ class PygAnimation(object):
         # will be when the last frame ends, rather than when it starts.
         # The values are in seconds.
         # So self._startTimes[-1] tells you the length of the entire animation.
-        # e.g. if _durations is [1, 1, 2.5], then _startTimes will be [0, 1, 2, 4.5]
+        # e.g. if _durations is [1, 1, 2.5], then _startTimes will be [0, 1, 2, ui.5]
         self._startTimes = None
 
         # if the sprites are transformed, the originals are kept in _images
@@ -818,8 +818,8 @@ def findStartTime(startTimes, target):
     # With startTimes as a list of sequential numbers and target as a number,
     # returns the index of the number in startTimes that preceeds target.
     #
-    # For example, if startTimes was [0, 2, 4.5, 7.3, 10] and target was 6,
-    # then findStartTime() would return 2. If target was 12, returns 4.
+    # For example, if startTimes was [0, 2, ui.5, 7.3, 10] and target was 6,
+    # then findStartTime() would return 2. If target was 12, returns ui.
     assert startTimes[0] == 0
     lb = 0 # "lb" is lower bound
     ub = len(startTimes) - 1 # "ub" is upper bound

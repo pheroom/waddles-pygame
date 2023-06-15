@@ -60,6 +60,8 @@ class Dwarf(sprite.Sprite):
         return transform.scale(img, (config.MONSTER_WIDTH, config.MONSTER_HEIGHT))
 
     def die(self):
+        if self.dead:
+            return
         self.image = transform.scale(self.image, (config.PLATFORM_WIDTH * 1.5, config.PLATFORM_HEIGHT / 2))
         self.rect.height -= config.PLATFORM_HEIGHT / 2
         self.xvel = 0
@@ -179,8 +181,10 @@ class DwarfLegless(sprite.Sprite):
         return transform.scale(img, (config.MONSTER_WIDTH, config.MONSTER_HEIGHT))
 
     def die(self):
+        if self.dead:
+            return
         self.image = transform.scale(self.image, (config.PLATFORM_WIDTH * 1.5, config.PLATFORM_HEIGHT / 2))
-        self.rect.height += config.PLATFORM_HEIGHT / 2
+        self.rect.y += config.PLATFORM_HEIGHT / 2
         self.xvel = 0
         self.whenDead(self)
         self.startDead = time.get_ticks()
@@ -224,9 +228,8 @@ class DwarfLegless(sprite.Sprite):
             #     self.boltAnim_left.blit(self.image, self.indentImage)
 
         for p in platforms:
-            if sprite.collide_rect(self, p) and self != p and not isinstance(p, Mushroom) and (
-                    not self.dead or not isinstance(p, Dwarf) or not isinstance(p, Gideon) or not isinstance(p, DwarfLegless)):
-                if isinstance(p, weapon.Bullet):
+            if sprite.collide_rect(self, p) and self != p:
+                if isinstance(p, weapon.Bullet) and not self.dead:
                     if p.owner != 'monster':
                         self.hit()
                         p.die()
@@ -279,6 +282,8 @@ class Gideon(sprite.Sprite):
         return transform.scale(img, (config.MONSTER_WIDTH, config.MONSTER_HEIGHT))
 
     def die(self):
+        if self.dead:
+            return
         self.image = transform.scale(self.image, (config.PLATFORM_WIDTH * 1.5, config.PLATFORM_HEIGHT / 2))
         self.rect.height -= config.PLATFORM_HEIGHT / 2
         self.xvel = 0

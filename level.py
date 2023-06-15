@@ -1,8 +1,6 @@
 from pygame import *
 import time as pytime
-
-import player
-from config import config, saveConfigOnExit, refreshConfig
+from config import config, refreshConfig
 from player import Player
 from blocks import Platform, BlockTeleport, Princess, ActPlatform, Coin, Flower, Amount, PlatformCoin
 from monsters import Dwarf, Mushroom, DwarfLegless, Gideon
@@ -76,8 +74,10 @@ class Level:
 
         self.startTime = time.get_ticks()
 
+        self.levelName = levelName
+
         self.firstRenderMap(pytmx.load_pygame(lvl))
-        self.ui = UI(self.surface, levelName)
+        self.ui = UI(self.surface, self.levelName)
 
         self.deadScreen = False
         self.startDead = 0
@@ -283,7 +283,9 @@ class Level:
                 self.surface.blit(deadImg, (config.WIN_WIDTH // 2 - 100, config.WIN_HEIGHT // 2 - 15))
                 self.surface.blit(deadLabel, (config.WIN_WIDTH // 2 - 32, config.WIN_HEIGHT // 2 - 15))
                 time_diff = time.get_ticks() - self.startTime
-                self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 1000) // 1000, player.curWeaponIndex)
+
+                self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 1000) // 1000, self.hero.getWeaponSet())
+
             else:
                 if self.hero.lives == 0:
                     self.s_winner.stop()
@@ -344,22 +346,17 @@ class Level:
                          self.slowly, self.platforms)
 
         time_diff = time.get_ticks() - self.startTime
-        self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 1000) // 1000, player.curWeaponIndex)
+
+        self.ui.draw(self.hero.points, self.hero.health, (time_diff - time_diff % 1000) // 1000, self.hero.getWeaponSet())
 
         if self.hero.winner:
-            if self.levelName == '1-1':
-                config.LEVEL_2_AVAILABLE = True
-                refreshConfig()
-            elif self.levelName == '1-2':
-                config.LEVEL_3_AVAILABLE = True
-                refreshConfig()
-            if self.bool_winner:
-                mixer.music.stop()
-                self.s_winner.play()
-                self.bool_winner = False
             if not self.winScreen:
                 self.winScreen = True
                 self.startWin = time.get_ticks()
+                mixer.music.stop()
+                self.s_winner.play()
+                config.END_LEVELS.append(self.levelName)
+                refreshConfig()
 
             if self.startWin + 600 < time.get_ticks():
                 label = font.Font('./emulogic.ttf', 30).render('YOU RESCUED MABEL!', False, '#ffffff')
@@ -385,24 +382,23 @@ class UI:
         self.surface = surf
         self.world = world
         self.font = font.Font('./emulogic.ttf', 25)
-        self.imgHeart = transform.scale(image.load("images/Heart/heart.png").convert_alpha(), (28, 28))
-        self.imgSword = transform.rotate(transform.scale(image.load("images/weapon/rainbow-sword.png").convert_alpha(), (35 * 1.88, 35)), 140)
-        self.imgRainbowSword = transform.rotate(transform.scale(image.load("images/weapon/ultimate-rainbow-sword.png").convert_alpha(), (35 * 1.88, 35)), 140)
-        self.imgMushroomSword = transform.rotate(transform.scale(image.load("images/weapon/mushroom-sword.png").convert_alpha(), (35 * 1.88, 35)), 140)
-        self.imgHook = transform.rotate(transform.flip(transform.scale(image.load("images/weapon/hook.png").convert_alpha(), (40*1.285, 40)), True, False), -20)
+        self.fontWeapon = font.Font('./emulogic.ttf', 10)
+        self.fontTime = font.Font('./emulogic.ttf', 18)
+        # self.imgHeart = transform.scale(image.load("images/Heart/heart.png").convert_alpha(), (28, 28))
+        # self.imgSword = transform.rotate(transform.scale(image.load("images/weapon/rainbow-sword.png").convert_alpha(), (35 * 1.88, 35)), 140)
+        # self.imgRainbowSword = transform.rotate(transform.scale(image.load("images/weapon/ultimate-rainbow-sword.png").convert_alpha(), (35 * 1.88, 35)), 140)
+        # self.imgMushroomSword = transform.rotate(transform.scale(image.load("images/weapon/mushroom-sword.png").convert_alpha(), (35 * 1.88, 35)), 140)
+        # self.imgHook = transform.rotate(transform.flip(transform.scale(image.load("images/weapon/hook.png").convert_alpha(), (40*1.285, 40)), True, False), -20)
+        self.imgHeart = transform.scale(image.load("images/Heart/heart.png").convert_alpha(), (32, 32))
+        self.imgTape = transform.scale(image.load("images/UI/tape.png").convert_alpha(), (160, 160))
         self.imgSweater = transform.scale(image.load("images/UI/sweater.png").convert_alpha(), (128, 128))
-        self.imgPotion = transform.scale(image.load("images/UI/potion.png").convert_alpha(), (110, 110))
-        self.imgTape = transform.scale(image.load("images/UI/tape.png").convert_alpha(), (190, 190))
+        # self.imgPotion = transform.scale(image.load("images/UI/potion.png").convert_alpha(), (110, 110))
         self.memo = {}
 
-        self.weapons = [[self.imgHook, (self.surface.get_size()[0] - 117, 50)],
-                        [self.imgMushroomSword, (self.surface.get_size()[0] - 123, 45)],
-                        [self.imgRainbowSword, (self.surface.get_size()[0] - 123, 45)],
-                        [self.imgSword, (self.surface.get_size()[0] - 123, 45)]]
 
 
-    def renderFont(self, text):
-        return self.font.render(str(text), False, '#73f5a7')
+    def renderFont(self, font ,text):
+        return font.render(str(text), False, config.MENU_COLOR_WHITE)
 
     def util(self, num, cur = -1, pre = 1e6):
         if self.memo.get(num) != None:
@@ -416,42 +412,42 @@ class UI:
             self.memo[num] = cur
             return cur
 
-    def draw(self, point, health, time, curWeaponIndex):
-        self.surface.blit(self.imgSweater, (self.surface.get_size()[0] - 150, 10))
-        if curWeaponIndex + 1 < len(self.weapons):
-            curWeaponIndex += 1
-            self.surface.blit(self.weapons[curWeaponIndex - 1][0], self.weapons[curWeaponIndex - 1][1])
-        else:
-            curWeaponIndex = 0
-            self.surface.blit(self.weapons[curWeaponIndex - 1][0], self.weapons[curWeaponIndex - 1][1])
-
-
-        padding = 100
+    def draw(self, point, health, time, weaponSet):
+        padding_left = 100
+        padding_right = 75
         smallPadding = 25
+
+        all_surface = self.surface.get_size()[0]
+        step = all_surface - 150
+        weaponName = self.renderFont(self.fontWeapon, weaponSet[1])
+        self.surface.blit(self.imgSweater, (step, 10))
+        self.surface.blit(weaponSet[0], (step + 25, 43))
+        self.surface.blit(weaponName, (all_surface - (self.imgSweater.get_width()/2 + weaponName.get_width()/2) - 20, 143))
+
+        step -= self.imgSweater.get_width() + padding_right
+        timeLabel = self.renderFont(self.fontTime, 'TIME')
+        timeValue = self.renderFont(self.fontTime, time)
+        self.surface.blit(timeLabel, (step - 10, 30))
+        self.surface.blit(timeValue, (step + timeLabel.get_size()[0] - timeValue.get_size()[0] - 10, 50))
+        self.surface.blit(self.imgTape, (step - 85, -25))
+
         x = 100
-        pointLabel = self.renderFont('WADDLES')
-        pointValue = self.renderFont('0' * self.util(point) + str(point))
+        pointLabel = self.renderFont(self.font, 'WADDLES')
+        pointValue = self.renderFont(self.font, '0' * self.util(point) + str(point))
         self.surface.blit(pointLabel, (x, 32.5))
         # self.surface.blit(pointValue, (x, 45))
-        x += pointValue.get_width() + padding
+        x += pointValue.get_width() + padding_left
 
-        health_value = self.renderFont(str(health))
-        self.surface.blit(self.imgPotion, (x - 10, 10))
-        self.surface.blit(self.imgHeart, (x + 34, 55))
-        self.surface.blit(health_value, (x + 21, 80))
+        health_value = self.renderFont(self.font, '*' + str(health))
+        self.surface.blit(self.imgHeart, (x - 10, 32.5))
+        self.surface.blit(health_value, (x + smallPadding, 32.5))
 
-        x += self.imgHeart.get_width() + health_value.get_width() + smallPadding + padding
-        worldLabel = self.renderFont('LEVEL')
-        worldValue = self.renderFont(self.world)
-        # self.surface.blit(worldLabel, (x, 20))
-        # self.surface.blit(worldValue, (x + (worldLabel.get_size()[0] - worldValue.get_size()[0]) // 2, 45))
+        x += self.imgHeart.get_width() + health_value.get_width() + padding_right
+        worldLabel = self.renderFont(self.font, 'LEVEL')
+        worldValue = self.renderFont(self.font, self.world)
+        self.surface.blit(worldLabel, (x, 20))
+        self.surface.blit(worldValue, (x + (worldLabel.get_size()[0] - worldValue.get_size()[0]) // 2, 45))
 
-        x += worldLabel.get_width() + padding
-        timeLabel = self.renderFont('TIME')
-        timeValue = self.renderFont(time)
-        self.surface.blit(timeLabel, (x, 30))
-        self.surface.blit(timeValue, (x + timeLabel.get_size()[0] - timeValue.get_size()[0], 60))
-        self.surface.blit(self.imgTape, (x - 85, -30))
 
 if __name__ == '__main__':
     init()
