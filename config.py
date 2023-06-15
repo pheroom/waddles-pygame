@@ -21,7 +21,7 @@ config.END_LEVELS = configData['END_LEVELS']
 def refreshConfig():
     config.MENU_COLOR_WHITE = '#ffffff'
     config.MENU_COLOR_GREY = '#616161'
-    config.MENU_COLOR_RED = '#730c05'
+    config.MENU_COLOR_RED = '#8a0101'
     config.MENU_COLOR_BLUE = '#3cb9cf'
 
     config.PLATFORM_COLOR = "#FF6262"

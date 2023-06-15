@@ -79,6 +79,7 @@ class SettingsScreen():
         #     config.PLATFORM_WIDTH = size
         #     config.PLATFORM_HEIGHT = size
         #     refreshConfig()
+        self.menu.append_option('Controls', lambda: self.switchScreen(controlsScreen), config.MENU_COLOR_WHITE)
         self.menu.append_option('Selection scale', lambda: self.switchScreen(selectScaleScreen), config.MENU_COLOR_WHITE)
         self.menu.append_option('Selection volume', lambda: self.switchScreen(selectVolumeScreen), config.MENU_COLOR_WHITE)
         self.menu.append_option('Selection screen resolution', lambda: self.switchScreen(selectScreenResolution), config.MENU_COLOR_WHITE)
@@ -104,6 +105,27 @@ class SettingsScreen():
         self.surface.blit(self.bg, (0,0))
         self.menu.draw(self.surface, 100, 50, 75)
 
+class ControlsScreen():
+    def __init__(self, surf, switchScreen):
+        self.switchScreen = switchScreen
+        self.surface = surf
+        self.menu = Menu()
+        self.bg = transform.scale(image.load('images/keyboard.png'), (config.WIN_WIDTH, config.WIN_HEIGHT))
+        self.title = font.Font('./emulogic.ttf', 45).render('Controls', False, config.MENU_COLOR_WHITE)
+        self.menu.append_option('Back to settings', lambda: self.switchScreen(settingsScreen), config.MENU_COLOR_WHITE)
+
+    def run(self, events):
+        for e in events:
+            if e.type == KEYDOWN:
+                if e.key == K_SPACE:
+                    s_menu.play()
+                    self.menu.select()
+                elif e.key == K_ESCAPE:
+                    self.switchScreen(settingsScreen)
+
+        self.surface.blit(self.bg, (0,0))
+        self.surface.blit(self.title, (config.WIN_WIDTH / 2 - self.title.get_width()/2 - 20, 20))
+        self.menu.draw(self.surface, 80, config.WIN_HEIGHT - 60, 75)
 class SelectScaleScreen():
     def __init__(self, surf, switchScreen):
         self.switchScreen = switchScreen
@@ -274,6 +296,9 @@ def selectVolumeScreen(screen, switchScreen):
 
 def selectScreenResolution(screen, switchScreen):
     return SelectScreenResolutionScreen(screen, switchScreen)
+
+def controlsScreen(screen, switchScreen):
+    return ControlsScreen(screen, switchScreen)
 
 game.switchScreen(MainScreen)
 while game.currentScreen is not None:
