@@ -42,7 +42,7 @@ class Player(sprite.Sprite):
         self.afterDead = afterDead
         self.startDead = -1
         self.dead = False
-        self.lives = 3
+        self.lives = 2
         self.health = config.HERO_HEALTH
 
         self.playAnimAmount = lambda amount,color: playAnimAmountWithRect(self.rect.x, self.rect.y, amount, color)

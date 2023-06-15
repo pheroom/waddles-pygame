@@ -51,8 +51,8 @@ def refreshConfig():
     config.JUMP_EXTRA_POWER = 1 / 5 * config.HERO_HEIGHT / 32
     config.ANIMATION_SUPER_SPEED_DELAY = 0.05
 
-    config.HERO_HEALTH = 10
-    config.MONSTER_HEALTH = 3
+    config.HERO_HEALTH = 6
+    config.MONSTER_HEALTH = 4
 
     config.ANIMATION_DELAY = 0.12
     config.ANIMATION_STAY_DELAY = 0.8
