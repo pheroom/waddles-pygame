@@ -24,7 +24,7 @@ class Dwarf(sprite.Sprite):
         self.startX = x
         self.startY = y
         self.maxLengthLeft = maxLengthLeft
-        self.xvel = round(left * config.PLATFORM_WIDTH / 64)
+        self.xvel = max(round(left * config.PLATFORM_WIDTH / 64), 1)
         self.yvel = 0
         self.onGround = False
         self.dead = False
