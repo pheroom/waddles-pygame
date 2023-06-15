@@ -24,7 +24,6 @@ class Player(sprite.Sprite):
         self.addObjective = addObjective
         self.removeObjective = removeObjective
 
-        self.weaponIsKnife = True
         self.rightDirection = True
 
         self.attackOrb = config.PLATFORM_WIDTH
@@ -127,8 +126,8 @@ class Player(sprite.Sprite):
         self.yvel = -config.JUMP_POWER
         self.health = 0
 
-    def getWeaponImg(self):
-        return self.weapons[self.curWeaponIndex].getImg()
+    def getWeaponSet(self):
+        return self.weapons[self.curWeaponIndex].getUiSet()
 
     def hit(self, damage = 1):
         if self.immunityStart + self.immunityValue < time.get_ticks():

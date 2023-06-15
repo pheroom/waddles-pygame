@@ -1,5 +1,4 @@
 from pygame import *
-
 class Menu:
     def __init__(self):
         self._option_surfaces = []
@@ -12,8 +11,8 @@ class Menu:
         self.activePoint = transform.scale(image.load('images/star.png').convert_alpha(), (41,40))
         self.activeOption = []
 
-    def append_option(self, option, callback, isActive = False):
-        self._option_surfaces.append(self.font.render(option, True, '#ffffff'))
+    def append_option(self, option, callback, colour, isActive = False):
+        self._option_surfaces.append(self.font.render(option, True, colour))
         self._callbacks.append(callback)
         if isActive:
             self.activeOption.append(len(self._option_surfaces) - 1)

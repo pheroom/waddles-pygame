@@ -11,12 +11,19 @@ with open("configfile.pickle", 'rb') as f:
 config.PLATFORM_WIDTH = configData['PLATFORM_WIDTH']
 config.PLATFORM_HEIGHT = configData['PLATFORM_HEIGHT']
 config.VOLUME_LEVEL = configData['VOLUME_LEVEL']
+
 config.WIN_WIDTH = configData['WIN_WIDTH']
 config.WIN_HEIGHT = configData['WIN_HEIGHT']
 
 config.END_LEVELS = configData['END_LEVELS']
 
+
 def refreshConfig():
+    config.MENU_COLOR_WHITE = '#ffffff'
+    config.MENU_COLOR_GREY = '#616161'
+    config.MENU_COLOR_RED = '#730c05'
+    config.MENU_COLOR_BLUE = '#3cb9cf'
+
     config.PLATFORM_COLOR = "#FF6262"
 
     config.WIN_SCREEN_TIME = 3000
@@ -70,13 +77,13 @@ def refreshConfig():
     config.ANIMATION_BLOCKTELEPORT = [
         ('images/portal2.png'),
         ('images/portal1.png')]
-    
+
+    config.GIDEON_DELAY = 0.2
     config.MONSTER_DELAY = 0.1
     config.MONSTER_WIDTH = config.PLATFORM_WIDTH
     config.MONSTER_HEIGHT = config.PLATFORM_HEIGHT
     config.MONSTER_COLOR = "#2110FF"
 
-    config.ANIMATION_DWARF_STAY = ['images/usual_dwarf/dwarf_stay.png']
 
     config.ANIMATION_USUAL_DWARF_L = ['images/usual_dwarf/usual_dwarf_run_l1.png',
                                'images/usual_dwarf/usual_dwarf_run_l2.png',
@@ -87,15 +94,25 @@ def refreshConfig():
                                'images/usual_dwarf/usual_dwarf_run_r3.png',
                                'images/usual_dwarf/usual_dwarf_run_r4.png']
 
-    config.ANIMATION_PUKING_DWARF_l = ['images/puking_dwarf/puking_dwarf1.png',
-                                            'images/puking_dwarf/puking_dwarf_r2.png',
+    config.ANIMATION_PUKING_DWARF_STAY = ['images/puking_dwarf/puking_dwarf1.png']
+
+    config.ANIMATION_PUKING_DWARF_l = ['images/puking_dwarf/puking_dwarf_r2.png',
                                             'images/puking_dwarf/puking_dwarf_r3.png']
-    config.ANIMATION_PUKING_DWARF_r = ['images/puking_dwarf/puking_dwarf1.png',
-                                     'images/puking_dwarf/puking_dwarf_l2.png',
+    config.ANIMATION_PUKING_DWARF_r = ['images/puking_dwarf/puking_dwarf_l2.png',
                                      'images/puking_dwarf/puking_dwarf_l3.png']
 
-    config.ANIMATION_GIDEON_L = ['images/gideon/gideon_l.png']
-    config.ANIMATION_GIDEON_R = ['images/gideon/gideon_r.png']
+    config.ANIMATION_GIDEON_L = ['images/gideon/gideon_l1.png',
+                                 'images/gideon/gideon_l2.png',
+                                 'images/gideon/gideon_l3.png',
+                                 'images/gideon/gideon_l4.png',
+                                 'images/gideon/gideon_l3.png',
+                                 'images/gideon/gideon_l2.png']
+    config.ANIMATION_GIDEON_R = ['images/gideon/gideon_r1.png',
+                                 'images/gideon/gideon_r2.png',
+                                 'images/gideon/gideon_r3.png',
+                                 'images/gideon/gideon_r4.png',
+                                 'images/gideon/gideon_r3.png',
+                                 'images/gideon/gideon_r2.png']
 
 
     config.ANIMATION_PRINCESS = [

@@ -51,15 +51,16 @@ class Sword(sprite.Sprite):
         self.imgL = transform.rotate(self.img, 135)
         self.animationStage = 0
         self.image = self.imgR
-        self.uiImg = transform.rotate(transform.scale(self.img,
-                                   (40 * 1.88, 40)), 140)
+        self.uiImg = [transform.rotate(transform.scale(self.img,
+                                   (38 * 1.88, 38)), 140),
+                      'Sword']
         self.orb = orb
         self.w, self.h = orb, config.HERO_HEIGHT
         self.rect = Rect(x, y, self.w, self.h)
         self.animStep = pi/180
         self.r = config.PLATFORM_WIDTH*0.2
 
-    def getImg(self):
+    def getUiSet(self):
         return self.uiImg
 
     def update(self, rect, rightDir):
@@ -102,16 +103,17 @@ class RainbowSword(sprite.Sprite):
         self.imgL = transform.rotate(self.img, 135)
         self.animationStage = 0
         self.image = self.imgR
-        self.uiImg = transform.rotate(transform.scale(self.img,
-                                   (40 * 1.88, 40)), 140)
+        self.uiImg = [transform.rotate(transform.scale(self.img,
+                                   (38 * 1.88, 38)), 140), 'Reflective sword']
         self.orb = orb
         self.w, self.h = orb, config.HERO_HEIGHT
         self.rect = Rect(x, y, self.w, self.h)
         self.animStep = pi/180
         self.r = config.PLATFORM_WIDTH*0.2
 
-    def getImg(self):
+    def getUiSet(self):
         return self.uiImg
+
 
     def update(self, rect, rightDir):
         x = rect.right if rightDir else rect.x - self.orb
@@ -160,8 +162,8 @@ class MushroomSword(sprite.Sprite):
         self.imgL = transform.rotate(self.img, 135)
         self.animationStage = 0
         self.image = self.imgR
-        self.uiImg =  transform.rotate(transform.scale(self.img,
-                                   (40 * 1.88, 40)), 140)
+        self.uiImg = [transform.rotate(transform.scale(self.img,
+                                   (38 * 1.88, 38)), 140), 'Mushroom sword']
         self.orb = orb
         self.w, self.h = orb, config.HERO_HEIGHT
         self.rect = Rect(x, y, self.w, self.h)
@@ -197,7 +199,7 @@ class MushroomSword(sprite.Sprite):
 
         self.rightDirection = rightDir
 
-    def getImg(self):
+    def getUiSet(self):
         return self.uiImg
 
     def attack(self, platforms):
@@ -220,9 +222,9 @@ class Hook(sprite.Sprite):
         self.imgR = self.img
         self.imgL = transform.flip(self.img, True, False)
         self.image = self.imgR
-        self.uiImg = Surface((70, 70), SRCALPHA, 32)
-        self.uiImg.blit(transform.scale(self.img, (50, 50)), (17,10))
-        self.uiImg.convert_alpha()
+        self.uiImg = [Surface((70, 70), SRCALPHA, 32), 'Grappling Hook']
+        self.uiImg[0].blit(transform.scale(self.img, (50, 50)), (17,10))
+        self.uiImg[0].convert_alpha()
         self.rect = Rect(x, y, 30 * config.PLATFORM_WIDTH/64,30 * config.PLATFORM_HEIGHT/ 64)
 
     def update(self, rect, rightDir):
@@ -238,5 +240,5 @@ class Hook(sprite.Sprite):
                                self.removeObjective, BULLET_HERO)
         self.addObjective(bullet)
 
-    def getImg(self):
+    def getUiSet(self):
         return self.uiImg

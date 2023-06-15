@@ -161,7 +161,7 @@ class DwarfLegless(sprite.Sprite):
             self.boltAnim_attack.append(pyganim.PygAnimation(self.transformAnim(anims[i])))
             self.boltAnim_attack[-1].play()
 
-        self.boltAnim_stay = pyganim.PygAnimation([[self.transformImg(config.ANIMATION_DWARF_STAY[0]), 100]])
+        self.boltAnim_stay = pyganim.PygAnimation([[self.transformImg(config.ANIMATION_PUKING_DWARF_STAY[0]), 100]])
         self.boltAnim_stay.play()
 
         self.lastAnimIndex = 0
@@ -211,7 +211,7 @@ class DwarfLegless(sprite.Sprite):
         else:
             self.image.fill(Color(config.MONSTER_COLOR))
             if random.randint(0,10) == 6 and time.get_ticks() - self.timeLastAttack >= self.attackCooldown:
-                self.lastAnimIndex = random.randint(0,2)
+                self.lastAnimIndex = random.randint(0,1)
                 self.boltAnim_attack[self.lastAnimIndex].blit(self.image, self.indentImage)
                 self.shot()
             else:
@@ -260,13 +260,13 @@ class Gideon(sprite.Sprite):
         boltAnim = []
         for anim in config.ANIMATION_GIDEON_L:
             anim = self.transformImg(anim)
-            boltAnim.append((anim, config.MONSTER_DELAY))
+            boltAnim.append((anim, config.GIDEON_DELAY))
         self.boltAnim_left = pyganim.PygAnimation(boltAnim)
         self.boltAnim_left.play()
         boltAnim = []
         for anim in config.ANIMATION_GIDEON_R:
             anim = self.transformImg(anim)
-            boltAnim.append((anim, config.MONSTER_DELAY))
+            boltAnim.append((anim, config.GIDEON_DELAY))
         self.boltAnim_right = pyganim.PygAnimation(boltAnim)
         self.boltAnim_right.play()
 
@@ -282,6 +282,8 @@ class Gideon(sprite.Sprite):
         return transform.scale(img, (config.MONSTER_WIDTH, config.MONSTER_HEIGHT))
 
     def die(self):
+        if self.dead:
+            return
         self.image = transform.scale(self.image, (config.PLATFORM_WIDTH * 1.5, config.PLATFORM_HEIGHT / 2))
         self.rect.height -= config.PLATFORM_HEIGHT / 2
         self.xvel = 0
