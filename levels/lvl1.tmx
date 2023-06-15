@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="100" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="36">
+<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="100" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="38">
  <tileset firstgid="1" source="tileset.tsx"/>
  <tileset firstgid="129" source="mario-tiles.tsx"/>
  <tileset firstgid="912" name="tileset_night" tilewidth="32" tileheight="32" tilecount="128" columns="8">
@@ -171,7 +171,7 @@
  <objectgroup id="5" name="Player" locked="1">
   <object id="18" gid="821" x="198.667" y="550.667" width="32" height="32"/>
  </objectgroup>
- <objectgroup id="6" name="ActPlatforms" locked="1">
+ <objectgroup id="6" name="ActPlatforms">
   <object id="22" gid="1495" x="896" y="416" width="32" height="32">
    <properties>
     <property name="flower" type="bool" value="true"/>

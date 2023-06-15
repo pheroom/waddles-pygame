@@ -1,3 +1,4 @@
+import math
 from pygame import *
 import util
 import weapon
@@ -23,7 +24,7 @@ class Dwarf(sprite.Sprite):
         self.startX = x
         self.startY = y
         self.maxLengthLeft = maxLengthLeft
-        self.xvel = max(left * config.HERO_HEIGHT / 64, 1)
+        self.xvel = round(left * config.PLATFORM_WIDTH / 64)
         self.yvel = 0
         self.onGround = False
         self.dead = False
@@ -242,8 +243,9 @@ class Gideon(sprite.Sprite):
         self.startY = y
         self.maxLengthLeft = maxLengthLeft
         self.maxLengthUp = maxLengthUp
-        self.xvel = left * config.HERO_HEIGHT / 64
-        self.yvel = up * config.HERO_HEIGHT / 64
+        self.xvel = max(round(left * config.PLATFORM_WIDTH / 64), 1)
+        self.yvel = max(round(up * config.PLATFORM_WIDTH / 64), 1)
+        print(maxLengthLeft, maxLengthUp, self.xvel, self.yvel)
         self.dead = False
         self.indentImage = (0, 0)
         self.rightDirection = True
