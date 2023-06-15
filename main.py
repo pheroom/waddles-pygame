@@ -83,7 +83,7 @@ class SettingsScreen():
         self.menu.append_option('Selection volume', lambda: self.switchScreen(selectVolumeScreen), config.MENU_COLOR_WHITE)
         self.menu.append_option('Selection screen resolution', lambda: self.switchScreen(selectScreenResolution), config.MENU_COLOR_WHITE)
         self.menu.append_option('RESET PROGRESS', lambda: self.switchScreen(resetProgress), config.MENU_COLOR_RED)
-        self.menu.append_option('FULL PROGRESS', lambda: self.switchScreen(fullProgress), config.MENU_COLOR_BLUE)
+        # self.menu.append_option('FULL PROGRESS', lambda: self.switchScreen(fullProgress), config.MENU_COLOR_BLUE)
         self.menu.append_option('Back to menu', lambda: self.switchScreen(MainScreen), config.MENU_COLOR_WHITE)
 
     def run(self, events):
@@ -255,13 +255,13 @@ def resetProgress(screen, switchScreen):
     refreshConfig()
     return LevelSelectionScreen(screen, switchScreen)
 
-def fullProgress(screen, switchScreen):
-    if '1-1' not in config.END_LEVELS:
-        config.END_LEVELS.append('1-1')
-    if '1-2' not in config.END_LEVELS:
-        config.END_LEVELS.append('1-2')
-    refreshConfig()
-    return LevelSelectionScreen(screen, switchScreen)
+# def fullProgress(screen, switchScreen):
+#     if '1-1' not in config.END_LEVELS:
+#         config.END_LEVELS.append('1-1')
+#     if '1-2' not in config.END_LEVELS:
+#         config.END_LEVELS.append('1-2')
+#     refreshConfig()
+#     return LevelSelectionScreen(screen, switchScreen)
 
 def settingsScreen(screen, switchScreen):
     return SettingsScreen(screen, switchScreen)

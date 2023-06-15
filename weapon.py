@@ -207,7 +207,7 @@ class MushroomSword(sprite.Sprite):
             self.animationStage = 90
         self.shot()
         for p in platforms:
-            if sprite.collide_rect(self.attackArea, p) and (isinstance(p, monsters.Dwarf) or isinstance(p, monsters.DwarfLegless)):
+            if sprite.collide_rect(self.attackArea, p) and (isinstance(p, monsters.Dwarf) or isinstance(p, monsters.DwarfLegless) or isinstance(p, monsters.Gideon)):
                 p.hit(2)
 
 class Hook(sprite.Sprite):
