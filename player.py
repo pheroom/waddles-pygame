@@ -6,6 +6,8 @@ import blocks
 import monsters
 import weapon
 
+curWeaponIndex = 0
+
 class Player(sprite.Sprite):
     def __init__(self, x, y, playAnimAmountWithRect, maxX, maxY, afterDead, addEntities, removeEntities, addObjective, removeObjective):
         mixer.init()
@@ -24,7 +26,6 @@ class Player(sprite.Sprite):
         self.addObjective = addObjective
         self.removeObjective = removeObjective
 
-        self.weaponIsKnife = True
         self.rightDirection = True
 
         self.attackOrb = config.PLATFORM_WIDTH
@@ -33,8 +34,7 @@ class Player(sprite.Sprite):
         swordMushroom = weapon.MushroomSword(x, y, self.attackOrb, self.addObjective, self.removeObjective)
         hook = weapon.Hook(x, y, self.addObjective, self.removeObjective)
         self.weapons = [hook, swordMushroom, swordRainbow, sword]
-        self.curWeaponIndex = 0
-        addEntities(self.weapons[self.curWeaponIndex])
+        addEntities(self.weapons[curWeaponIndex])
         self.attackCooldown = 500
         self.timeLastAttack = time.get_ticks()
 
@@ -161,7 +161,8 @@ class Player(sprite.Sprite):
         self.immunityValue = value
 
     def switchWeapon(self):
-        self.removeEntities(self.weapons[self.curWeaponIndex])
+        global curWeaponIndex
+        self.removeEntities(self.weapons[curWeaponIndex])
 
         #whatafuck:
         # if self.weapons[self.curWeaponIndex] == self.weapons[0] or self.weapons[1]:
@@ -171,11 +172,11 @@ class Player(sprite.Sprite):
         #     self.s_hit = mixer.Sound('music/sword_whoosh.wav')
         #     self.s_hit.set_volume(0.2 + config.VOLUME_LEVEL)
 
-        if self.curWeaponIndex + 1 < len(self.weapons):
-            self.curWeaponIndex += 1
+        if curWeaponIndex + 1 < len(self.weapons):
+            curWeaponIndex += 1
         else:
-            self.curWeaponIndex = 0
-        self.addEntities(self.weapons[self.curWeaponIndex])
+            curWeaponIndex = 0
+        self.addEntities(self.weapons[curWeaponIndex])
 
     def update(self, left, right, up, space, running, slowly, platforms):
         if self.dead:
@@ -255,9 +256,9 @@ class Player(sprite.Sprite):
         if space and time.get_ticks() - self.timeLastAttack >= self.attackCooldown:
             self.s_hit.play()
             self.timeLastAttack = time.get_ticks()
-            self.weapons[self.curWeaponIndex].attack(platforms)
+            self.weapons[curWeaponIndex].attack(platforms)
 
-        self.weapons[self.curWeaponIndex].update(self.rect, self.rightDirection)
+        self.weapons[curWeaponIndex].update(self.rect, self.rightDirection)
 
         if self.rect.x + config.PLATFORM_WIDTH < 0 or self.rect.x - config.PLATFORM_WIDTH > self.maxX or self.rect.y - config.PLATFORM_HEIGHT*5 > self.maxY:
             self.die()
