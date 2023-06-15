@@ -27,11 +27,11 @@ class Player(sprite.Sprite):
         self.rightDirection = True
 
         self.attackOrb = config.PLATFORM_WIDTH
+        # swordRainbow = weapon.RainbowSword(x, y, self.attackOrb)
+        # swordMushroom = weapon.MushroomSword(x, y, self.attackOrb, self.addObjective, self.removeObjective)
         sword = weapon.Sword(x, y, self.attackOrb)
-        swordRainbow = weapon.RainbowSword(x, y, self.attackOrb)
-        swordMushroom = weapon.MushroomSword(x, y, self.attackOrb, self.addObjective, self.removeObjective)
         hook = weapon.Hook(x, y, self.addObjective, self.removeObjective)
-        self.weapons = [hook, swordMushroom, swordRainbow, sword]
+        self.weapons = [sword, hook]
         self.curWeaponIndex = 0
         addEntities(self.weapons[self.curWeaponIndex])
         self.attackCooldown = 500
@@ -116,10 +116,11 @@ class Player(sprite.Sprite):
         return transform.scale(img, (config.HERO_WIDTH, config.HERO_HEIGHT))
 
     def die(self):
-        self.s_die.play()
         if self.startDead + 500 > time.get_ticks():
             return
         self.dead = True
+        self.s_die.play()
+        self.removeEntities(self.weapons[self.curWeaponIndex])
         self.lives -= 1
         self.startDead = time.get_ticks()
         self.image = transform.scale(image.load("images/waddles/waddles_dead.png").convert_alpha(), (config.PLATFORM_WIDTH, config.PLATFORM_HEIGHT) )
@@ -158,21 +159,12 @@ class Player(sprite.Sprite):
     def addCoin(self):
         self.coins += 1
 
-    def setImmunity(self, value = 1000):
+    def setImmunity(self, value = 500):
         self.immunityStart = time.get_ticks()
         self.immunityValue = value
 
     def switchWeapon(self):
         self.removeEntities(self.weapons[self.curWeaponIndex])
-
-        #whatafuck:
-        # if self.weapons[self.curWeaponIndex] == self.weapons[0] or self.weapons[1]:
-        #     self.s_hit = mixer.Sound('music/hook_whoosh.wav')
-        #     self.s_hit.set_volume(0.2 + config.VOLUME_LEVEL)
-        # else:
-        #     self.s_hit = mixer.Sound('music/sword_whoosh.wav')
-        #     self.s_hit.set_volume(0.2 + config.VOLUME_LEVEL)
-
         if self.curWeaponIndex + 1 < len(self.weapons):
             self.curWeaponIndex += 1
         else:
@@ -182,7 +174,9 @@ class Player(sprite.Sprite):
     def addWeapon(self, newWeapon, needSwitching = True):
         self.weapons.append(newWeapon)
         if(needSwitching):
-            self.curWeaponIndex = len(self.weapons)
+            self.removeEntities(self.weapons[self.curWeaponIndex])
+            self.curWeaponIndex = len(self.weapons) - 1
+            self.addEntities(self.weapons[self.curWeaponIndex])
 
     def update(self, left, right, up, space, running, slowly, platforms):
         if self.dead:
@@ -192,6 +186,7 @@ class Player(sprite.Sprite):
             else:
                 self.health = config.HERO_HEALTH
                 self.dead = False
+                self.addEntities(self.weapons[self.curWeaponIndex])
                 self.immunityStart = time.get_ticks()
                 self.immunityValue = config.DEAD_SCREEN_TIME + 1500
                 self.teleport(self.startX, self.startY)
@@ -263,6 +258,7 @@ class Player(sprite.Sprite):
             self.s_hit.play()
             self.timeLastAttack = time.get_ticks()
             self.weapons[self.curWeaponIndex].attack(platforms)
+            self.attackCooldown = self.weapons[self.curWeaponIndex].cooldown
 
         self.weapons[self.curWeaponIndex].update(self.rect, self.rightDirection)
 

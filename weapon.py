@@ -20,7 +20,7 @@ class Bullet(sprite.Sprite):
             self.image = transform.rotate(self.image, 180)
         w, h = self.image.get_rect()[2], self.image.get_rect()[3]
         self.rect = Rect(x, y - h/2, w, h)
-        self.xvel = 10
+        self.xvel = 10 * config.HERO_HEIGHT / 64
 
     def changeDirection(self):
         self.rightDirection = not self.rightDirection
@@ -36,7 +36,7 @@ class Bullet(sprite.Sprite):
         for p in platforms:
             if sprite.collide_rect(self, p) and p != self and (isinstance(p, blocks.ActPlatform) or isinstance(p, blocks.Platform)):
                 self.die()
-        if abs(self.rect.x - self.startX) > 500:
+        if abs(self.rect.x - self.startX) > 500 * config.HERO_HEIGHT / 64:
             self.remove(self)
 
 class Sword(sprite.Sprite):
@@ -59,6 +59,7 @@ class Sword(sprite.Sprite):
         self.rect = Rect(x, y, self.w, self.h)
         self.animStep = pi/180
         self.r = config.PLATFORM_WIDTH*0.2
+        self.cooldown = 500
 
     def getUiSet(self):
         return self.uiImg
@@ -110,10 +111,10 @@ class RainbowSword(sprite.Sprite):
         self.rect = Rect(x, y, self.w, self.h)
         self.animStep = pi/180
         self.r = config.PLATFORM_WIDTH*0.2
+        self.cooldown = 500
 
     def getUiSet(self):
         return self.uiImg
-
 
     def update(self, rect, rightDir):
         x = rect.right if rightDir else rect.x - self.orb
@@ -169,6 +170,7 @@ class MushroomSword(sprite.Sprite):
         self.rect = Rect(x, y, self.w, self.h)
         self.animStep = pi/180
         self.r = config.PLATFORM_WIDTH*0.2
+        self.cooldown = 1000
 
     def shot(self):
         bullet = Bullet(self.rect.x, self.rect.y + config.HERO_HEIGHT / 2, 'player', self.rightDirection,
@@ -226,6 +228,7 @@ class Hook(sprite.Sprite):
         self.uiImg[0].blit(transform.scale(self.img, (50, 50)), (17,10))
         self.uiImg[0].convert_alpha()
         self.rect = Rect(x, y, 30 * config.PLATFORM_WIDTH/64,30 * config.PLATFORM_HEIGHT/ 64)
+        self.cooldown = 500
 
     def update(self, rect, rightDir):
         x = rect.right if rightDir else rect.x

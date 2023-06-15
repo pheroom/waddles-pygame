@@ -23,7 +23,7 @@ class Dwarf(sprite.Sprite):
         self.startX = x
         self.startY = y
         self.maxLengthLeft = maxLengthLeft
-        self.xvel = left
+        self.xvel = max(left * config.HERO_HEIGHT / 64, 1)
         self.yvel = 0
         self.onGround = False
         self.dead = False
@@ -114,9 +114,9 @@ class Dwarf(sprite.Sprite):
     def collide(self, xvel, yvel, platforms):
         for p in platforms:
             if sprite.collide_rect(self, p) and self != p and not isinstance(p, Mushroom) and (
-                    not self.dead or not isinstance(p, Dwarf) or not isinstance(p, DwarfLegless) or not isinstance(p, Gideon)):
+                    not self.dead or (not isinstance(p, Dwarf) and not isinstance(p, DwarfLegless) and not isinstance(p, Gideon))):
                 if isinstance(p, weapon.Bullet):
-                    if p.owner != 'monster':
+                    if p.owner != 'monster' and not self.dead:
                         self.hit()
                         p.die()
                 else:
@@ -183,8 +183,11 @@ class DwarfLegless(sprite.Sprite):
     def die(self):
         if self.dead:
             return
+        self.image.fill(Color(config.MONSTER_COLOR))
+        self.boltAnim_stay.blit(self.image, self.indentImage)
         self.image = transform.scale(self.image, (config.PLATFORM_WIDTH * 1.5, config.PLATFORM_HEIGHT / 2))
         self.rect.y += config.PLATFORM_HEIGHT / 2
+        self.rect.x -= config.PLATFORM_HEIGHT / 4
         self.xvel = 0
         self.whenDead(self)
         self.startDead = time.get_ticks()
@@ -220,17 +223,10 @@ class DwarfLegless(sprite.Sprite):
                 else:
                     self.boltAnim_stay.blit(self.image, self.indentImage)
 
-            # if self.rightDirection:
-            #     self.image.fill(Color(config.MONSTER_COLOR))
-            #     self.boltAnim_right.blit(self.image, self.indentImage)
-            # else:
-            #     self.image.fill(Color(config.MONSTER_COLOR))
-            #     self.boltAnim_left.blit(self.image, self.indentImage)
-
         for p in platforms:
             if sprite.collide_rect(self, p) and self != p:
-                if isinstance(p, weapon.Bullet) and not self.dead:
-                    if p.owner != 'monster':
+                if isinstance(p, weapon.Bullet):
+                    if p.owner != 'monster' and not self.dead:
                         self.hit()
                         p.die()
 
@@ -246,8 +242,8 @@ class Gideon(sprite.Sprite):
         self.startY = y
         self.maxLengthLeft = maxLengthLeft
         self.maxLengthUp = maxLengthUp
-        self.xvel = left
-        self.yvel = up
+        self.xvel = left * config.HERO_HEIGHT / 64
+        self.yvel = up * config.HERO_HEIGHT / 64
         self.dead = False
         self.indentImage = (0, 0)
         self.rightDirection = True
@@ -329,9 +325,9 @@ class Gideon(sprite.Sprite):
     def collide(self, xvel, yvel, platforms):
         for p in platforms:
             if sprite.collide_rect(self, p) and self != p and not isinstance(p, Mushroom) and (
-                    not self.dead or not isinstance(p, Dwarf) or not isinstance(p, DwarfLegless) or not isinstance(p, Gideon)):
+                    not self.dead or (not isinstance(p, Dwarf) and not isinstance(p, DwarfLegless) and not isinstance(p, Gideon))):
                 if isinstance(p, weapon.Bullet):
-                    if p.owner != 'monster':
+                    if p.owner != 'monster'  and not self.dead:
                         self.hit()
                         p.die()
                 else:

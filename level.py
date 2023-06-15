@@ -4,6 +4,7 @@ from config import config, refreshConfig
 from player import Player
 from blocks import Platform, BlockTeleport, Princess, ActPlatform, Coin, Flower, Amount, PlatformCoin
 from monsters import Dwarf, Mushroom, DwarfLegless, Gideon
+import weapon
 import pytmx
 
 class Camera(object):
@@ -118,6 +119,14 @@ class Level:
         self.entities.add(mr)
         self.animatedEntities.add(mr)
         self.platforms.append(mr)
+
+    def addRainbowSword(self, x, y):
+        swordRainbow = weapon.RainbowSword(x, y, self.hero.attackOrb)
+        self.hero.addWeapon(swordRainbow)
+
+    def addMushroomSword(self, x, y):
+        swordMushroom = weapon.MushroomSword(x, y, self.hero.attackOrb, self.addObjective, self.removeObjective)
+        self.hero.addWeapon(swordMushroom)
 
     def removeActPlatform(self, x, y):
         for pl in self.actPlatforms:
@@ -234,6 +243,13 @@ class Level:
                             self.actPlatforms.append(pf)
                         elif actObj.get('flower'):
                             pf = ActPlatform(getX(actPlatform), getY(actPlatform), 1, self.createFlower,
+                                             img=actPlatform.image)
+                            self.entities.add(pf)
+                            self.platforms.append(pf)
+                            self.actPlatforms.append(pf)
+                        elif actObj.get('weapon'):
+                            pf = ActPlatform(getX(actPlatform), getY(actPlatform), 1,
+                                             self.addRainbowSword if actObj.get('weapon') == 'rainbowSword' else self.addMushroomSword,
                                              img=actPlatform.image)
                             self.entities.add(pf)
                             self.platforms.append(pf)
