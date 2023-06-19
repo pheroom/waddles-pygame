@@ -47,7 +47,6 @@ class Player(sprite.Sprite):
 
         self.playAnimAmount = lambda amount,color: playAnimAmountWithRect(self.rect.x, self.rect.y, amount, color)
         self.points = 0
-        self.coins = 0
 
         self.image = Surface((config.HERO_WIDTH, config.HERO_HEIGHT))
         self.image.fill(Color(config.COLOR))
@@ -96,8 +95,6 @@ class Player(sprite.Sprite):
         self.s_jump.set_volume(0.2 + config.VOLUME_LEVEL)
         self.s_hit = mixer.Sound('music/sword_whoosh.wav')
         self.s_hit.set_volume(0.2 + config.VOLUME_LEVEL)
-        self.s_walk = mixer.Sound('music/walk.wav')
-        self.s_walk.set_volume(0.4 + config.VOLUME_LEVEL)
         self.s_damage = mixer.Sound('music/hero_damage.wav')
         self.s_damage.set_volume(0.3 + config.VOLUME_LEVEL)
         self.s_die = mixer.Sound('music/die.wav')
@@ -148,16 +145,11 @@ class Player(sprite.Sprite):
         if(self.health < 20):
             self.health += min(amount, 20 - self.health)
 
-    def addPoint(self, amount = 200):
-        self.playAnimAmount(amount, '#ffffff')
-        self.points += amount
 
     def addLive(self, amount = 1):
         self.playAnimAmount(amount, '#ffc0cb')
         self.lives += amount
 
-    def addCoin(self):
-        self.coins += 1
 
     def setImmunity(self, value = 500):
         self.immunityStart = time.get_ticks()
@@ -287,22 +279,14 @@ class Player(sprite.Sprite):
                     if p.owner != 'player':
                         self.hit()
                         p.die()
-                elif isinstance(p, blocks.BlockTeleport):
-                    self.teleport(p.goX, p.goY)
                 elif isinstance(p, blocks.Princess):
                     if not self.winner:
-                        self.addPoint(10000)
                         self.winner = True
-                elif isinstance(p, blocks.Flower):
+                elif isinstance(p, blocks.Heart):
                     self.addHealth(1)
                     p.die()
                 elif isinstance(p, monsters.Mushroom):
                     self.addHealth(3)
-                    # self.addPoint(800)
-                    p.die()
-                elif isinstance(p, blocks.PlatformCoin):
-                    self.addCoin()
-                    self.addPoint()
                     p.die()
                 elif isinstance(p, weapon.Sword):
                     p.die()

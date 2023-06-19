@@ -2,7 +2,7 @@ from pygame import *
 import time as pytime
 from config import config, refreshConfig
 from player import Player
-from blocks import Platform, BlockTeleport, Princess, ActPlatform, Coin, Flower, Amount, PlatformCoin
+from blocks import Platform, Princess, ActPlatform, Heart, Amount
 from monsters import Dwarf, Mushroom, DwarfLegless, Gideon
 import weapon
 import pytmx
@@ -96,17 +96,6 @@ class Level:
         self.bool_winner = True
 
 
-    def animateCoin(self, x, y):
-        def removeCoin(v):
-            self.entities.remove(v)
-            self.animatedEntities.remove(v)
-            self.hero.addPoint()
-
-        self.hero.addCoin()
-        coin = Coin(x, y, removeCoin)
-        self.entities.add(coin)
-        self.animatedEntities.add(coin)
-
     def createMushroom(self, x, y):
         mr = Mushroom(x, y - config.PLATFORM_HEIGHT, 3, 0,
                       150, 0, self.removePlatform, self.removeMonster)
@@ -115,7 +104,7 @@ class Level:
         self.monsters.add(mr)
 
     def createFlower(self, x, y):
-        mr = Flower(x, y, self.removePlatform, self.removeMonster)
+        mr = Heart(x, y, self.removePlatform, self.removeMonster)
         self.entities.add(mr)
         self.animatedEntities.add(mr)
         self.platforms.append(mr)
@@ -216,10 +205,6 @@ class Level:
                     for entity in layer:
                         if entity.name == 'flower':
                             self.createFlower(getX(entity), getY(entity) + config.PLATFORM_HEIGHT)
-                        elif entity.name == 'coin':
-                            cn = PlatformCoin(getX(entity), getY(entity), self.removePlatformAndEntity, entity.image)
-                            self.platforms.append(cn)
-                            self.entities.add(cn)
                 elif layer.name.rstrip() == LayerNameActPlatforms:
                     for actPlatform in layer:
                         actObj = actPlatform.properties
@@ -231,12 +216,6 @@ class Level:
                             self.actPlatforms.append(pf)
                         elif actObj.get('break'):
                             pf = ActPlatform(getX(actPlatform), getY(actPlatform), actObj.get('break'), self.removeActPlatform,
-                                             img=actPlatform.image)
-                            self.entities.add(pf)
-                            self.platforms.append(pf)
-                            self.actPlatforms.append(pf)
-                        elif actObj.get('coins'):
-                            pf = ActPlatform(getX(actPlatform), getY(actPlatform), actObj.get('coins'), self.animateCoin,
                                              img=actPlatform.image)
                             self.entities.add(pf)
                             self.platforms.append(pf)
@@ -401,15 +380,9 @@ class UI:
         self.font = font.Font('./emulogic.ttf', 25)
         self.fontWeapon = font.Font('./emulogic.ttf', 10)
         self.fontTime = font.Font('./emulogic.ttf', 18)
-        # self.imgHeart = transform.scale(image.load("images/Heart/heart.png").convert_alpha(), (28, 28))
-        # self.imgSword = transform.rotate(transform.scale(image.load("images/weapon/rainbow-sword.png").convert_alpha(), (35 * 1.88, 35)), 140)
-        # self.imgRainbowSword = transform.rotate(transform.scale(image.load("images/weapon/ultimate-rainbow-sword.png").convert_alpha(), (35 * 1.88, 35)), 140)
-        # self.imgMushroomSword = transform.rotate(transform.scale(image.load("images/weapon/mushroom-sword.png").convert_alpha(), (35 * 1.88, 35)), 140)
-        # self.imgHook = transform.rotate(transform.flip(transform.scale(image.load("images/weapon/hook.png").convert_alpha(), (40*1.285, 40)), True, False), -20)
         self.imgHeart = transform.scale(image.load("images/Heart/heart.png").convert_alpha(), (32, 32))
         self.imgTape = transform.scale(image.load("images/UI/tape.png").convert_alpha(), (160, 160))
         self.imgSweater = transform.scale(image.load("images/UI/sweater.png").convert_alpha(), (128, 128))
-        # self.imgPotion = transform.scale(image.load("images/UI/potion.png").convert_alpha(), (110, 110))
         self.memo = {}
 
 
