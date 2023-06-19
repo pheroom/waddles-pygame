@@ -62,6 +62,7 @@ class LevelSelectionScreen():
                     s_menu.play()
                     self.menu.select()
                 elif e.key == K_ESCAPE:
+                    s_menu.play()
                     self.switchScreen(MainScreen)
 
         self.surface.blit(self.bg, (0,0))
@@ -100,6 +101,7 @@ class SettingsScreen():
                     s_menu.play()
                     self.menu.select()
                 elif e.key == K_ESCAPE:
+                    s_menu.play()
                     self.switchScreen(MainScreen)
 
         self.surface.blit(self.bg, (0,0))
@@ -121,6 +123,7 @@ class ControlsScreen():
                     s_menu.play()
                     self.menu.select()
                 elif e.key == K_ESCAPE:
+                    s_menu.play()
                     self.switchScreen(settingsScreen)
 
         self.surface.blit(self.bg, (0,0))
@@ -156,6 +159,7 @@ class SelectScaleScreen():
                     s_menu.play()
                     self.menu.select()
                 elif e.key == K_ESCAPE:
+                    s_menu.play()
                     self.switchScreen(settingsScreen)
 
         self.surface.blit(self.bg, (0,0))
@@ -191,6 +195,7 @@ class SelectVolumeScreen():
                     s_menu.play()
                     self.menu.select()
                 elif e.key == K_ESCAPE:
+                    s_menu.play()
                     self.switchScreen(settingsScreen)
 
         self.surface.blit(self.bg, (0,0))
@@ -212,7 +217,7 @@ class SelectScreenResolutionScreen():
             self.switchScreen(settingsScreen)
         def createOption(w, h):
             self.menu.append_option(f'{w}x{h}', lambda: switchResolution(w, h), config.MENU_COLOR_WHITE, config.WIN_WIDTH == w and config.WIN_HEIGHT == h)
-        createOption(800, 600)
+        # createOption(800, 600)
         createOption(1280, 720)
         createOption(1600, 900)
         self.menu.append_option('Back to settings', lambda: self.switchScreen(settingsScreen), config.MENU_COLOR_WHITE)
@@ -228,6 +233,7 @@ class SelectScreenResolutionScreen():
                 elif e.key == K_SPACE:
                     self.menu.select()
                 elif e.key == K_ESCAPE:
+                    s_menu.play()
                     self.switchScreen(settingsScreen)
 
         self.surface.blit(self.bg, (0,0))

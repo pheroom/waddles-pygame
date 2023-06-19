@@ -371,7 +371,8 @@ class Level:
                 self.startWin = time.get_ticks()
                 mixer.music.stop()
                 self.s_winner.play()
-                config.END_LEVELS.append(self.levelName)
+                if self.levelName not in config.END_LEVELS:
+                    config.END_LEVELS.append(self.levelName)
                 refreshConfig()
 
             if self.startWin + 600 < time.get_ticks():
